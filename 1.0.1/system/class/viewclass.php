@@ -1,9 +1,17 @@
 <?php
 Final class ViewClass
 {
+	protected $session;
+	protected $input;
+	protected $server;
+	protected $globals;
+	
 	function __construct()
 	{
-
+		$this->session 	= new sessionClass;
+		$this->input 	= new inputClass;
+		$this->server 	= new serverClass;
+		$this->globals 	= new globalsClass;
 	}
 
 	function __call($mth_name,$mth_arg)
