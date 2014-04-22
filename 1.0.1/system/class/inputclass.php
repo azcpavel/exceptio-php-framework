@@ -1,0 +1,77 @@
+<?php
+/**
+* 
+*/
+Final class InputClass
+{
+	
+	function __construct()
+	{
+		# code...
+	}
+
+	function __call($mth_name,$mth_arg)
+	{
+		echo "Unknown Member Call $mth_name<br>You can get all details by calling get_class_details() method";
+	}
+
+	function get_class_details()
+	{		
+		echo '<pre>';
+		echo "<br><b>Class Name</b><br>";
+		echo "\t".get_class($this);
+
+		echo "<br><br><b>List of Methods</b><br>";		
+		foreach (get_class_methods($this) as $key => $value) {
+			echo "\t".$value."()<br>";
+		}		
+		
+		echo "<br><b>List of Properties</b><br>";
+		if(count(get_object_vars($this)) > 0)
+			print_r($this);			
+		else
+			echo "\t"."No Properties Exists";
+		
+		exit;
+	}
+
+	function POST($name,$clr = FALSE)
+	{
+		if(isset($_POST[$name]))
+		{
+			if($clr == TRUE)
+				@$_POST[$name] = filter_var(@$_POST[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+			return $_POST[$name];
+		}
+	}
+
+	function GET($name,$clr = FALSE)
+	{
+		if(isset($_GET[$name]))
+		{
+			if($clr == TRUE)
+				@$_GET[$name] = filter_var(@$_GET[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+			return $_GET[$name];
+		}
+	}
+
+	function REQUEST($name,$clr = FALSE)
+	{
+		if(isset($_REQUEST[$name]))
+		{
+			if($clr == TRUE)
+				@$_REQUEST[$name] = filter_var(@$_REQUEST[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			
+			return $_REQUEST[$name];
+		}
+	}
+
+	function FILES($name)
+	{
+		if(isset($_FILES[$name]))
+			return $_FILES[$name];
+	}
+}
+?>
