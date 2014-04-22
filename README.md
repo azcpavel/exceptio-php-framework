@@ -153,3 +153,4 @@ imgresize----
 
 
 
+Must change the root .htaccess file
