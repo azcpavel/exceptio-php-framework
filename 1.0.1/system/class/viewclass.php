@@ -87,6 +87,12 @@ Final class ViewClass
 			exit("Libraries not found in ".APPLICATION.'/libraries/'.$load_libraries_name.'.php');
 	}
 	
+	function pagination(array $config = array(''))
+	{
+		require(SYSTEM.'/class/pagination.php');
+		$this->pagination = new pagination($config);
+	}
+	
 
 }
 
