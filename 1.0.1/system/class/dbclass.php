@@ -9,8 +9,10 @@ Final class DbClass
 	private $order_by 	= '';
 	private $limit;
 	private $query;
+	private $query_str;
 	private $error_query;
-	private $num_rows;
+	private $affected_rows;
+
 	
 	function __construct($driver,$host,$uname,$pass,$db,$port,$service,$protocol,$server,$uid)
 	{
@@ -96,12 +98,13 @@ Final class DbClass
 		if ($query === "")
 			$query = "SELECT {$this->select} FROM {$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->limit}";
 
-		$this->query = $this->pdo->query($query) or $error_t = $this->pdo->errorInfo();
+		$this->query_str = $query;
+		$this->query = $this->pdo->query($query) or $error_t = $this->pdo->errorInfo();		
 
 		if(isset($error_t) && $error_t[1] != '')
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $query");
-		}
+		}				
 		
 		return $this;
 	}
@@ -240,7 +243,14 @@ Final class DbClass
 
 	function num_rows()
 	{
-		return count($this->query->fetchAll());
+		$num = $this->pdo->query($this->query_str) or $error_t = $this->pdo->errorInfo();		
+
+		if(isset($error_t) && $error_t[1] != '')
+		{
+			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $query");
+		}
+		$num = count($num->fetchAll());				
+		return $num;
 	}
 
 
@@ -292,7 +302,7 @@ Final class DbClass
 			$values_full .= $values.')';
 	
 	
-		$this->num_rows = $this->pdo->exec("INSERT INTO {$table} $key_full VALUES {$values_full}"); 
+		$this->affected_rows = $this->pdo->exec("INSERT INTO {$table} $key_full VALUES {$values_full}"); 
 		
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
@@ -317,7 +327,7 @@ Final class DbClass
 		else
 			$values_full = $values;
 
-		$this->num_rows = $this->pdo->exec("UPDATE $table SET$values_full WHERE {$this->where} ");
+		$this->affected_rows = $this->pdo->exec("UPDATE $table SET$values_full WHERE {$this->where} ");
 
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
@@ -333,7 +343,7 @@ Final class DbClass
 
 		$this->where($where);
 
-		$this->num_rows = $this->pdo->exec("DELETE FROM $table WHERE {$this->where}");
+		$this->affected_rows = $this->pdo->exec("DELETE FROM $table WHERE {$this->where}");
 
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
@@ -345,7 +355,7 @@ Final class DbClass
 
 	function affected_rows()
 	{
-		return $this->num_rows;
+		return $this->affected_rows;
 	}
 
 	function insert_id()
