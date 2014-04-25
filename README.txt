@@ -19,7 +19,7 @@ input----
 view-----
 		|-page('view page name') //of applicaion views folder
 		|-library('view library name') //of applicaion libraries folder
-		|-pagination(array $config)
+		|-pagination(array $config) class
 					|-show()
 		|-input class
 		|-session class
