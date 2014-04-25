@@ -48,8 +48,9 @@ Final class LoadClass
 
 		$base_name = basename($load_model_name);
 
-		if(file_exists($_SERVER['DOCUMENT_ROOT'].BASEDIR.APPLICATION.'/models/'.$load_model_name.'.php'))
+		if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/models/'.$load_model_name.'.php'))
 			{
+				require(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/models/'.$load_model_name.'.php');
 				if(class_exists($base_name))
 					$Controller->$base_name = new $base_name;
 				else
@@ -65,7 +66,7 @@ Final class LoadClass
 
 		$base_name = basename($load_libraries_name);
 
-		if(file_exists($_SERVER['DOCUMENT_ROOT'].BASEDIR.SYSTEM.'/libraries/'.$load_libraries_name.'.php'))
+		if(file_exists(DOCUMENT_ROOT.BASEDIR.SYSTEM.'/libraries/'.$load_libraries_name.'.php'))
 			{
 				require(SYSTEM.'/libraries/'.$load_libraries_name.'.php');
 				if(class_exists($base_name))
@@ -101,7 +102,7 @@ Final class LoadClass
 	function helper($load_helper_page = 'main')
 	{		
 
-		if(file_exists($_SERVER['DOCUMENT_ROOT'].BASEDIR.APPLICATION.'/helpers/'.$load_helper_page.'_helper.php'))
+		if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/helpers/'.$load_helper_page.'_helper.php'))
 			require_once (APPLICATION.'/helpers/'.$load_helper_page.'_helper.php');
 		else
 			exit("Helper not found in ".APPLICATION.'/helpers/'.$load_helper_page.'_helper.php');
