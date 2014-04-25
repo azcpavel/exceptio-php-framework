@@ -18,11 +18,14 @@ input----
 
 view-----
 		|-page('view page name') //of applicaion views folder
-		|-library('view library name') //of applicaion libraries folder	
+		|-library('view library name') //of applicaion libraries folder
+		|-pagination(array $config)
+					|-show()
 		|-input class
 		|-session class
 		|-server class
 		|-global class
+		
 
 file-----
 		|-config_upload(array config)
