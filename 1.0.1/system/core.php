@@ -57,5 +57,10 @@ function &get_model_instance()
 	return ex_model::get_all_instance();
 }
 
+function &get_view_instance()
+{
+	return ViewClass::get_all_instance();
+}
+
 
 ?>
