@@ -4,10 +4,7 @@
 function __autoload($class)
 {
 	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/controllers/'.$class.'.php'))	
-		require(APPLICATION.'/controllers/'.$class.'.php');
-
-	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/models/'.$class.'.php'))	
-		require(APPLICATION.'/models/'.$class.'.php');
+		require(APPLICATION.'/controllers/'.$class.'.php');	
 
 	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/helpers/'.$class.'.php'))	
 		require(APPLICATION.'/helpers/'.$class.'.php');
@@ -61,6 +58,4 @@ function &get_view_instance()
 {
 	return ViewClass::get_all_instance();
 }
-
-
 ?>
