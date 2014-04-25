@@ -10,7 +10,10 @@ if(isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] != '/'){
 	}
 
 	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/controllers/'.$controller_option[0].'.php'))
-		$obj = new $controller_option[0];
+		if(class_exists($controller_option[0]))
+			$obj = new $controller_option[0];
+		else
+			exit("Class $controller_option[0] Not Found.");
 	else
 		{
 			include(APPLICATION.'/config/route.php');			
@@ -84,8 +87,14 @@ else{
 
 	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/controllers/'.$config['default_controller'].'.php'))
 		{			
-			$obj = new $config['default_controller'];				
-			$obj_meth 	= get_class_methods($obj);
+			if(class_exists($config['default_controller']))
+				{
+					$obj = new $config['default_controller'];				
+					$obj_meth 	= get_class_methods($obj);
+				}
+			else
+				exit("Class $config[default_controller] Not Found.");
+			
 		}
 	else
 		{
