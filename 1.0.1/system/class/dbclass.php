@@ -106,6 +106,10 @@ Final class DbClass
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $query");
 		}
 		
+		$this->order_by = $this->join = $this->limit = '';
+		$this->where = 1;
+		$this->select = '*';
+		
 		return $this;
 	}
 
@@ -365,9 +369,6 @@ Final class DbClass
 	function __destruct()
 	{
 		$this->pdo = null;
-		$this->order_by = $this->join = $this->limit = '';
-		$this->where = 1;
-		$this->select = '*';
 	}
 }
 
