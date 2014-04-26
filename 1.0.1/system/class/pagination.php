@@ -68,7 +68,7 @@ Final class pagination
 		if(($tmp < $this->total-$tmp) && ( ($this->start - $tmp) > 0) )
 			$this->start = $this->start - $tmp;
 
-		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}'>{$this->first}</a> ".$this->after_tag.$this->end_part;
+		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}'>{$this->first}</a> ".$this->after_tag;
 
 		for ($list_page = $this->start; $list_page <= $this->start+$this->per_page; $list_page++) { 
 
@@ -78,7 +78,7 @@ Final class pagination
 				break;
 		}
 		$last = $this->total - (int)($this->per_page / 2);
-		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/{$last}'>{$this->last}</a>".$this->after_tag.$this->end_part;
+		echo $this->before_tag."<a href='{$this->base_url}/{$last}'>{$this->last}</a>".$this->after_tag.$this->end_part;
 	}
 }
 
