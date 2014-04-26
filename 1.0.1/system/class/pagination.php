@@ -78,6 +78,8 @@ Final class pagination
 				break;
 		}
 		$last = $this->total - (int)($this->per_page / 2);
+		if($last <= $this->total) 
+			$last = $this->total;
 		echo $this->before_tag."<a href='{$this->base_url}/{$last}'>{$this->last}</a>".$this->after_tag.$this->end_part;
 	}
 }
