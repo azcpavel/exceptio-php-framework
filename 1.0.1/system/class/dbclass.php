@@ -7,7 +7,7 @@ Final class DbClass
 	private $join 		= '';
 	private $where 		= 1;
 	private $order_by 	= '';
-	private $limit;
+	private $limit 		= '';
 	private $query;
 	private $query_str;
 	private $error_query;
@@ -104,7 +104,9 @@ Final class DbClass
 		if(isset($error_t) && $error_t[1] != '')
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $query");
-		}				
+		}
+
+		$this->order_by = $this->join = $this->limit = '';				
 		
 		return $this;
 	}
@@ -216,13 +218,12 @@ Final class DbClass
 
 	function order_by($order_by = 0, $order = 0)
 	{
-		if($order_by != 0)
+		
 			if($this->order_by == '')
-				$this->order_by .= "ORDER BY $order_by";
+				$this->order_by = "ORDER BY $order_by";
 			else
 				$this->order_by .= " ,$order_by";
-
-		if($order != 0)
+		
 			$this->order_by .= " $order";
 
 		return $this;
