@@ -18,22 +18,22 @@ function base_url()
 
 function site_url($address = '')
 {
-	return BASEPATH.$address;
+	return BASEPATH.'index.php/'.$address;
 }
 
 function redirect($link){
 	
-	header("Location: ".BASEPATH.$link);
+	header("Location: ".BASEPATH.'index.php/'.$link);
 }
 
 function form_mpt($address)
 {
-	echo '<form action="'.BASEPATH.$address.'" method="POST" enctype="multipart/form-data">';
+	echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST" enctype="multipart/form-data">';
 }
 
 function form_spt($address)
 {
-	echo '<form action="'.BASEPATH.$address.'" method="POST">';
+	echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST">';
 }
 
 function uri_segment($no)
