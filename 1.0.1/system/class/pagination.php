@@ -63,6 +63,8 @@ Final class pagination
 
 	function show()
 	{
+		if($this->per_page < $this->total){		
+
 		$tmp = (int) ($this->per_page / 2);
 		
 		if(($tmp < $this->total-$tmp) && ( ($this->start - $tmp) > 0) )
@@ -81,6 +83,8 @@ Final class pagination
 		if($last <= $this->total) 
 			$last = $this->total;
 		echo $this->before_tag."<a href='{$this->base_url}/{$last}'>{$this->last}</a>".$this->after_tag.$this->end_part;
+		
+		}
 	}
 }
 
