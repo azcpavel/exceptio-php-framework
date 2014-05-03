@@ -12,6 +12,7 @@ Final class DbClass
 	private $query_str;
 	private $error_query;
 	private $affected_rows;
+	private $db_name;
 
 	
 	function __construct($driver,$host,$uname,$pass,$db,$port,$service,$protocol,$server,$uid)
@@ -55,7 +56,8 @@ Final class DbClass
 
 		try{
 
-			$this->pdo = @new pdo($dsn,$uname,$pass);	
+			$this->pdo = @new pdo($dsn,$uname,$pass);
+			$this->db_name = $db;	
 
 		} catch (PDOException $e) {
 		    print "Error!: " . $e->getMessage() . "<br/>";
@@ -281,6 +283,21 @@ Final class DbClass
 			array_pop($result);
 
 		return $result;		
+	}
+
+	function fetch_column($offset = 0)
+	{
+		return $this->query->fetchColumn($offset);		
+	}
+
+	function show_column($table)
+	{
+		return $this->query("SHOW COLUMNS FROM $table");		
+	}
+
+	function show_tables()
+	{
+		return $this->query("SHOW TABLES FROM {$this->db_name}");		
 	}
 
 
