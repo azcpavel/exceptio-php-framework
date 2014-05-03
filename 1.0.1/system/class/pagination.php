@@ -65,26 +65,63 @@ Final class pagination
 	{
 		if($this->per_page < $this->total){		
 
-		$tmp = (int) ($this->per_page / 2);
+		$tmp = (int) ($this->total - ($this->per_page * 3));		
 		
-		if(($tmp < $this->total-$tmp) && ( ($this->start - $tmp) > 0) )
-			$this->start = $this->start - $tmp;
+		if($this->start >= $tmp)
+			{
+				$this->start = (int) ($this->start - ($this->per_page * 3));
+				if($this->start <= 0 )
+						$this->start = 1;					
+			}
+			
+		
+		$prev = $this->start - $this->per_page; 
+		if($prev <= 0 )
+						$prev = 1;
+						
+		$next = $this->start + $this->per_page; 
+		if($next >= ($this->total / $this->per_page ))
+						$next = $this->start;
+		
+		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}'>{$this->first}</a> ".$this->after_tag;		
+		
+		$count_li == 1;
+		
+		$this->start = (int) ($this->start / $this->per_page);
+		
+		if($this->start <= 0 )
+			$this->start = 1; 
+			
+		$prev = ($this->start - 1) * $this->per_page; 
+		if($prev <= 0 )
+						$prev = 1;
+						
+		$next = ($this->start + 1) * $this->per_page;
+		if($next >= $this->total )
+						$next = $this->start;
+						
+		echo $this->before_tag."<a href='{$this->base_url}/{$prev}'><<</a> ".$this->after_tag;
 
-		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}'>{$this->first}</a> ".$this->after_tag;
+		for ($list_page = $this->start; $list_page < ($this->total / $this->per_page); $list_page++) { 
 
-		for ($list_page = $this->start; $list_page <= $this->start+$this->per_page; $list_page++) { 
+			echo "{$this->before_tag}<a href='{$this->base_url}/".($list_page * $this->per_page)."'>{$list_page}</a>{$this->after_tag} ";			
+			
+				
+			$count_li++;
+			if($count_li == 4)
+				break;
 
-			echo "{$this->before_tag}<a href='{$this->base_url}/{$list_page}'>{$list_page}</a>{$this->after_tag} ";
-
-			if($list_page == $this->total)
+			if($list_page == $this->total )
 				break;
 		}
 		$last = $this->total - (int)($this->per_page / 2);
 		if($last <= $this->total) 
 			$last = $this->total;
-		echo $this->before_tag."<a href='{$this->base_url}/{$last}'>{$this->last}</a>".$this->after_tag.$this->end_part;
+			
+		echo $this->before_tag."<a href='{$this->base_url}/{$next}'>>></a> ".$this->after_tag;
 		
-		}
+		echo $this->before_tag."<a href='{$this->base_url}/".($last-$this->per_page)."'>{$this->last}</a>".$this->after_tag.$this->end_part;
+		
 	}
 }
 
