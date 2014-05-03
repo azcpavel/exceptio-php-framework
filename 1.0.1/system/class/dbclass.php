@@ -63,11 +63,7 @@ Final class DbClass
 		    print "Error!: " . $e->getMessage() . "<br/>";
 		    die();
 		}
-
-		// if($this->pdo->connect_error)
-		// 	exit('Connection Error No: '.$this->pdo->connect_errno.'<br>Connection Error Cd: '.$this->pdo->connect_error);
-
-		//$this->pdo->select_db($db);
+		
 	}
 
 	function __call($mth_name,$mth_arg)
