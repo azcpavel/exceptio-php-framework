@@ -81,7 +81,7 @@ Final class pagination
 						
 		$next = $this->start + $this->per_page; 
 		if($next >= ($this->total / $this->per_page ))
-						$next = $this->start;
+						$next = $this->total - $this->per_page;
 		
 		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}'>{$this->first}</a> ".$this->after_tag;		
 		
