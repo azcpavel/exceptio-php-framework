@@ -285,9 +285,9 @@ Final class DbClass
 		return $result;		
 	}
 
-	function fetch_column($offset = 0)
+	function fetch_column($limit = 0)
 	{
-		return $this->query->fetchColumn($offset);		
+		return $this->query->fetchColumn($limit);		
 	}
 
 	function show_column($table)
