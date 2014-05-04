@@ -3,6 +3,10 @@ $user_uri = str_replace(BASEDIR, '', $_SERVER['REQUEST_URI']);
 
 $user_uri = explode('/', $user_uri);
 
+if ($user_uri[0] == 'index.php') {
+	$user_uri[0]='';
+}
+
 if(isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] != '/'){
 
 	$controller_option_list = explode('/', $_SERVER['PATH_INFO']);
