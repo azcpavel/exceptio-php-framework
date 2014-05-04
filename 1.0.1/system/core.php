@@ -37,7 +37,7 @@ function form_mpt($address)
 	if(INDEXPHP === 0)
 		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST" enctype="multipart/form-data">';
 	else
-		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST" enctype="multipart/form-data">';
+		echo '<form action="'.BASEPATH.$address.'" method="POST" enctype="multipart/form-data">';
 }
 
 function form_spt($address)
@@ -45,7 +45,7 @@ function form_spt($address)
 	if(INDEXPHP === 0)
 		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST">';
 	else
-		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST">';
+		echo '<form action="'.BASEPATH.$address.'" method="POST">';
 }
 
 function uri_segment($no)
