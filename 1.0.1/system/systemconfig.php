@@ -25,6 +25,8 @@ define('BASEHOST', $config['base_host']);
 
 define('BASEDIR', $config['base_dir']);
 
+define('INDEXPHP', $config['hide_index']);
+
 define('NOCACHE', $config['no_cache']);
 
 define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
