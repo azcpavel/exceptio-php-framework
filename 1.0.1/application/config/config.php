@@ -6,6 +6,7 @@ $config['base_url'] = ''; //Leave empty for generate auto
 $config['no_cache'] = 1; //Add no cache user can't go back after logout value = 1 for active, 0 for inactive
 
 
+$config['hide_index'] = 1; //If you need to hide index.php from url value = 1 for active, 0 for inactive
 
 /*******************************************************************************************
 
