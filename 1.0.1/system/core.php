@@ -18,22 +18,34 @@ function base_url()
 
 function site_url($address = '')
 {
-	return BASEPATH.'index.php/'.$address;
+	if(INDEXPHP === 0)
+		return BASEPATH.'index.php/'.$address;
+	else
+		return BASEPATH.$address;
 }
 
 function redirect($link){
 	
-	header("Location: ".BASEPATH.'index.php/'.$link);
+	if(INDEXPHP === 0)
+		header("Location: ".BASEPATH.'index.php/'.$link);
+	else
+		header("Location: ".BASEPATH.$link);
 }
 
 function form_mpt($address)
 {
-	echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST" enctype="multipart/form-data">';
+	if(INDEXPHP === 0)
+		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST" enctype="multipart/form-data">';
+	else
+		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST" enctype="multipart/form-data">';
 }
 
 function form_spt($address)
 {
-	echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST">';
+	if(INDEXPHP === 0)
+		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST">';
+	else
+		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST">';
 }
 
 function uri_segment($no)
