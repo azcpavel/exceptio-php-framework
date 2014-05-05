@@ -196,7 +196,7 @@ Final class DbClass
 
 	function group_by($group_by = '')
 	{
-		$this->group_by = $group_by;
+		$this->group_by = 'GROUP BY '.$group_by;
 
 		return $this;
 	}
