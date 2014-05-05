@@ -75,6 +75,7 @@ db-------
 		|-select_avg($AVG, $as = 0)
 		|-from($table)
 		|-join($table, $join, $pos = 0)
+		|-group_by($group_by = '')
 		|-where($where = 1)
 		|-order_by($order_by = 0, $order = 0)
 		|-limit($offset = 0, $limit = 0)
@@ -91,6 +92,9 @@ db-------
 		|-delete($table, $where = 1)
 		|-affected_rows()
 		|-insert_id()
+		|-optimaze_table($table)
+		|-truncate_table($table)
+		|-drop_table($table)
 		
 
 input----
