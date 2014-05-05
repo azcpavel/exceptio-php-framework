@@ -338,6 +338,8 @@ Final class DbClass
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> INSERT INTO {$table} $key_full VALUES {$values_full}");
 		}
 
+		return $this;
+
 	}
 
 	function update($table, $values = '')
@@ -362,7 +364,8 @@ Final class DbClass
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> UPDATE $table SET$values_full WHERE {$this->where} ");
 		}
-		
+
+		return $this;
 	}
 
 
@@ -378,6 +381,8 @@ Final class DbClass
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> DELETE FROM $table WHERE {$this->where}");
 		}
+
+		return $this;
 		
 	}
 
@@ -399,7 +404,15 @@ Final class DbClass
 
 	function truncate_table($table)
 	{
-		$this->query("TRUNCATE TABLE $table ");
+		
+		$this->affected_rows = $this->pdo->exec("TRUNCATE TABLE $table ");
+
+		$error_t = $this->pdo->errorInfo();
+		if($error_t[1] != '')
+		{
+			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> TRUNCATE TABLE $table ");
+		}
+
 		return $this;
 	}
 
