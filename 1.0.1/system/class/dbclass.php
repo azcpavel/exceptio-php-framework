@@ -7,6 +7,7 @@ Final class DbClass
 	private $join 		= '';
 	private $where 		= 1;
 	private $order_by 	= '';
+	private $group_by 	= '';
 	private $limit 		= '';
 	private $query;
 	private $query_str;
@@ -63,7 +64,11 @@ Final class DbClass
 		    print "Error!: " . $e->getMessage() . "<br/>";
 		    die();
 		}
-		
+
+		// if($this->pdo->connect_error)
+		// 	exit('Connection Error No: '.$this->pdo->connect_errno.'<br>Connection Error Cd: '.$this->pdo->connect_error);
+
+		//$this->pdo->select_db($db);
 	}
 
 	function __call($mth_name,$mth_arg)
@@ -94,7 +99,7 @@ Final class DbClass
 	function query($query = "")
 	{
 		if ($query === "")
-			$query = "SELECT {$this->select} FROM {$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->limit}";
+			$query = "SELECT {$this->select} FROM {$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->group_by} {$this->limit}";
 
 		$this->query_str = $query;
 		$this->query = $this->pdo->query($query) or $error_t = $this->pdo->errorInfo();		
@@ -185,6 +190,13 @@ Final class DbClass
 	function join($table, $join, $pos = 0)
 	{
 		$this->join .=  (($pos !== 0) ? "{strtoupper($pos)} JOIN $table ON $join " : "JOIN $table ON $join ");
+
+		return $this;
+	}
+
+	function group_by($group_by = '')
+	{
+		$this->group_by = $group_by;
 
 		return $this;
 	}
@@ -377,6 +389,24 @@ Final class DbClass
 	function insert_id()
 	{
 		return $this->pdo->lastInsertId();
+	}
+
+	function optimaze_table($table)
+	{
+		$this->query("OPTIMIZE TABLE $table ");
+		return $this;
+	}
+
+	function truncate_table($table)
+	{
+		$this->query("TRUNCATE TABLE $table ");
+		return $this;
+	}
+
+	function drop_table($table)
+	{
+		$this->query("DROP TABLE $table ");
+		return $this;
 	}
 
 	function __destruct()
