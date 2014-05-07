@@ -129,6 +129,7 @@ Final class pagination
 		
 		echo $this->before_tag."<a href='{$this->base_url}/".($last-$this->per_page)."'>{$this->last}</a>".$this->after_tag.$this->end_part;
 		
+		}
 	}
 }
 
