@@ -61,7 +61,8 @@ function uri_segment($no)
 	$uri = BASEHOST.$_SERVER['REQUEST_URI'];	
 	$uri = str_replace(BASEPATH ,'', $uri);	
 	$uri = explode('/', $uri);
-	return $uri[$no-1];
+	if(count($uri) > 1)
+		return $uri[$no-1];
 }
 
 function &get_controller_instance()
