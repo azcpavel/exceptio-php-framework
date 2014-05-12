@@ -128,6 +128,7 @@ redirect($address = '')
 form_mpt($address)
 form_spt($address)
 uri_segment($no)
+truncate_str($str, $maxlen)
 &get_controller_instance() get main controller instance
 &get_model_instance() get main model instance
 
