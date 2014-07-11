@@ -77,7 +77,7 @@ Final class LoadClass
 				require(SYSTEM.'/libraries/'.$load_libraries_name.'.php');
 				if(class_exists($base_name))
 					{
-						if($base_name === 'imgresize')
+						if($base_name === 'imgresize' || $base_name === 'zend' || $base_name == 'exqrcode')
 						{
 							$Controller->$base_name = new $base_name($config);
 						}
