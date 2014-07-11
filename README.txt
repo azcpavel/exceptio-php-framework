@@ -153,3 +153,11 @@ System libraries
 imgresize----
 			|-resizeImage(width, height, maintain ratio 0 or 1)
 			|-saveImage('images/cars/large/output.jpg', 100)
+zand---------
+			|-barcode
+				|-factory
+					|-draw()
+					|-render()
+exqrcode----
+			|-generate()
+			|-initialize()
