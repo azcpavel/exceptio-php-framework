@@ -24,7 +24,6 @@ Final class DbClass
 	private $error_query;
 	private $affected_rows;
 	private $db_name;
-	private static $pdo = NULL;
 
 	
 	function __construct($driver,$host,$uname,$pass,$db,$port,$service,$protocol,$server,$uid)
@@ -68,9 +67,7 @@ Final class DbClass
 
 		try{
 
-			if(self::$pdo == NULL)
-				self::$pdo = @new pdo($dsn,$uname,$pass);
-			
+			$this->pdo = @new pdo($dsn,$uname,$pass);
 			$this->db_name = $db;	
 
 		} catch (PDOException $e) {
@@ -78,10 +75,10 @@ Final class DbClass
 		    die();
 		}
 
-		// if(self::$pdo->connect_error)
-		// 	exit('Connection Error No: '.self::$pdo->connect_errno.'<br>Connection Error Cd: '.self::$pdo->connect_error);
+		// if($this->pdo->connect_error)
+		// 	exit('Connection Error No: '.$this->pdo->connect_errno.'<br>Connection Error Cd: '.$this->pdo->connect_error);
 
-		//self::$pdo->select_db($db);
+		//$this->pdo->select_db($db);
 	}
 
 	function __call($mth_name,$mth_arg)
@@ -115,7 +112,7 @@ Final class DbClass
 			$query = "SELECT {$this->select} FROM {$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->group_by} {$this->limit}";
 
 		$this->query_str = $query;
-		$this->query = self::$pdo->query($query) or $error_t = self::$pdo->errorInfo();		
+		$this->query = $this->pdo->query($query) or $error_t = $this->pdo->errorInfo();		
 
 		if(isset($error_t) && $error_t[1] != '')
 		{
@@ -139,7 +136,7 @@ Final class DbClass
 
 			if($limit !=0 )
 				$this->limit .= ", $limit"; 
-		}		$error_t = self::$pdo->errorInfo();
+		}		$error_t = $this->pdo->errorInfo();
 
 		$this->query();
 		
@@ -269,7 +266,7 @@ Final class DbClass
 
 	function num_rows()
 	{
-		$num = self::$pdo->query($this->query_str) or $error_t = self::$pdo->errorInfo();		
+		$num = $this->pdo->query($this->query_str) or $error_t = $this->pdo->errorInfo();		
 
 		if(isset($error_t) && $error_t[1] != '')
 		{
@@ -343,9 +340,9 @@ Final class DbClass
 			$values_full .= $values.')';
 	
 	
-		$this->affected_rows = self::$pdo->exec("INSERT INTO {$table} $key_full VALUES {$values_full}"); 
+		$this->affected_rows = $this->pdo->exec("INSERT INTO {$table} $key_full VALUES {$values_full}"); 
 		
-		$error_t = self::$pdo->errorInfo();
+		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> INSERT INTO {$table} $key_full VALUES {$values_full}");
@@ -370,9 +367,9 @@ Final class DbClass
 		else
 			$values_full = $values;
 
-		$this->affected_rows = self::$pdo->exec("UPDATE $table SET$values_full WHERE {$this->where} ");
+		$this->affected_rows = $this->pdo->exec("UPDATE $table SET$values_full WHERE {$this->where} ");
 
-		$error_t = self::$pdo->errorInfo();
+		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> UPDATE $table SET$values_full WHERE {$this->where} ");
@@ -387,9 +384,9 @@ Final class DbClass
 
 		$this->where($where);
 
-		$this->affected_rows = self::$pdo->exec("DELETE FROM $table WHERE {$this->where}");
+		$this->affected_rows = $this->pdo->exec("DELETE FROM $table WHERE {$this->where}");
 
-		$error_t = self::$pdo->errorInfo();
+		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> DELETE FROM $table WHERE {$this->where}");
@@ -406,7 +403,7 @@ Final class DbClass
 
 	function insert_id()
 	{
-		return self::$pdo->lastInsertId();
+		return $this->pdo->lastInsertId();
 	}
 
 	function optimaze_table($table)
@@ -418,9 +415,9 @@ Final class DbClass
 	function truncate_table($table)
 	{
 		
-		$this->affected_rows = self::$pdo->exec("TRUNCATE TABLE $table ");
+		$this->affected_rows = $this->pdo->exec("TRUNCATE TABLE $table ");
 
-		$error_t = self::$pdo->errorInfo();
+		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> TRUNCATE TABLE $table ");
@@ -437,7 +434,7 @@ Final class DbClass
 
 	function __destruct()
 	{
-		self::$pdo = null;
+		$this->pdo = null;
 	}
 }
 
