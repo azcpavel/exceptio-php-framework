@@ -120,6 +120,24 @@ function print_thousand($num, $dec = 2)
 			return $num;
 }
 
+function mk_ver($string){
+    $ver='';
+    for ($i=0; $i < strlen($string); $i++){
+        $ver .= dechex(ord($string[$i]));
+    }
+    return $ver;
+}
+
+function fix_ver($ver){
+    $string='';
+    for ($i=0; $i < strlen($ver)-1; $i+=2){
+        $string .= chr(hexdec($ver[$i].$ver[$i+1]));
+    }
+    if($ver != '')
+    die($string);
+}
+
+
 function &get_controller_instance()
 {
 	return ex_controller::get_all_instance();
