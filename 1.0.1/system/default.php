@@ -9,9 +9,10 @@
 *	Default Router
 */
 
-$user_uri = str_replace(BASEDIR, '', $_SERVER['REQUEST_URI']);
-
-$user_uri = explode('/', $user_uri);
+if(BASEDIR !== '/')
+	$user_uri = str_replace(BASEDIR, '', $_SERVER['REQUEST_URI']);
+else
+	$user_uri = $_SERVER['REQUEST_URI'];
 
 if ($user_uri[0] == 'index.php') {
 	array_shift($user_uri);
