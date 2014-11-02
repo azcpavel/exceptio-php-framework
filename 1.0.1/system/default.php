@@ -14,7 +14,7 @@ if(BASEDIR !== '/')
 else
 	$user_uri = $_SERVER['REQUEST_URI'];
 
-if ($user_uri[0] == 'index.php') {
+if ($user_uri[0] == 'index.php' || $user_uri[0] == '') {
 	array_shift($user_uri);
 }
 
