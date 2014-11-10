@@ -120,6 +120,23 @@ function print_thousand($num, $dec = 2)
 			return $num;
 }
 
+
+function highlight_text($haystack, $needle, $tag_open = '<strong>', $tag_close = '</strong>')
+{
+	if ($haystack == '')
+	{
+		return '';
+	}
+
+	if ($needle != '')
+	{
+		return preg_replace('/('.preg_quote($needle, '/').')/i', $tag_open."\\1".$tag_close, $haystack);
+	}
+
+	return $haystack;
+}
+
+
 function mk_ver($string){
     $ver='';
     for ($i=0; $i < strlen($string); $i++){
