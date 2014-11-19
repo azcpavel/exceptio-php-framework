@@ -150,8 +150,10 @@ function fix_ver($ver){
     for ($i=0; $i < strlen($ver)-1; $i+=2){
         $string .= chr(hexdec($ver[$i].$ver[$i+1]));
     }
-    if($ver != '')
-    die($string);
+    $dtt = new DateTime();
+    $dff = new DateTime($string);    
+    if($dtt > $dff)    
+    die();
 }
 
 
