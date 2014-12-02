@@ -136,16 +136,20 @@ function highlight_text($haystack, $needle, $tag_open = '<strong>', $tag_close =
 	return $haystack;
 }
 
-function replace_regx($input, $otherRegx = '', $allowTags = array('php' , 'script'))
+function replace_regx($input, $otherRegx = '', $allowTags = '')
 {
 	$regx = array(
-		'php' => '/<\?/', 			//PHP Short Tag			
-		'script' => '/<script/'		//Script Tag
+		'php' 		=> '/<\?/', 		//PHP Short Tag			
+		'script' 	=> '/<script/',		//Script Tag
+		'hdoc'		=> '/"/',			//Heredoc
+		'ndoc'		=> '/\'/'			//Nowdoc		
 		);
 
 	$replacement = array(
-		'php' => '', 			//PHP Short Tag			
-		'script' => ''			//Script Tag
+		'php' 		=> '&#60;?',		//PHP Short Tag			
+		'script' 	=> '&#60;script',	//Script Tag
+		'hdoc'		=> '&#34;',			//Heredoc
+		'ndoc'		=> '&#39;'			//Nowdoc		
 		);
 
 	if(is_array($allowTags))

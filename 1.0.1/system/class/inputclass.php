@@ -46,7 +46,7 @@ Final class InputClass
 		if(isset($_POST[$name]))
 		{
 			if($clr == TRUE)
-				@$_POST[$name] = filter_var(@$_POST[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+				@$_POST[$name] = replace_regx(@$_POST[$name]);
 
 			return $_POST[$name];
 		}
@@ -57,7 +57,7 @@ Final class InputClass
 		if(isset($_GET[$name]))
 		{
 			if($clr == TRUE)
-				@$_GET[$name] = filter_var(@$_GET[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+				@$_GET[$name] = replace_regx(@$_GET[$name]);
 
 			return $_GET[$name];
 		}
@@ -68,7 +68,7 @@ Final class InputClass
 		if(isset($_REQUEST[$name]))
 		{
 			if($clr == TRUE)
-				@$_REQUEST[$name] = filter_var(@$_REQUEST[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+				@$_REQUEST[$name] = replace_regx(@$_REQUEST[$name]);
 			
 			return $_REQUEST[$name];
 		}
