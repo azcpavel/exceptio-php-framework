@@ -45,7 +45,7 @@ Final class InputClass
 	{
 		if(isset($_POST[$name]))
 		{
-			elseif($clr == TRUE)
+			if($clr == TRUE)
 				@$_POST[$name] = filter_var(@$_POST[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 			return $_POST[$name];
