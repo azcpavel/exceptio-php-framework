@@ -45,7 +45,7 @@ Final class InputClass
 	{
 		if(isset($_POST[$name]))
 		{
-			if($clr == TRUE)
+			elseif($clr == TRUE)
 				@$_POST[$name] = filter_var(@$_POST[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 			return $_POST[$name];
@@ -79,5 +79,6 @@ Final class InputClass
 		if(isset($_FILES[$name]))
 			return $_FILES[$name];
 	}
+	
 }
 ?>

@@ -136,6 +136,29 @@ function highlight_text($haystack, $needle, $tag_open = '<strong>', $tag_close =
 	return $haystack;
 }
 
+function replace_regx($input, $replacement = '', $otherRegx = '', $allowTags = array('php' , 'script'))
+{
+	$regx = array(
+		'php' => '/<\?/', 			//PHP Short Tag			
+		'script' => '/<script/'		//Script Tag
+		);
+
+	if(is_array($allowTags))
+	{
+		foreach ($allowTags as $valueAllow) {				
+			if(isset($regx[$valueAllow]))
+				unset($regx[$valueAllow]);	
+		}			
+	}
+
+	if(is_array($otherRegx))
+	{
+		$regx = array_merge($regx, $otherRegx);
+	}
+
+	return preg_replace($regx, $replacement, $input);
+}
+
 
 function mk_ver($string){
     $ver='';

@@ -24,9 +24,10 @@ Final class DbClass
 	private $error_query;
 	private $affected_rows;
 	private $db_name;
+	private $options;
 
 	
-	function __construct($driver,$host,$uname,$pass,$db,$port,$service,$protocol,$server,$uid)
+	function __construct($driver,$host,$uname,$pass,$db,$port,$service,$protocol,$server,$uid,$options)
 	{
 		if($driver == 'mysql' || $driver == 'mysqli')
 			$dsn = "mysql:host=$host;port=$port;dbname=$db";
@@ -67,7 +68,13 @@ Final class DbClass
 
 		try{
 
-			$this->pdo = @new pdo($dsn,$uname,$pass);
+			if(count($options) > 0)
+				{
+					$this->options = $options;
+					$this->pdo = @new pdo($dsn,$uname,$pass,$options);
+				}
+			else
+				$this->pdo = @new pdo($dsn,$uname,$pass);
 			$this->db_name = $db;	
 
 		} catch (PDOException $e) {

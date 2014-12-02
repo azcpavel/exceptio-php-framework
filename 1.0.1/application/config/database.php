@@ -10,6 +10,6 @@ $db_config['default']['service']  	= '';
 $db_config['default']['protocol']  	= '';
 $db_config['default']['server']  	= '';
 $db_config['default']['uid']  		= '';
-
+$db_config['default']['options']  	= array('');
 
 ?>
