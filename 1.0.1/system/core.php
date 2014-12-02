@@ -136,24 +136,36 @@ function highlight_text($haystack, $needle, $tag_open = '<strong>', $tag_close =
 	return $haystack;
 }
 
-function replace_regx($input, $replacement = '', $otherRegx = '', $allowTags = array('php' , 'script'))
+function replace_regx($input, $otherRegx = '', $allowTags = array('php' , 'script'))
 {
 	$regx = array(
 		'php' => '/<\?/', 			//PHP Short Tag			
 		'script' => '/<script/'		//Script Tag
 		);
 
+	$replacement = array(
+		'php' => '', 			//PHP Short Tag			
+		'script' => ''			//Script Tag
+		);
+
 	if(is_array($allowTags))
 	{
 		foreach ($allowTags as $valueAllow) {				
 			if(isset($regx[$valueAllow]))
-				unset($regx[$valueAllow]);	
+				unset($regx[$valueAllow]);
+
+			if(isset($replacement[$valueAllow]))
+				unset($replacement[$valueAllow]);	
 		}			
 	}
 
 	if(is_array($otherRegx))
 	{
-		$regx = array_merge($regx, $otherRegx);
+		foreach ($otherRegx as $valueRegx) {				
+			$otherRegxSub = explode('>', $valueRegx);			
+			$regx[] = '/'.$otherRegxSub[0].'/';
+			$replacement[] = $otherRegxSub[1];
+		}		
 	}
 
 	return preg_replace($regx, $replacement, $input);
