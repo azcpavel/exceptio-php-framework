@@ -64,6 +64,44 @@ Final class LoadDBClass
 
 		return $model->db;
 	}
+
+	function library($load_libraries_name = '',$config = '')
+	{
+		$Model =& get_model_instance();
+
+		$base_name = basename($load_libraries_name);
+
+		if(file_exists(DOCUMENT_ROOT.BASEDIR.SYSTEM.'/libraries/'.$load_libraries_name.'.php'))
+			{
+				require(SYSTEM.'/libraries/'.$load_libraries_name.'.php');
+				if(class_exists($base_name))
+					{
+						if($base_name === 'imgresize' || $base_name === 'zend' || $base_name == 'exqrcode')
+						{
+							$Model->$base_name = new $base_name($config);
+						}
+						else
+						{
+							$Model->$base_name = new $base_name;
+
+							if(is_array($config))
+							foreach ($config as $key => $value) {
+								
+								if(property_exists($Model->$base_name, $key))
+									$Model->$base_name->$key = $value;
+							}
+
+							unset($key);
+							unset($value);
+						}
+
+					}
+				else
+					exit("Class $base_name not found in ".SYSTEM.'/libraries/'.$load_libraries_name.'.php');
+			}
+		else
+			exit("Libraries not found in ".SYSTEM.'/libraries/'.$load_libraries_name.'.php');
+	}	
 	
 }
 ?>

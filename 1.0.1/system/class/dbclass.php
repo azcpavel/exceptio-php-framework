@@ -10,8 +10,7 @@
 */
 
 Final class DbClass
-{
-	private $mysqli;
+{	
 	private $select 	= '*';	
 	private $table;
 	private $join 		= '';
@@ -23,11 +22,21 @@ Final class DbClass
 	private $query_str;
 	private $error_query;
 	private $affected_rows;
-	private $db_name;
-	private $options;
+	private $db_driver;
+	
+	// Public Property
+	public $db_host;
+	public $db_uname;
+	public $db_pass;
+	public $db_name;
+	public $db_service;
+	public $db_protocol;
+	public $db_server;
+	public $db_uid;
+	public $options;
 
 	
-	function __construct($driver,$host,$uname,$pass,$db,$port,$service,$protocol,$server,$uid,$options)
+	function __construct($driver = '',$host = '',$uname = '',$pass = '',$db = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
 	{
 		if($driver == 'mysql' || $driver == 'mysqli')
 			$dsn = "mysql:host=$host;port=$port;dbname=$db";
@@ -67,6 +76,18 @@ Final class DbClass
 
 
 		try{
+
+			$this->db_driver 	= $driver;
+			$this->db_host 		= $host;
+			$this->db_uname 	= $uname;
+			$this->db_pass 		= $pass;
+			$this->db_name 		= $db;
+			$this->db_host 		= $host;
+			$this->db_port 		= $port;
+			$this->db_service 	= $service;
+			$this->db_protocol 	= $protocol;
+			$this->db_server 	= $server;
+			$this->db_uid 		= $uid;
 
 			if(count($options) > 0)
 				{
@@ -438,6 +459,7 @@ Final class DbClass
 		$this->query("DROP TABLE $table ");
 		return $this;
 	}
+	
 
 	function __destruct()
 	{

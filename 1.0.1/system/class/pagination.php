@@ -19,6 +19,7 @@ Final class pagination
 	private $per_page;
 	private $link;	
 	private $base_url;
+	private $uri_segment = 3;
 	private $begin_part = '';
 	private $end_part = '';
 	private $before_tag = '';
@@ -90,7 +91,7 @@ Final class pagination
 		if($next >= ($this->total / $this->per_page ))
 						$next = $this->total - $this->per_page;
 		
-		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/0'>{$this->first}</a> ".$this->after_tag;		
+		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/1'>{$this->first}</a> ".$this->after_tag;		
 		
 		$count_li = 1;
 		
@@ -99,13 +100,12 @@ Final class pagination
 		if($this->start <= 0 )
 			$this->start = 1; 
 			
-		$prev = ($this->start - 1) * $this->per_page; 
+		$prev = (uri_segment($this->uri_segment) ) - $this->per_page; 
 		if($prev <= 0 )
 						$prev = 1;
 						
-		$next = ($this->start + 1) * $this->per_page;
-		if($next >= $this->total )
-						$next = $this->start * $this->per_page;
+		$next = (uri_segment($this->uri_segment) ) + $this->per_page;
+		
 						
 		echo $this->before_tag."<a href='{$this->base_url}/{$prev}'><<</a> ".$this->after_tag;
 

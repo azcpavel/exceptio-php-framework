@@ -62,7 +62,13 @@ function uri_segment($no)
 	$uri = str_replace(BASEPATH ,'', $uri);	
 	$uri = explode('/', $uri);
 	if(count($uri) > 1)
-		return $uri[$no-1];
+	{
+		if(isset($uri[$no-1]))
+			return $uri[$no-1];
+	}
+	
+	return false;
+
 }
 
 function truncate_str($str, $maxlen) {
