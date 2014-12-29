@@ -79,6 +79,11 @@ Final class InputClass
 		if(isset($_FILES[$name]))
 			return $_FILES[$name];
 	}
+
+	function xss_Clean($input)
+	{
+		return replace_regx($input);
+	}
 	
 }
 ?>
