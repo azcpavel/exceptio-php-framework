@@ -21,12 +21,12 @@ KEY `ex_access` (`access`)
 )Engine=InnoDB default charset=UTF8;
 
 ********************************************************************************************/
-$config['session_use_db'] = FALSE; //Use database For session value = 1 for active, 0 for inactive
+$config['session_use_db'] = TRUE; //Use database For session value = 1 for active, 0 for inactive
 $config['session_bd_name'] = '';
 $config['session_bd_host'] = '';
 $config['session_bd_pass'] = '';
 $config['session_bd_user'] = '';
-$config['session_match_ip'] = TRUE;
-$config['session_match_browser'] = TRUE;
+$config['session_match_ip'] = FALSE;
+$config['session_match_browser'] = FALSE;
 
 ?>

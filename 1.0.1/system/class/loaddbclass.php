@@ -58,7 +58,7 @@ Final class LoadDBClass
 			exit("No database selected...!<br/>Please check config file.");
 
 		$model->db = new dbClass($db_get_all_config[$name]['driver'],$db_get_all_config[$name]['host'],$db_get_all_config[$name]['user'],
-			$db_get_all_config[$name]['pass'],$db_get_all_config[$name]['db'],$db_get_all_config[$name]['port'],
+			$db_get_all_config[$name]['pass'],$db_get_all_config[$name]['db'],$db_get_all_config[$name]['dbPrefix'],$db_get_all_config[$name]['port'],
 			$db_get_all_config[$name]['service'],$db_get_all_config[$name]['protocol'],$db_get_all_config[$name]['server'],
 			$db_get_all_config[$name]['uid'],$db_get_all_config[$name]['options']);
 

@@ -10,18 +10,18 @@
 */
 
 Final class SessionClass
-{
-	private $sess_db;
+{	
+	private $db;
 	
 	function __construct()
 	{
-		if(SESSION_USE_DB === TRUE)
+		if(SESSION_USE_DB === TRUE)		
 		session_set_save_handler(array($this , '_open'),
                          array($this , '_close'),
                          array($this , '_read'),
                          array($this , '_write'),
                          array($this , '_destroy'),
-                         array($this , '_gc'));
+                         array($this , '_gc'));	
 
 		if(!isset($_SESSION))
 			session_start();
@@ -51,37 +51,40 @@ Final class SessionClass
 			echo "\t"."No Properties Exists";
 		
 		exit;
-	}
+	}	
 
 	function _open()
-	{	    
+	{	    	
+	    	
+	    require (APPLICATION.'/config/database.php');
+		
+		$db_get_all_config = $db_config;		
+		
+		$name = 'default';
 
-	    $db_user = SESSION_DB_USER;
-	    $db_pass = SESSION_DB_PASS;
-	    $db_host = SESSION_DB_HOST;
-	    $db_name = SESSION_DB_NAME;
-	    
-	    if ($this->sess_db = new mysqli($db_host,$db_user,$db_pass))
-	    {
-	        return $this->sess_db->select_db($db_name);
-	    }
-	    else
-	    	 die("Error " . $this->sess_db->error());
-	    
+		if($db_get_all_config[$name]['db'] == '')
+			exit("No database selected...!<br/>Please check config file.");
+
+		// echo "<pre>";print_r($this->db);exit;
+
+		$this->db = new dbClass($db_get_all_config[$name]['driver'],$db_get_all_config[$name]['host'],$db_get_all_config[$name]['user'],
+			$db_get_all_config[$name]['pass'],$db_get_all_config[$name]['db'],$db_get_all_config[$name]['dbPrefix'],$db_get_all_config[$name]['port'],
+			$db_get_all_config[$name]['service'],$db_get_all_config[$name]['protocol'],$db_get_all_config[$name]['server'],
+			$db_get_all_config[$name]['uid'],$db_get_all_config[$name]['options']);			
+
 	    return FALSE;
 	}
 
 	function _close()
 	{	    
 	    
-	    return $this->sess_db->close();
+	    return $this->db = NULL;
 	}
 
 	function _read($id)
 	{
-	   
-
-	    $id = 'ex_session_'.$this->sess_db->real_escape_string($id);
+		echo " read ";
+	    $id = 'ex_session_'.$id;
 
 	    if(SESSION_MATCH_IP != TRUE && SESSION_MATCH_BROWSER !=TRUE)
 	    $sql = "SELECT data
@@ -100,13 +103,13 @@ Final class SessionClass
 	    else
 	    $sql = "SELECT data
 	            FROM   ex_sessions
-	            WHERE  id = '$id' AND ip = '$_SERVER[REMOTE_ADDR]' AND browser = '$_SERVER[HTTP_USER_AGENT]'";
+	            WHERE  id = '$id' AND ip = '$_SERVER[REMOTE_ADDR]' AND browser = '$_SERVER[HTTP_USER_AGENT]'";	   
 
-	    if ($result = $this->sess_db->query($sql))
-	    {
-	        if ($result->num_rows)
+	    if ($result = $this->db->query($sql))
+	    {	        
+	        if ($result->num_rows() > 0)
 	        {
-	            $record = $result->fetch_assoc();
+	            $record = $result->row_array();
 
 	            return $record['data'];
 	        }
@@ -116,55 +119,55 @@ Final class SessionClass
 	}
 
 	function _write($id, $data)
-	{   
-	   
-
+	{	    
 	    $access = time();
+	    echo " write ";
+	    // $data = array(
+	    // 	'id' => 'ex_session_'.$id,
+		   //  'access' => $access,
+		   //  'data' => $data,
+		   //  'ip' => $_SERVER['REMOTE_ADDR'],
+		   //  'browser' => $_SERVER['HTTP_USER_AGENT']
+		   //  );
+		$data = array(
+	    	'id' => 'sdgfdfsg',
+		    'access' => 'sdgfdfsg',
+		    'data' => 'sdgfdfsg',
+		    'ip' => 'sdgfdfsg',
+		    'browser' => 'sdgfdfsg'
+		    );	    	
+	    // $sql = "REPLACE INTO ex_sessions VALUES ('$id', '$ip', '$browser', '$access', '$data')";
 	    
-	    $id = 'ex_session_'.$this->sess_db->real_escape_string($id);
-	    $access = $this->sess_db->real_escape_string($access);
-	    $data = $this->sess_db->real_escape_string($data);
-	    $ip = $_SERVER['REMOTE_ADDR'];
-	    $browser = $_SERVER['HTTP_USER_AGENT'];
-
-	    $sql = "REPLACE 
-	            INTO    ex_sessions
-	            VALUES  ('$id', '$ip', '$browser', '$access', '$data')";
-
-	    return $this->sess_db->query($sql);
+	    $this->db->insert('ex_sessions', $data, 'REPLACE');	    
 	}
 
 	function _destroy($id)
-	{
-	   
+	{	    
+	    $id = 'ex_session_'.$id;
 	    
-	    $id = 'ex_session_'.$this->sess_db->real_escape_string($id);
-
 	    $sql = "DELETE
 	            FROM   ex_sessions
 	            WHERE  id = '$id'";
 
-	    return $this->sess_db->query($sql);
+	    $this->db->delete('ex_sessions',array('id'=>$id));
 	}
 
 	function _gc($max)
 	{
 	    
+	    $old = time() - $max;	    
 	    
-	    $old = time() - $max;
-	    $old = $this->sess_db->real_escape_string($old);
-
 	    $sql = "DELETE
 	            FROM   ex_sessions
-	            WHERE  access < '$old'";
-
-	    return $this->sess_db->query($sql);
+	            WHERE  access < '$old'";	    
+	    $this->db->delete('ex_sessions',array('access <'=>$old));
 	}
 
 
 	function set_userdata($name,$value)
 	{		
-		$_SESSION[$name] = $value;		
+		echo " set ";
+		$_SESSION[$name] = $value;
 	}
 
 	function userdata($name)

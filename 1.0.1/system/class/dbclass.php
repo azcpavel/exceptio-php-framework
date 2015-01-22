@@ -29,6 +29,7 @@ Final class DbClass
 	public $db_uname;
 	public $db_pass;
 	public $db_name;
+	public $db_prefix;
 	public $db_service;
 	public $db_protocol;
 	public $db_server;
@@ -36,7 +37,7 @@ Final class DbClass
 	public $options;
 
 	
-	function __construct($driver = '',$host = '',$uname = '',$pass = '',$db = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
+	function __construct($driver = '',$host = '',$uname = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
 	{
 		if($driver == 'mysql' || $driver == 'mysqli')
 			$dsn = "mysql:host=$host;port=$port;dbname=$db";
@@ -80,8 +81,9 @@ Final class DbClass
 			$this->db_driver 	= $driver;
 			$this->db_host 		= $host;
 			$this->db_uname 	= $uname;
-			$this->db_pass 		= $pass;
+			$this->db_pass 		= $pass;			
 			$this->db_name 		= $db;
+			$this->db_prefix 	= $dbPrefix;
 			$this->db_host 		= $host;
 			$this->db_port 		= $port;
 			$this->db_service 	= $service;
@@ -137,7 +139,7 @@ Final class DbClass
 	function query($query = "")
 	{
 		if ($query === "")
-			$query = "SELECT {$this->select} FROM {$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->group_by} {$this->limit}";
+			$query = "SELECT {$this->select} FROM {$this->db_prefix}{$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->group_by} {$this->limit}";
 
 		$this->query_str = $query;
 		$this->query = $this->pdo->query($query) or $error_t = $this->pdo->errorInfo();		
@@ -190,9 +192,11 @@ Final class DbClass
 		return $this;
 	}
 
-	function select($select = '*')
+	function select($select = '')
 	{
-		$this->select = $select;
+		if(strlen($this->select) > 1)
+			$this->select .= ',';
+		$this->select .= $select;
 
 		return $this;
 	}
@@ -347,7 +351,7 @@ Final class DbClass
 	}
 
 
-	function insert($table, $values = 1)
+	function insert($table, $values = 1, $typeQr = 'INSERT')
 	{
 
 		$values_full = '(';
@@ -368,7 +372,7 @@ Final class DbClass
 			$values_full .= $values.')';
 	
 	
-		$this->affected_rows = $this->pdo->exec("INSERT INTO {$table} $key_full VALUES {$values_full}"); 
+		$this->affected_rows = $this->pdo->exec("$typeQr INTO {$table} $key_full VALUES {$values_full}"); 
 		
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
@@ -463,7 +467,7 @@ Final class DbClass
 
 	function __destruct()
 	{
-		$this->pdo = null;
+		// $this->pdo = null;
 	}
 }
 
