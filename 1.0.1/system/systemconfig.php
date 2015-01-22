@@ -43,10 +43,6 @@ define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
 
 
 define('SESSION_USE_DB', $config['session_use_db']);
-define('SESSION_DB_NAME', $config['session_bd_name']);
-define('SESSION_DB_HOST', $config['session_bd_host']);
-define('SESSION_DB_USER', $config['session_bd_user']);
-define('SESSION_DB_PASS', $config['session_bd_pass']);
 define('SESSION_MATCH_IP', $config['session_match_ip']);
 define('SESSION_MATCH_BROWSER', $config['session_match_browser']);
 

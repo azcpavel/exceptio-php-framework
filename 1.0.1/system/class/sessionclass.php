@@ -11,17 +11,20 @@
 
 Final class SessionClass
 {	
+	public $pdo;
 	private $db;
 	
 	function __construct()
 	{
-		if(SESSION_USE_DB === TRUE)		
-		session_set_save_handler(array($this , '_open'),
-                         array($this , '_close'),
-                         array($this , '_read'),
-                         array($this , '_write'),
-                         array($this , '_destroy'),
-                         array($this , '_gc'));	
+		if(SESSION_USE_DB === TRUE)
+		{		
+			session_set_save_handler(array($this , '_open'),
+	                         array($this , '_close'),
+	                         array($this , '_read'),
+	                         array($this , '_write'),
+	                         array($this , '_destroy'),
+	                         array($this , '_gc'));			
+		}	
 
 		if(!isset($_SESSION))
 			session_start();
@@ -54,91 +57,145 @@ Final class SessionClass
 	}	
 
 	function _open()
-	{	    	
-	    	
-	    require (APPLICATION.'/config/database.php');
-		
-		$db_get_all_config = $db_config;		
-		
+	{
+	    require (APPLICATION.'/config/database.php');					
+			
 		$name = 'default';
 
-		if($db_get_all_config[$name]['db'] == '')
+		if($db_config[$name]['db'] == '')
 			exit("No database selected...!<br/>Please check config file.");
 
-		// echo "<pre>";print_r($this->db);exit;
+		extract($db_config[$name]);
 
-		$this->db = new dbClass($db_get_all_config[$name]['driver'],$db_get_all_config[$name]['host'],$db_get_all_config[$name]['user'],
-			$db_get_all_config[$name]['pass'],$db_get_all_config[$name]['db'],$db_get_all_config[$name]['dbPrefix'],$db_get_all_config[$name]['port'],
-			$db_get_all_config[$name]['service'],$db_get_all_config[$name]['protocol'],$db_get_all_config[$name]['server'],
-			$db_get_all_config[$name]['uid'],$db_get_all_config[$name]['options']);			
+        if($driver == 'mysql' || $driver == 'mysqli')
+			$dsn = "mysql:host=$host;port=$port;dbname=$db";
+
+		elseif($driver == 'cubrid')
+			$dsn = "cubrid:dbname=$db;host=$host;port=$post";
+
+		elseif($driver == 'firebird')
+			$dsn = "firebird:dbname=$host/port:$port$db";
+
+		elseif($driver == 'ibm')
+			$dsn = "ibm:DRIVER={IBM DB2 ODBC DRIVER};DATABASE=$db;HOSTNAME=$host;PORT=$port;PROTOCOL=$protocol;";
+
+		elseif($driver == 'informix')
+			$dsn = "informix:host=$host;service=$service;database=$db;server=$server;protocol=$protocol;EnableScrollableCursors=1";
+
+		elseif($driver == 'oci')
+			$dsn = "oci:dbname=//$host:$port/$db";
+
+		elseif($driver == 'sqlsrv')
+			$dsn = "sqlsrv:Server=$host,$port;Database=$db";		
+
+		elseif($driver == 'odbc')
+			{
+				if (!file_exists($db)) {
+				    die("Could not find database file in $db");
+				}
+
+				$dsn = "odbc:DRIVER={Microsoft Access Driver (*.mdb, *.accdb)}; DBQ=$db; Uid=$user; Pwd=$pass;";
+			}
+
+		elseif($driver == 'pgsql')
+			$dsn = "pgsql:host=$host;port=$port;dbname=$db;user=$user;password=$pass";		
+
+		elseif($driver == '4D')
+			$dsn = "4D:host=$host;charset=UTF-8";
+
+
+		try{
+			
+			$this->pdo = @new pdo($dsn,$user,$pass,array(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION));
+
+		} catch (PDOException $e) {
+		    print "Error!: " . $e->getMessage() . "<br/>";
+		    die();
+		}
 
 	    return FALSE;
 	}
 
 	function _close()
 	{	    
-	    
-	    return $this->db = NULL;
+	    $this->pdo = NULL;
+	    return true;
 	}
 
 	function _read($id)
-	{
-		echo " read ";
+	{		
+	    
+
 	    $id = 'ex_session_'.$id;
 
 	    if(SESSION_MATCH_IP != TRUE && SESSION_MATCH_BROWSER !=TRUE)
-	    $sql = "SELECT data
-	            FROM   ex_sessions
-	            WHERE  id = '$id'";
-
+	    {
+	    	$sql = "SELECT data
+	    	            FROM   ex_sessions
+	    	            WHERE  id = :id";
+	    	$pdo = $this->pdo->prepare($sql);	    
+	    	$pdo->bindValue(':id', $id, PDO::PARAM_STR);
+	   	}
 	    elseif(SESSION_MATCH_IP == TRUE && SESSION_MATCH_BROWSER !=TRUE)
-	    $sql = "SELECT data
-	            FROM   ex_sessions
-	            WHERE  id = '$id' AND ip = '$_SERVER[REMOTE_ADDR]'";
-
+	    {
+	    	$sql = "SELECT data
+	    	            FROM   ex_sessions
+	    	            WHERE  id = :id AND ip = :ip";
+	    	$pdo = $this->pdo->prepare($sql);	    
+	    	$pdo->bindValue(':id', $id, PDO::PARAM_STR);
+	    	$pdo->bindValue(':ip', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
+	   	}
 	    elseif(SESSION_MATCH_IP != TRUE && SESSION_MATCH_BROWSER ==TRUE)
-	    $sql = "SELECT data
-	            FROM   ex_sessions
-	            WHERE  id = '$id' AND browser = '$_SERVER[HTTP_USER_AGENT]'";
+	    {
+	    	$sql = "SELECT data
+	    	            FROM   ex_sessions
+	    	            WHERE  id = :$id AND browser = :browser";
+	    	$pdo = $this->pdo->prepare($sql);	    
+	    	$pdo->bindValue(':id', $id, PDO::PARAM_STR);
+	    	$pdo->bindValue(':browser', $_SERVER['HTTP_USER_AGENT'], PDO::PARAM_STR);
+	   	}
 	    else
-	    $sql = "SELECT data
-	            FROM   ex_sessions
-	            WHERE  id = '$id' AND ip = '$_SERVER[REMOTE_ADDR]' AND browser = '$_SERVER[HTTP_USER_AGENT]'";	   
+	    {
+	    	$sql = "SELECT data
+	    	            FROM   ex_sessions
+	    	            WHERE  id = :$id AND ip = :ip AND browser = :browser";
+	    	$pdo = $this->pdo->prepare($sql);	    
+	    	$pdo->bindValue(':id', $id, PDO::PARAM_STR);
+	    	$pdo->bindValue(':ip', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
+	    	$pdo->bindValue(':browser', $_SERVER['HTTP_USER_AGENT'], PDO::PARAM_STR);
+	   	}	    
+	    
+	    $pdo->execute();
 
-	    if ($result = $this->db->query($sql))
-	    {	        
-	        if ($result->num_rows() > 0)
-	        {
-	            $record = $result->row_array();
-
-	            return $record['data'];
-	        }
+	    if($pdo->rowCount() == 1)
+	    {
+	        list($session_data) = $pdo->fetch();
+	        return $session_data;
 	    }
-
-	    return '';
+	    else
+	    {
+	        return '';
+	    }
+	    
 	}
 
 	function _write($id, $data)
-	{	    
-	    $access = time();
-	    echo " write ";
-	    // $data = array(
-	    // 	'id' => 'ex_session_'.$id,
-		   //  'access' => $access,
-		   //  'data' => $data,
-		   //  'ip' => $_SERVER['REMOTE_ADDR'],
-		   //  'browser' => $_SERVER['HTTP_USER_AGENT']
-		   //  );
-		$data = array(
-	    	'id' => 'sdgfdfsg',
-		    'access' => 'sdgfdfsg',
-		    'data' => 'sdgfdfsg',
-		    'ip' => 'sdgfdfsg',
-		    'browser' => 'sdgfdfsg'
-		    );	    	
-	    // $sql = "REPLACE INTO ex_sessions VALUES ('$id', '$ip', '$browser', '$access', '$data')";
-	    
-	    $this->db->insert('ex_sessions', $data, 'REPLACE');	    
+	{
+	    $access = time();    
+    	$id = 'ex_session_'.$id;
+	    $access = $access;
+	    $data = $data;
+	    $ip = $_SERVER['REMOTE_ADDR'];
+	    $browser = $_SERVER['HTTP_USER_AGENT'];
+
+	    $query = 'REPLACE INTO ex_sessions(id, ip, browser, access, data) VALUES(:id, :ip, :browser, :access, :data)';
+	    $pdo = $this->pdo->prepare($query);
+	    $pdo->bindValue(':id', $id, PDO::PARAM_STR);
+	    $pdo->bindValue(':ip', $ip, PDO::PARAM_STR);
+	    $pdo->bindValue(':browser', $browser, PDO::PARAM_STR);
+	    $pdo->bindValue(':access', $access, PDO::PARAM_STR);
+	    $pdo->bindValue(':data', $data, PDO::PARAM_STR);	    
+	    $pdo->execute();	    	       
 	}
 
 	function _destroy($id)
@@ -147,9 +204,11 @@ Final class SessionClass
 	    
 	    $sql = "DELETE
 	            FROM   ex_sessions
-	            WHERE  id = '$id'";
+	            WHERE  id = :id";
 
-	    $this->db->delete('ex_sessions',array('id'=>$id));
+	    $pdo = $this->pdo->prepare($sql);
+	    $pdo->bindValue('id', $id, PDO::PARAM_STR);
+	    $pdo->execute();	    
 	}
 
 	function _gc($max)
@@ -159,14 +218,16 @@ Final class SessionClass
 	    
 	    $sql = "DELETE
 	            FROM   ex_sessions
-	            WHERE  access < '$old'";	    
-	    $this->db->delete('ex_sessions',array('access <'=>$old));
+	            WHERE  access < :access";	    
+
+	    $pdo = $this->pdo->prepare($sql);
+	    $pdo->bindValue('access', $access, PDO::PARAM_STR);
+	    $pdo->execute();
 	}
 
 
 	function set_userdata($name,$value)
 	{		
-		echo " set ";
 		$_SESSION[$name] = $value;
 	}
 
@@ -186,6 +247,11 @@ Final class SessionClass
 	{
 		if(isset($_SESSION))
 			 session_destroy();
+	}
+
+	function __destruct()
+	{
+		session_write_close();
 	}
 }
 

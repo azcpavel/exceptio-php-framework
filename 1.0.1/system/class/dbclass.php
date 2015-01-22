@@ -37,7 +37,7 @@ Final class DbClass
 	public $options;
 
 	
-	function __construct($driver = '',$host = '',$uname = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
+	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
 	{
 		if($driver == 'mysql' || $driver == 'mysqli')
 			$dsn = "mysql:host=$host;port=$port;dbname=$db";
@@ -52,7 +52,7 @@ Final class DbClass
 			$dsn = "ibm:DRIVER={IBM DB2 ODBC DRIVER};DATABASE=$db;HOSTNAME=$host;PORT=$port;PROTOCOL=$protocol;";
 
 		elseif($driver == 'informix')
-			$dsn = "informix:host=$host;service=$service;database=$db;server=$server; protocol=$protocol;EnableScrollableCursors=1";
+			$dsn = "informix:host=$host;service=$service;database=$db;server=$server;protocol=$protocol;EnableScrollableCursors=1";
 
 		elseif($driver == 'oci')
 			$dsn = "oci:dbname=//$host:$port/$db";
@@ -66,7 +66,7 @@ Final class DbClass
 				    die("Could not find database file in $db");
 				}
 
-				$dsn = "odbc:DRIVER={Microsoft Access Driver (*.mdb, *.accdb)}; DBQ=$db; Uid=$uname; Pwd=$pass;";
+				$dsn = "odbc:DRIVER={Microsoft Access Driver (*.mdb, *.accdb)}; DBQ=$db; Uid=$user; Pwd=$pass;";
 			}
 
 		elseif($driver == 'pgsql')
@@ -80,7 +80,7 @@ Final class DbClass
 
 			$this->db_driver 	= $driver;
 			$this->db_host 		= $host;
-			$this->db_uname 	= $uname;
+			$this->db_uname 	= $user;
 			$this->db_pass 		= $pass;			
 			$this->db_name 		= $db;
 			$this->db_prefix 	= $dbPrefix;
@@ -94,10 +94,10 @@ Final class DbClass
 			if(count($options) > 0)
 				{
 					$this->options = $options;
-					$this->pdo = @new pdo($dsn,$uname,$pass,$options);
+					$this->pdo = @new pdo($dsn,$user,$pass,$options);
 				}
 			else
-				$this->pdo = @new pdo($dsn,$uname,$pass);
+				$this->pdo = @new pdo($dsn,$user,$pass);
 			$this->db_name = $db;	
 
 		} catch (PDOException $e) {
@@ -257,7 +257,8 @@ Final class DbClass
 				elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
 					$where_full .= " $key = $value";
 				else
-					$where_full .= " $key = '$value' AND";			}
+					$where_full .= " $key = '$value' AND";			
+			}
 			
 			if(substr($where_full,-4) === ' AND')
 				$this->where = substr($where_full, 0, -4);
@@ -467,7 +468,7 @@ Final class DbClass
 
 	function __destruct()
 	{
-		// $this->pdo = null;
+		$this->pdo = null;
 	}
 }
 
