@@ -34,7 +34,7 @@ Final class DbClass
 	public $db_protocol;
 	public $db_server;
 	public $db_uid;
-	public $options;
+	public $db_options;
 
 	
 	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
@@ -90,25 +90,21 @@ Final class DbClass
 			$this->db_protocol 	= $protocol;
 			$this->db_server 	= $server;
 			$this->db_uid 		= $uid;
+			$this->db_options	= array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);			
 
-			if(count($options) > 0)
+			if(is_array($options) && count($options) > 0)
 				{
-					$this->options = $options;
-					$this->pdo = @new pdo($dsn,$user,$pass,$options);
+					$this->db_options = array_merge(array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION),$options);
+					$this->pdo = @new pdo($dsn,$user,$pass,$this->db_options);
 				}
 			else
-				$this->pdo = @new pdo($dsn,$user,$pass);
-			$this->db_name = $db;	
+				$this->pdo = @new pdo($dsn,$user,$pass,$this->db_options);			
 
 		} catch (PDOException $e) {
 		    print "Error!: " . $e->getMessage() . "<br/>";
 		    die();
 		}
-
-		// if($this->pdo->connect_error)
-		// 	exit('Connection Error No: '.$this->pdo->connect_errno.'<br>Connection Error Cd: '.$this->pdo->connect_error);
-
-		//$this->pdo->select_db($db);
+		
 	}
 
 	function __call($mth_name,$mth_arg)
@@ -378,7 +374,7 @@ Final class DbClass
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> INSERT INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}");
+			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $typeQr INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}");
 		}
 
 		return $this;
