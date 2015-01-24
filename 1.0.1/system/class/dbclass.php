@@ -231,7 +231,7 @@ Final class DbClass
 
 	function join($table, $join, $pos = 0)
 	{
-		$this->join .=  (($pos !== 0) ? "{strtoupper($pos)} JOIN $table ON $join " : "JOIN $table ON $join ");
+		$this->join .=  (($pos !== 0) ? " ".strtoupper($pos)." JOIN {$this->db_prefix}$table ON $join " : "JOIN {$this->db_prefix}$table ON $join ");
 
 		return $this;
 	}
@@ -343,7 +343,7 @@ Final class DbClass
 
 	function show_column($table)
 	{
-		return $this->query("SHOW COLUMNS FROM $table");		
+		return $this->query("SHOW COLUMNS FROM {$this->db_prefix}$table");		
 	}
 
 	function show_tables()
@@ -373,12 +373,12 @@ Final class DbClass
 			$values_full .= $values.')';
 	
 	
-		$this->affected_rows = $this->pdo->exec("$typeQr INTO {$table} $key_full VALUES {$values_full}"); 
+		$this->affected_rows = $this->pdo->exec("$typeQr INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}"); 
 		
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> INSERT INTO {$table} $key_full VALUES {$values_full}");
+			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> INSERT INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}");
 		}
 
 		return $this;
@@ -400,12 +400,12 @@ Final class DbClass
 		else
 			$values_full = $values;
 
-		$this->affected_rows = $this->pdo->exec("UPDATE $table SET$values_full WHERE {$this->where} ");
+		$this->affected_rows = $this->pdo->exec("UPDATE {$this->db_prefix}$table SET$values_full WHERE {$this->where} ");
 
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> UPDATE $table SET$values_full WHERE {$this->where} ");
+			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> UPDATE {$this->db_prefix}$table SET$values_full WHERE {$this->where} ");
 		}
 
 		return $this;
@@ -417,12 +417,12 @@ Final class DbClass
 
 		$this->where($where);
 
-		$this->affected_rows = $this->pdo->exec("DELETE FROM $table WHERE {$this->where}");
+		$this->affected_rows = $this->pdo->exec("DELETE FROM {$this->db_prefix}$table WHERE {$this->where}");
 
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> DELETE FROM $table WHERE {$this->where}");
+			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> DELETE FROM {$this->db_prefix}$table WHERE {$this->where}");
 		}
 
 		return $this;
@@ -441,19 +441,19 @@ Final class DbClass
 
 	function optimaze_table($table)
 	{
-		$this->query("OPTIMIZE TABLE $table ");
+		$this->query("OPTIMIZE TABLE {$this->db_prefix}$table ");
 		return $this;
 	}
 
 	function truncate_table($table)
 	{
 		
-		$this->affected_rows = $this->pdo->exec("TRUNCATE TABLE $table ");
+		$this->affected_rows = $this->pdo->exec("TRUNCATE TABLE {$this->db_prefix}$table ");
 
 		$error_t = $this->pdo->errorInfo();
 		if($error_t[1] != '')
 		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> TRUNCATE TABLE $table ");
+			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> TRUNCATE TABLE {$this->db_prefix}$table ");
 		}
 
 		return $this;
