@@ -106,7 +106,8 @@ Final class SessionClass
 
 		try{
 			
-			$this->pdo = @new pdo($dsn,$user,$pass,array(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION));
+			$this->pdo = @new pdo($dsn,$user,$pass);
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		} catch (PDOException $e) {
 		    print "Error!: " . $e->getMessage() . "<br/>";

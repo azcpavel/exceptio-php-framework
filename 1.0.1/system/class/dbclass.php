@@ -90,15 +90,14 @@ Final class DbClass
 			$this->db_protocol 	= $protocol;
 			$this->db_server 	= $server;
 			$this->db_uid 		= $uid;
-			$this->db_options	= array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);			
+			$this->db_options	= $options;
 
-			if(is_array($options) && count($options) > 0)
-				{
-					$this->db_options = array_merge(array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION),$options);
-					$this->pdo = @new pdo($dsn,$user,$pass,$this->db_options);
-				}
+			if(is_array($options) && count($options) > 0)					
+				$this->pdo = @new pdo($dsn,$user,$pass,$this->db_options);
 			else
-				$this->pdo = @new pdo($dsn,$user,$pass,$this->db_options);			
+				$this->pdo = @new pdo($dsn,$user,$pass);
+			
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);				
 
 		} catch (PDOException $e) {
 		    print "Error!: " . $e->getMessage() . "<br/>";
