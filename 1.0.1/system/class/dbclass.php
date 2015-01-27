@@ -11,7 +11,7 @@
 
 Final class DbClass
 {	
-	private $select 	= '*';	
+	private $select 	= NULL;	
 	private $table;
 	private $join 		= '';
 	private $where 		= 1;
@@ -99,9 +99,8 @@ Final class DbClass
 			
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);				
 
-		} catch (PDOException $e) {
-		    print "Error!: " . $e->getMessage() . "<br/>";
-		    die();
+		} catch (PDOException $error) {
+		    $this->printError($error);		    
 		}
 		
 	}
@@ -109,6 +108,24 @@ Final class DbClass
 	function __call($mth_name,$mth_arg)
 	{
 		echo "Unknown Member Call $mth_name<br>You can get all details by calling get_class_details() method";
+	}
+
+	private function printError($error)
+	{
+		echo "Query Error:<br><br>".$error->getMessage()."<br><br>";
+		echo "Query Trace:<br><br>";
+		foreach ($error->getTrace() as $key => $value) {
+			echo 'In file "'.$value['file'].'"<br>';
+			echo 'In line "'.$value['line'].'"<br>';
+			echo 'In function "'.$value['function'].'"<br>';
+			echo (isset($value['class'])) ? 'In class "'.$value['class'].'"<br>' : '';
+			echo (isset($value['type'])) ? 'In type "'.$value['type'].'"<br>' : '';
+			foreach ($value['args'] as $argsKey => $argsValue) {
+				echo (strlen($argsValue) > 0) ? 'In args "'.$argsValue.'"<br>' : '';	
+			}
+			echo "<br>";							
+		}
+		die();
 	}
 
 	function get_class_details()
@@ -133,20 +150,21 @@ Final class DbClass
 
 	function query($query = "")
 	{
+		$select = ($this->select == NULL ) ? '*' : $this->select;
 		if ($query === "")
-			$query = "SELECT {$this->select} FROM {$this->db_prefix}{$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->group_by} {$this->limit}";
+			$query = "SELECT {$select} FROM {$this->db_prefix}{$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->group_by} {$this->limit}";
 
 		$this->query_str = $query;
-		$this->query = $this->pdo->query($query) or $error_t = $this->pdo->errorInfo();		
-
-		if(isset($error_t) && $error_t[1] != '')
-		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $query");
+		try{			
+			$this->query = $this->pdo->query($query) or $error_t = $this->pdo->errorInfo();			
 		}
+		catch(PDOException $error){
+			$this->printError($error);			
+		}		
 		
 		$this->order_by = $this->join = $this->limit = '';
 		$this->where = 1;
-		$this->select = '*';
+		$this->select = NULL;
 		
 		return $this;
 	}
@@ -187,9 +205,9 @@ Final class DbClass
 		return $this;
 	}
 
-	function select($select = '')
+	function select($select = NULL)
 	{
-		if(strlen($this->select) > 1)
+		if($this->select != NULL)
 			$this->select .= ',';
 		$this->select .= $select;
 
@@ -367,14 +385,13 @@ Final class DbClass
 		else
 			$values_full .= $values.')';
 	
-	
-		$this->affected_rows = $this->pdo->exec("$typeQr INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}"); 
-		
-		$error_t = $this->pdo->errorInfo();
-		if($error_t[1] != '')
-		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $typeQr INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}");
+		try{
+			$this->affected_rows = $this->pdo->exec("$typeQr INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}"); 	
 		}
+		catch (PDOException $error)
+		{
+			$this->printError($error);
+		}		
 
 		return $this;
 
@@ -395,13 +412,13 @@ Final class DbClass
 		else
 			$values_full = $values;
 
-		$this->affected_rows = $this->pdo->exec("UPDATE {$this->db_prefix}$table SET$values_full WHERE {$this->where} ");
-
-		$error_t = $this->pdo->errorInfo();
-		if($error_t[1] != '')
+		try{
+			$this->affected_rows = $this->pdo->exec("UPDATE {$this->db_prefix}$table SET$values_full WHERE {$this->where} ");
+		}		
+		catch (PDOException $error)
 		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> UPDATE {$this->db_prefix}$table SET$values_full WHERE {$this->where} ");
-		}
+			$this->printError($error);
+		}	
 
 		return $this;
 	}
@@ -412,14 +429,14 @@ Final class DbClass
 
 		$this->where($where);
 
-		$this->affected_rows = $this->pdo->exec("DELETE FROM {$this->db_prefix}$table WHERE {$this->where}");
-
-		$error_t = $this->pdo->errorInfo();
-		if($error_t[1] != '')
-		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> DELETE FROM {$this->db_prefix}$table WHERE {$this->where}");
+		try{
+			$this->affected_rows = $this->pdo->exec("DELETE FROM {$this->db_prefix}$table WHERE {$this->where}");
 		}
-
+		catch (PDOException $error)
+		{
+			$this->printError($error);
+		}
+		
 		return $this;
 		
 	}
@@ -442,13 +459,12 @@ Final class DbClass
 
 	function truncate_table($table)
 	{
-		
-		$this->affected_rows = $this->pdo->exec("TRUNCATE TABLE {$this->db_prefix}$table ");
-
-		$error_t = $this->pdo->errorInfo();
-		if($error_t[1] != '')
+		try{
+			$this->affected_rows = $this->pdo->exec("TRUNCATE TABLE {$this->db_prefix}$table ");
+		}
+		catch (PDOException $error)
 		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> TRUNCATE TABLE {$this->db_prefix}$table ");
+			$this->printError($error);
 		}
 
 		return $this;
