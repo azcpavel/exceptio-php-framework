@@ -1,5 +1,5 @@
 <?php
-define('FCPATH', DOCUMENT_ROOT.BASEDIR.APPLICATION);
+define('FCPATH', APPLICATION);
 
 /*
 *	$this->load->library('ciqrcode');

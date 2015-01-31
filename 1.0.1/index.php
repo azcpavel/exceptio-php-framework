@@ -1,11 +1,6 @@
 <?php
 ob_start();
 
-define('APPLICATION','application');
-
-require_once(APPLICATION.'/config/config.php');
-require_once(APPLICATION.'/config/route.php');
-
 
 define('SYSTEM','system');
 
@@ -34,7 +29,6 @@ require_once(SYSTEM.'/default.php');
 *	@phone : +880 1677 533818
 *	@since : 2014-04-20
 *	@version : 1.0.1
-*	https://github.com/azcpavel/Exceptio-PHP-Framework
 *	Main Index
 */
 

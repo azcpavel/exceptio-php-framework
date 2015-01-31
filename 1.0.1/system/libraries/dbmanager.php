@@ -52,7 +52,7 @@ class dbmanager {
     	}
 
     	if($this->dir == '')
-    		$this->dir = dirname(__FILE__);    	
+    		$this->dir = dirname(__FILE__); 	
 
         return $this->backup_MysqliDatabase($this->dir, $this->filename, $this->db_host, $this->db_uname, $this->db_pass, $this->db_name, $this->tables); // execute		
     }

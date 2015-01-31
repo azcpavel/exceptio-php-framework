@@ -27,7 +27,7 @@ if(isset($user_uri[0]) && $user_uri[0] != ''){
 			$controller_option[] = $value;
 	}
 
-	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/controllers/'.$controller_option[0].'.php'))
+	if(file_exists(APPLICATION.'/controllers/'.$controller_option[0].'.php'))
 		if(class_exists($controller_option[0]))
 			$obj = new $controller_option[0];
 		else
@@ -44,7 +44,7 @@ if(isset($user_uri[0]) && $user_uri[0] != ''){
 			{
 				$custome_url = explode('/', $config['url_404'] );
 
-				if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/controllers/'.$custome_url[0].'.php'))
+				if(file_exists(APPLICATION.'/controllers/'.$custome_url[0].'.php'))
 					redirect($config['url_404']);
 				else
 					{
@@ -87,7 +87,7 @@ if(isset($user_uri[0]) && $user_uri[0] != ''){
 			{
 				$custome_url = explode('/', $config['url_404'] );
 
-				if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/controllers/'.$custome_url[0].'.php'))
+				if(file_exists(APPLICATION.'/controllers/'.$custome_url[0].'.php'))
 					redirect($config['url_404']);
 				else
 					{
@@ -102,7 +102,7 @@ if(isset($user_uri[0]) && $user_uri[0] != ''){
 else{
 	
 
-	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/controllers/'.$config['default_controller'].'.php'))
+	if(file_exists(APPLICATION.'/controllers/'.$config['default_controller'].'.php'))
 		{			
 			if(class_exists($config['default_controller']))
 				{

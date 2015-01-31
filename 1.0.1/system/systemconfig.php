@@ -9,6 +9,10 @@
 *	System Constants
 */
 
+define('APPLICATION','application');
+
+require_once(APPLICATION.'/config/config.php');
+require_once(APPLICATION.'/config/route.php');
 
 if($config['base_url'] === ''){
 
@@ -48,6 +52,5 @@ define('SESSION_MATCH_BROWSER', $config['session_match_browser']);
 
 
 define('DEFAULT_CONTROLLER', $config['default_controller']);
-
 
 ?>

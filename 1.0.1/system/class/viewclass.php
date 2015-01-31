@@ -59,7 +59,7 @@ Final class ViewClass
 		if(count($config_helper) > 0){
 			
 			foreach ($config_helper as $key => $value) {
-				if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/helpers/'.$value.'_helper.php'))
+				if(file_exists(APPLICATION.'/helpers/'.$value.'_helper.php'))
 					require (APPLICATION.'/helpers/'.$value.'_helper.php');
 				else
 					exit("Helper not found in ".APPLICATION.'/helpers/'.$value.'_helper.php');
@@ -71,7 +71,7 @@ Final class ViewClass
 
 		extract($data_for_view);		
 
-		if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/views/'.$load_view_page.'.php'))
+		if(file_exists(APPLICATION.'/views/'.$load_view_page.'.php'))
 			require (APPLICATION.'/views/'.$load_view_page.'.php');
 		else
 			exit("View not found in ".APPLICATION.'/views/'.$load_view_page.'.php');
@@ -83,7 +83,7 @@ Final class ViewClass
 
 		$base_name = basename($load_libraries_name);
 
-		if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/libraries/'.$load_libraries_name.'.php'))
+		if(file_exists(APPLICATION.'/libraries/'.$load_libraries_name.'.php'))
 			{
 				require(APPLICATION.'/libraries/'.$load_libraries_name.'.php');
 				if(class_exists($base_name))

@@ -11,10 +11,10 @@
 
 function __autoload($class)
 {
-	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/controllers/'.$class.'.php'))	
+	if(file_exists(APPLICATION.'/controllers/'.$class.'.php'))	
 		require(APPLICATION.'/controllers/'.$class.'.php');	
 
-	if(file_exists(DOCUMENT_ROOT.BASEDIR.APPLICATION.'/helpers/'.$class.'.php'))	
+	if(file_exists(APPLICATION.'/helpers/'.$class.'.php'))	
 		require(APPLICATION.'/helpers/'.$class.'.php');
 }
 
