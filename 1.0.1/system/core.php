@@ -172,7 +172,7 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 	if(is_array($otherRegx))
 	{
 		foreach ($otherRegx as $valueRegx) {				
-			$otherRegxSub = explode('>', $valueRegx);			
+			$otherRegxSub = explode('^', $valueRegx);			
 			$regx[] = '/'.$otherRegxSub[0].'/';
 			$replacement[] = $otherRegxSub[1];
 		}		
