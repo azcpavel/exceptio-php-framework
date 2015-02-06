@@ -85,13 +85,13 @@ Final class pagination
 		
 		$prev = $this->start - $this->per_page; 
 		if($prev <= 0 )
-						$prev = 1;
+						$prev = 0;
 						
 		$next = $this->start + $this->per_page; 
 		if($next >= ($this->total / $this->per_page ))
 						$next = $this->total - $this->per_page;
 		
-		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/1'>{$this->first}</a> ".$this->after_tag;		
+		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/0'>{$this->first}</a> ".$this->after_tag;		
 		
 		$count_li = 1;
 		
@@ -102,7 +102,7 @@ Final class pagination
 			
 		$prev = (uri_segment($this->uri_segment) ) - $this->per_page; 
 		if($prev <= 0 )
-						$prev = 1;
+						$prev = 0;
 						
 		$next = (uri_segment($this->uri_segment) ) + $this->per_page;
 		
@@ -130,6 +130,16 @@ Final class pagination
 		echo $this->before_tag."<a href='{$this->base_url}/".($last-$this->per_page)."'>{$this->last}</a>".$this->after_tag.$this->end_part;
 		
 		}
+	}
+
+	function getConfig($name = NULL){		
+		if($name)
+			if(property_exists($this, $name))
+				return $this->$name;
+			else
+				return 'Error: Undefined Properties';
+		else
+			return get_object_vars($this);
 	}
 }
 

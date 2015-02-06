@@ -58,7 +58,7 @@ Final class DbClass
 			$dsn = "oci:dbname=//$host:$port/$db";
 
 		elseif($driver == 'sqlsrv')
-			$dsn = "sqlsrv:Server=$host,$port;Database=$db";		
+			$dsn = "sqlsrv:Server=$host,$port;Database=$db";
 
 		elseif($driver == 'odbc')
 			{
@@ -70,7 +70,7 @@ Final class DbClass
 			}
 
 		elseif($driver == 'pgsql')
-			$dsn = "pgsql:host=$host;port=$port;dbname=$db;user=$user;password=$pass";		
+			$dsn = "pgsql:host=$host;port=$port;dbname=$db;user=$user;password=$pass";
 
 		elseif($driver == '4D')
 			$dsn = "4D:host=$host;charset=UTF-8";
@@ -81,7 +81,7 @@ Final class DbClass
 			$this->db_driver 	= $driver;
 			$this->db_host 		= $host;
 			$this->db_uname 	= $user;
-			$this->db_pass 		= $pass;			
+			$this->db_pass 		= $pass;
 			$this->db_name 		= $db;
 			$this->db_prefix 	= $dbPrefix;
 			$this->db_host 		= $host;
@@ -92,15 +92,15 @@ Final class DbClass
 			$this->db_uid 		= $uid;
 			$this->db_options	= $options;
 
-			if(is_array($options) && count($options) > 0)					
+			if(is_array($options) && count($options) > 0)
 				$this->pdo = @new pdo($dsn,$user,$pass,$this->db_options);
 			else
 				$this->pdo = @new pdo($dsn,$user,$pass);
 			
-			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);				
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		} catch (PDOException $error) {
-		    $this->printError($error);		    
+		    $this->printError($error);
 		}
 		
 	}
@@ -123,7 +123,7 @@ Final class DbClass
 			foreach ($value['args'] as $argsKey => $argsValue) {
 				echo (strlen($argsValue) > 0) ? 'In args "'.$argsValue.'"<br>' : '';	
 			}
-			echo "<br>";							
+			echo "<br>";
 		}
 		die();
 	}
@@ -134,14 +134,14 @@ Final class DbClass
 		echo "<br><b>Class Name</b><br>";
 		echo "\t".get_class($this);
 
-		echo "<br><br><b>List of Methods</b><br>";		
+		echo "<br><br><b>List of Methods</b><br>";
 		foreach (get_class_methods($this) as $key => $value) {
 			echo "\t".$value."()<br>";
 		}		
 		
 		echo "<br><b>List of Properties</b><br>";
 		if(count(get_object_vars($this)) > 0)
-			print_r($this);			
+			print_r($this);
 		else
 			echo "\t"."No Properties Exists";
 		
@@ -159,7 +159,7 @@ Final class DbClass
 			$this->query = $this->pdo->query($query) or $error_t = $this->pdo->errorInfo();			
 		}
 		catch(PDOException $error){
-			$this->printError($error);			
+			$this->printError($error);
 		}		
 		
 		$this->order_by = $this->join = $this->limit = '';
@@ -169,34 +169,28 @@ Final class DbClass
 		return $this;
 	}
 
-	function get($table = 0, $offset = 0, $limit = 0)
+	function get($table = 0)
 	{
-		$this->table = (($table !== 0) ? $table : $this->table);		
-
-		if($limit != 0 || $offset !=0)
-		{
-			$this->limit = "LIMIT $offset";
-
-			if($limit !=0 )
-				$this->limit .= ", $limit"; 
-		}		$error_t = $this->pdo->errorInfo();
+		$this->table = (($table !== 0) ? $table : $this->table);
+		
+		if(count(func_get_args()) > 1 )
+			$this->limit = "LIMIT ".func_get_arg(1);
+		if(count(func_get_args()) > 2 )
+			$this->limit = "LIMIT ".func_get_arg(1).", ".func_get_arg(2)."";		
 
 		$this->query();
 		
 		return $this;
 	}
 
-	function get_where($table = 0, $where = 1, $offset =0, $limit = 0)
+	function get_where($table = 0, $where = 1)
 	{
-		$this->table = (($table !== 0) ? $table : $this->table);		
+		$this->table = (($table !== 0) ? $table : $this->table);
 
-		if($limit != 0 || $offset !=0)
-		{
-			$this->limit = "LIMIT $offset";
-
-			if($limit !=0 )
-				$this->limit .= ", $limit"; 
-		}
+		if(count(func_get_args()) > 2 )
+			$this->limit = "LIMIT ".func_get_arg(2);
+		if(count(func_get_args()) > 3 )
+			$this->limit = "LIMIT ".func_get_arg(2).", ".func_get_arg(3)."";		
 
 		$this->where($where);
 
@@ -265,18 +259,18 @@ Final class DbClass
 
 				if( preg_match('/<|>|\=|!| LIKE| BETWEEN| IN| NOT IN/', $key) && (preg_match('/ AND$| OR$|\'|^\(|\)$/', $value)) )					
 					$where_full .= " $key $value";
-				elseif(preg_match('/<|>|\=|!/', $key))					
+				elseif(preg_match('/<|>|\=|!/', $key))
 					$where_full .= " $key '$value' AND";
 				elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
 					$where_full .= " $key = $value";
 				else
-					$where_full .= " $key = '$value' AND";			
+					$where_full .= " $key = '$value' AND";
 			}
 			
 			if(substr($where_full,-4) === ' AND')
 				$this->where = substr($where_full, 0, -4);
 			else
-				$this->where = $where_full;		 
+				$this->where = $where_full;
 		}
 		else
 			$this->where = $where;
@@ -297,35 +291,32 @@ Final class DbClass
 		return $this;
 	}
 
-	function limit($offset = 0, $limit = 0)
+	function limit()
 	{
-		if($limit != 0 || $offset !=0)
-		{
-			$this->limit = "LIMIT $offset";
-
-			if($limit !=0 )
-				$this->limit .= ", $limit"; 
-		}
+		if(count(func_get_args()) > 1 )
+			$this->limit = "LIMIT ".func_get_arg(0).", ".func_get_arg(1)."";
+		else
+			$this->limit = "LIMIT ".func_get_arg(0);
 
 		return $this;
 	}
 
 	function num_rows()
 	{
-		$num = $this->pdo->query($this->query_str) or $error_t = $this->pdo->errorInfo();		
+		$num = $this->pdo->query($this->query_str) or $error_t = $this->pdo->errorInfo();
 
 		if(isset($error_t) && $error_t[1] != '')
 		{
 			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $query");
 		}
-		$num = count($num->fetchAll());				
+		$num = count($num->fetchAll());
 		return $num;
 	}
 
 
 	function row_array()
 	{		
-		return $this->query->fetch(PDO::FETCH_ASSOC);		
+		return $this->query->fetch(PDO::FETCH_ASSOC);
 	}
 
 	function result_array()
@@ -333,7 +324,7 @@ Final class DbClass
 		while($result[] = $this->query->fetch(PDO::FETCH_ASSOC)){}
 			array_pop($result);
 
-		return $result;		
+		return $result;
 	}
 
 	function row()
@@ -351,17 +342,17 @@ Final class DbClass
 
 	function fetch_column($limit = 0)
 	{
-		return $this->query->fetchColumn($limit);		
+		return $this->query->fetchColumn($limit);
 	}
 
 	function show_column($table)
 	{
-		return $this->query("SHOW COLUMNS FROM {$this->db_prefix}$table");		
+		return $this->query("SHOW COLUMNS FROM {$this->db_prefix}$table");
 	}
 
 	function show_tables()
 	{
-		return $this->query("SHOW TABLES FROM {$this->db_name}");		
+		return $this->query("SHOW TABLES FROM {$this->db_name}");
 	}
 
 
@@ -373,7 +364,7 @@ Final class DbClass
 		
 		if(is_array($values)){
 			$key_full = '(';
-			foreach ($values as $key => $value) {				
+			foreach ($values as $key => $value) {
 				
 					$values_full .= "'$value',";
 					$key_full .= "$key,";
@@ -402,7 +393,7 @@ Final class DbClass
 		$values_full = '';
 
 		if(is_array($values)){
-			foreach ($values as $key => $value) {				
+			foreach ($values as $key => $value) {
 				
 					$values_full .= " $key = '$value',";
 			}
