@@ -16,9 +16,15 @@ Final class ValidateClass
 	private $email = 1;
 	private $int = 1;
 	private $error = '';
-	private $post = 1;
+	private $input = 1;
 	private $field_name = 1;
 	private $url = 1;
+	private $min = 1;
+	private $max = 1;
+	private $fixed = 1;
+	private $minVal = NULL;
+	private $maxVal = NULL;
+	private $fixedVal = NULL;
 	private $trim;
 	private $tag_clr;
 	private $rule;
@@ -55,60 +61,162 @@ Final class ValidateClass
 	}
 
 
-	function set_rules($post,$field_name,$rules,$match_val = '')
+	function set_rules($input,$field_name,$rules,$match_val = '')
 	{
 		
-		$this->post = $post;
+		$this->input = $input;
 		$this->field_name = $field_name;
 		$rules = str_replace(' ', '', $rules);	
 		$this->rule = explode('|', $rules);
-
+		
 		foreach ($this->rule as $key => $value) {
 			
 			if ($value === 'required') {
-				$this->required($post);
+				$this->required($input);
 			}
 
 			if ($value === 'match') {
-				$this->match($post,$match_val);
+				$this->match($input,$match_val);
 			}
 
 			if ($value === 'email') {
-				$this->email($post);
+				$this->email($input);
 			}
 
 			if ($value === 'int') {
-				$this->int($post);
+				$this->int($input);
 			}
 
 			if ($value === 'url') {
-				$this->url($post);
+				$this->url($input);
+			}
+
+			if (strpos($value,'min') !== false) {
+				$this->minVal = str_replace('min', '', $value);
+				$this->min($input);
+			}
+
+			if (strpos($value,'max') !== false) {
+				$this->maxVal = str_replace('max', '', $value);
+				$this->max($input);
+			}
+
+			if (strpos($value,'fixed') !== false) {
+				$this->fixedVal = str_replace('fixed', '', $value);
+				$this->fixed($input);
 			}
 
 			if ($value === 'trim') {
-				$this->trim($post);
+				$this->trim($input);
 			}
 
 			if ($value === 'tag_clr') {
-				$this->tag_clr($post);
-			}
+				$this->tag_clr($input);
+			}			
 		}		
 		
 	}
 
+	private function validateArray($input, $type)
+	{		
+		foreach ($input as $key => $value) {
+			if(is_array($value))
+				$this->validateArray($value,$type);
+			else{
+					if($type == 'required'){
+						if (strlen($value) < 1) {
+							$this->required = FALSE;
+							$this->error .= $this->field_name." required<br>";						
+						}
+					}
 
-	function required($post)
+					if($type == 'email'){
+						if( filter_var($value, FILTER_VALIDATE_EMAIL))
+							$this->email = ($this->email != FALSE ) ? TRUE : FALSE; 
+						else{
+								$this->email = FALSE;
+								$this->error .= $this->field_name." is not valide email<br>";
+							}
+					}
+
+					if($type == 'int'){
+						if((filter_var($value, FILTER_VALIDATE_INT) !== FALSE) )
+							$this->int = ($this->int != FALSE ) ? TRUE : FALSE; 
+						else{
+								$this->int = FALSE;
+								$this->error .= $this->field_name." must be Integer<br>";	
+							}
+					}
+
+					if($type == 'url'){
+						if(filter_var($value, FILTER_VALIDATE_URL))
+							$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+						else{
+							$this->url = FALSE;
+							$this->error .= $this->field_name." must be URL<br>";	
+						} 
+					}					
+
+					if($type == 'tag_clr')
+					{
+						$input[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+						$this->tag_clr = TRUE;
+					}
+
+					if($type == 'min'){
+						if(strlen($value) >= $this->minVal)
+							$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+						else{
+							$this->url = FALSE;
+							$this->error .= $this->field_name." length must be greater then or equal {$this->minVal} <br>";	
+						}
+					}
+
+					if($type == 'max'){
+						if(strlen($value) <= $this->maxVal)
+							$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+						else{
+							$this->url = FALSE;
+							$this->error .= $this->field_name." length must be less then or equal {$this->maxVal} <br>";	
+						}
+					}
+
+					if($type == 'fixed'){
+						if(strlen($value) <= $this->fixedVal)
+							$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+						else{
+							$this->url = FALSE;
+							$this->error .= $this->field_name." length must be equal {$this->fixedVal} <br>";	
+						}
+					}
+
+					if($type == 'trim')
+					{
+						$input[$key] = trim($value);
+						$this->trim = TRUE;
+					}
+			}
+		}
+	}
+
+
+	function required($input)
 	{
-		if ((isset($_REQUEST[$post]) && $_REQUEST[$post] != '') || (@$_FILES[$post]['name'][0] != '')) {
-			
-			$this->required = ($this->required != FALSE ) ? TRUE : FALSE;
+		if(isset($_REQUEST[$input]))
+		{
+			if(!is_array($_REQUEST[$input])){
+				if($_REQUEST[$input] != '' || @$_FILES[$input]['name'][0] != '')				
+					$this->required = ($this->required != FALSE ) ? TRUE : FALSE;
+			}
+			else
+				$this->validateArray($_REQUEST[$input],'required');
 		}
 		else{
 				$this->required = FALSE;
 				$this->error .= $this->field_name." required<br>";
 			}
 		 
-	}
+	}	
 
 	function match($match_for, $match_with)
 	{
@@ -120,47 +228,154 @@ Final class ValidateClass
 			}
 	}
 
-	function email($post)
+	function email($input)
 	{
-		if (isset($_REQUEST[$post]) && filter_var($_REQUEST[$post], FILTER_VALIDATE_EMAIL))
-			$this->email = ($this->email != FALSE ) ? TRUE : FALSE; 
-		else{
-				$this->email = FALSE;
-				$this->error .= $this->field_name." ".@$_REQUEST[$this->post]." is not valide email<br>";
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input])){
+				if( filter_var($_REQUEST[$input], FILTER_VALIDATE_EMAIL))
+					$this->email = ($this->email != FALSE ) ? TRUE : FALSE; 
+				else{
+						$this->email = FALSE;
+						$this->error .= $this->field_name." ".$_REQUEST[$this->input]." is not valide email<br>";
+					}
 			}
+			else
+				$this->validateArray($_REQUEST[$input],'email');
+		}
+		else{
+			$this->email = FALSE;
+			$this->error .= $this->field_name." ".$_REQUEST[$this->input]." is not valide email<br>";
+		}
+
 	}
 
-	function int($post)
+	function int($input)
 	{
-		if (isset($_REQUEST[$post]) && (filter_var($_REQUEST[$post], FILTER_VALIDATE_INT) !== FALSE) )
-			$this->int = ($this->int != FALSE ) ? TRUE : FALSE; 
-		else{
-				$this->int = FALSE;
-				$this->error .= $this->field_name." must be Integer<br>";	
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input]))
+			{
+				if((filter_var($_REQUEST[$input], FILTER_VALIDATE_INT) !== FALSE) )
+					$this->int = ($this->int != FALSE ) ? TRUE : FALSE; 
+				else{
+						$this->int = FALSE;
+						$this->error .= $this->field_name." must be Integer<br>";	
+					}
 			}
+			else
+				$this->validateArray($_REQUEST[$input],'int');
+		}
+		else{
+			$this->int = FALSE;
+			$this->error .= $this->field_name." must be Integer<br>";	
+		}
 	}
 
-	function url($post)
+	function url($input)
 	{
-		if (isset($_REQUEST[$post]) && (filter_var($_REQUEST[$post], FILTER_VALIDATE_URL)) )
-			$this->url = ($this->url != FALSE ) ? TRUE : FALSE; 
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input])){
+				if(filter_var($_REQUEST[$input], FILTER_VALIDATE_URL))
+					$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+				else{
+					$this->url = FALSE;
+					$this->error .= $this->field_name." must be URL<br>";	
+				} 
+			}
+			else
+				$this->validateArray($_REQUEST[$input],'url');
+		}
 		else{
 				$this->url = FALSE;
-				$this->error .= $this->field_name." must be Url<br>";	
+				$this->error .= $this->field_name." must be URL<br>";	
 			}
 	}
 
-	function trim($post)
+	function min($input)
 	{
-		@$_REQUEST[$post] = trim(@$_REQUEST[$post]);
-		$this->trim = TRUE;
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input])){
+				if(strlen($_REQUEST[$input]) >= $this->minVal)
+					$this->min = ($this->min != FALSE ) ? TRUE : FALSE;
+				else{
+					$this->min = FALSE;
+					$this->error .= $this->field_name." length must be greater then or equal {$this->minVal} <br>";	
+				} 
+			}
+			else
+				$this->validateArray($_REQUEST[$input],'min');
+		}
+		else{
+				$this->min = FALSE;
+				$this->error .= $this->field_name." length must be greater then or equal {$this->minVal} <br>";	
+			}
 	}
 
-	function tag_clr($post)
+	function max($input)
 	{
-		@$_REQUEST[$post] = filter_var(@$_REQUEST[$post], FILTER_SANITIZE_SPECIAL_CHARS);
-		$this->tag_clr = TRUE;	
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input])){
+				if(strlen($_REQUEST[$input]) <= $this->maxVal)
+					$this->max = ($this->max != FALSE ) ? TRUE : FALSE;
+				else{
+					$this->max = FALSE;
+					$this->error .= $this->field_name." length must be less then or equal {$this->maxVal} <br>";	
+				} 
+			}
+			else
+				$this->validateArray($_REQUEST[$input],'max');
+		}
+		else{
+				$this->max = FALSE;
+				$this->error .= $this->field_name." length must be less then or equal {$this->maxVal} <br>";	
+			}
 	}
+
+	function fixed($input)
+	{
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input])){
+				if(strlen($_REQUEST[$input]) == $this->fixedVal)
+					$this->fixed = ($this->fixed != FALSE ) ? TRUE : FALSE;
+				else{
+					$this->fixed = FALSE;
+					$this->error .= $this->field_name." length must be equal {$this->fixedVal} <br>";	
+				} 
+			}
+			else
+				$this->validateArray($_REQUEST[$input],'fixed');
+		}
+		else{
+				$this->fixed = FALSE;
+				$this->error .= $this->field_name." length  must be equal {$this->fixedVal} <br>";	
+			}
+	}
+
+	function trim($input)
+	{		
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input]))
+			{
+				$_REQUEST[$input] = trim($_REQUEST[$input]);
+				$this->trim = TRUE;
+			}
+			else
+				$_REQUEST[$input] = $this->validateArray($_REQUEST[$input],'trim');
+		}
+	}
+
+
+	function tag_clr($input)
+	{
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input]))
+			{
+				$_REQUEST[$input] = filter_var($_REQUEST[$input], FILTER_SANITIZE_SPECIAL_CHARS);
+				$this->tag_clr = TRUE;	
+			}
+			else
+				$_REQUEST[$input] = $this->validateArray($_REQUEST[$input],'tag_clr');
+		}
+	}	
 
 	function run()
 	{		
