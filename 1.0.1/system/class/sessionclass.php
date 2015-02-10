@@ -175,7 +175,7 @@ Final class SessionClass
 	    }
 	    else
 	    {
-	        return '';
+	        return false;
 	    }
 	    
 	}

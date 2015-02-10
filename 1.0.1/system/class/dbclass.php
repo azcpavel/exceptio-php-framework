@@ -442,6 +442,15 @@ Final class DbClass
 		return $this->pdo->lastInsertId();
 	}
 
+	function last_row($parm = 'array')
+	{
+		$last = ($parm != 'array') ? $this->result_array() : $this->result();
+		if (count($last) > 0) {
+			$lastIndex = count($last)-1;
+			return $last[$lastIndex];
+		}
+	}
+
 	function optimaze_table($table)
 	{
 		$this->query("OPTIMIZE TABLE {$this->db_prefix}$table ");
