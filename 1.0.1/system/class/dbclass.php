@@ -99,6 +99,8 @@ Final class DbClass
 			
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+			$this->pdo->beginTransaction();
+
 		} catch (PDOException $error) {
 		    $this->printError($error);
 		}
@@ -121,7 +123,12 @@ Final class DbClass
 			echo (isset($value['class'])) ? 'In class "'.$value['class'].'"<br>' : '';
 			echo (isset($value['type'])) ? 'In type "'.$value['type'].'"<br>' : '';
 			foreach ($value['args'] as $argsKey => $argsValue) {
-				echo (strlen($argsValue) > 0) ? 'In args "'.$argsValue.'"<br>' : '';	
+				if(is_array($argsValue))
+					foreach ($argsValue as $argsKeySub => $argsValueSub) {
+						echo (strlen($argsValueSub) > 0) ? 'In args "'.$argsKeySub." => ".$argsValueSub.'"<br>' : '';	
+					}
+				else
+					echo (strlen($argsValue) > 0) ? 'In args "'.$argsValue.'"<br>' : '';	
 			}
 			echo "<br>";
 		}
@@ -377,7 +384,7 @@ Final class DbClass
 			$values_full .= $values.')';
 	
 		try{
-			$this->affected_rows = $this->pdo->exec("$typeQr INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}"); 	
+			$this->affected_rows = $this->pdo->exec("{$typeQr} INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}"); 	
 		}
 		catch (PDOException $error)
 		{
@@ -442,12 +449,11 @@ Final class DbClass
 		return $this->pdo->lastInsertId();
 	}
 
-	function last_row($parm = 'array')
+	function last_row($parm = 'obj')
 	{
-		$last = ($parm != 'array') ? $this->result_array() : $this->result();
-		if (count($last) > 0) {
-			$lastIndex = count($last)-1;
-			return $last[$lastIndex];
+		$last = ($parm != 'obj') ? $this->result_array() : $this->result();
+		if (count($last) > 0) {			
+			return $last[count($last)-1];
 		}
 	}
 
@@ -474,11 +480,11 @@ Final class DbClass
 	{
 		$this->query("DROP TABLE $table ");
 		return $this;
-	}
-	
+	}	
 
 	function __destruct()
 	{
+		$this->pdo->commit();
 		$this->pdo = null;
 	}
 }

@@ -108,6 +108,7 @@ Final class SessionClass
 			
 			$this->pdo = @new pdo($dsn,$user,$pass);
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->pdo->beginTransaction();
 
 		} catch (PDOException $e) {
 		    print "Error!: " . $e->getMessage() . "<br/>";
@@ -119,6 +120,7 @@ Final class SessionClass
 
 	function _close()
 	{	    
+	    $this->pdo->commit();
 	    $this->pdo = NULL;
 	    return true;
 	}
@@ -251,7 +253,7 @@ Final class SessionClass
 	}
 
 	function __destruct()
-	{
+	{		
 		session_write_close();
 	}
 }
