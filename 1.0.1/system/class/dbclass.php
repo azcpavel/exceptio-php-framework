@@ -257,7 +257,7 @@ Final class DbClass
 		return $this;
 	}
 
-	function where($where = 1)
+	function where($where = 1, $isSec = false)
 	{
 		$where_full = '';
 
@@ -279,6 +279,8 @@ Final class DbClass
 			else
 				$this->where = $where_full;
 		}
+		elseif($isSec != false)
+			$this->where = "$where = '$isSec'";
 		else
 			$this->where = $where;
 
@@ -321,8 +323,14 @@ Final class DbClass
 	}
 
 
-	function row_array()
+	function row_array($index = NULL)
 	{		
+		if($index)
+		{
+			$result = $this->result_array();
+			if(isset($return[$index]))
+			return $return[$index];
+		}
 		return $this->query->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -334,8 +342,14 @@ Final class DbClass
 		return $result;
 	}
 
-	function row()
+	function row($index = NULL)
 	{		
+		if($index)
+		{
+			$result = $this->result();
+			if(isset($return[$index]))
+			return $return[$index];
+		}
 		return $this->query->fetch(PDO::FETCH_OBJ);
 	}
 
@@ -395,9 +409,12 @@ Final class DbClass
 
 	}
 
-	function update($table, $values = '')
+	function update($table, $values = '', $where = false)
 	{		
 		$values_full = '';
+
+		if($where != false)
+			$this->where($where);
 
 		if(is_array($values)){
 			foreach ($values as $key => $value) {
