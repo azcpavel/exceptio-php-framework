@@ -16,7 +16,7 @@ Final class FileClass
 	private $upload_file_name;
 	private $upload_file_temp_name;
 	private $upload_max_size = 0;
-	private $upload_file_type;
+	private $upload_file_type = 0;
 	private $upload_file_source;
 	private $upload_create_thumb;
 	private $upload_image_ratio;
@@ -134,7 +134,7 @@ Final class FileClass
 
 			if ($value == UPLOAD_ERR_OK){	
 				
-				if($file_type_check !== FALSE){
+				if($this->upload_file_type === 0 || $file_type_check !== FALSE){
 
 					if($this->upload_max_size === 0 || ($_FILES[$post_name]['size'][$key] <= $this->upload_max_size)){						
 

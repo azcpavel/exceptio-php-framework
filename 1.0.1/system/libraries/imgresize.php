@@ -31,8 +31,9 @@
 				$this->image = $this->openImage($fileName);
 
 			    // *** Get width and height
-			    $this->width  = imagesx($this->image);
-			    $this->height = imagesy($this->image);
+			    $this->width  = @imagesx($this->image);
+			    $this->height = @imagesy($this->image);			    
+
 			}
 
 			## --------------------------------------------------------
@@ -65,6 +66,8 @@
 
 			public function resizeImage($newWidth, $newHeight, $option="auto")
 			{
+				if($this->width <= 0 || $this->height <= 0)
+					return;
 				// *** Get optimal width and height - based on $option
 				$optionArray = $this->getDimensions($newWidth, $newHeight, $option);
 
@@ -243,7 +246,7 @@
 						break;
 				}
 
-				imagedestroy($this->imageResized);
+				@imagedestroy($this->imageResized);
 			}
 
 
