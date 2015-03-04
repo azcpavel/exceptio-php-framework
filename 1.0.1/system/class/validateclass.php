@@ -132,7 +132,9 @@ Final class ValidateClass
 
 					if($type == 'email'){
 						if( filter_var($value, FILTER_VALIDATE_EMAIL))
-							$this->email = ($this->email != FALSE ) ? TRUE : FALSE; 
+							{
+								$this->email = TRUE;
+							}
 						else{
 								$this->email = FALSE;
 								$this->error .= $this->field_name." is not valide email<br>";
@@ -141,7 +143,9 @@ Final class ValidateClass
 
 					if($type == 'int'){
 						if((filter_var($value, FILTER_VALIDATE_INT) !== FALSE) )
-							$this->int = ($this->int != FALSE ) ? TRUE : FALSE; 
+							{
+								$this->int = TRUE;	
+							}
 						else{
 								$this->int = FALSE;
 								$this->error .= $this->field_name." must be Integer<br>";	
@@ -150,7 +154,7 @@ Final class ValidateClass
 
 					if($type == 'url'){
 						if(filter_var($value, FILTER_VALIDATE_URL))
-							$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+							$this->url = TRUE;	
 						else{
 							$this->url = FALSE;
 							$this->error .= $this->field_name." must be URL<br>";	
@@ -165,27 +169,33 @@ Final class ValidateClass
 
 					if($type == 'min'){
 						if(strlen($value) >= $this->minVal)
-							$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+							{
+								$this->min = TRUE;	
+							}
 						else{
-							$this->url = FALSE;
+							$this->min = FALSE;
 							$this->error .= $this->field_name." length must be greater then or equal {$this->minVal} <br>";	
 						}
 					}
 
 					if($type == 'max'){
 						if(strlen($value) <= $this->maxVal)
-							$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+							{
+								$this->max = TRUE;		
+							}
 						else{
-							$this->url = FALSE;
+							$this->max = FALSE;
 							$this->error .= $this->field_name." length must be less then or equal {$this->maxVal} <br>";	
 						}
 					}
 
 					if($type == 'fixed'){
 						if(strlen($value) <= $this->fixedVal)
-							$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+							{
+								$this->fixed = TRUE;	
+							}
 						else{
-							$this->url = FALSE;
+							$this->fixed = FALSE;
 							$this->error .= $this->field_name." length must be equal {$this->fixedVal} <br>";	
 						}
 					}
@@ -206,7 +216,12 @@ Final class ValidateClass
 		{
 			if(!is_array($_REQUEST[$input])){
 				if($_REQUEST[$input] != '' || @$_FILES[$input]['name'][0] != '')				
-					$this->required = ($this->required != FALSE ) ? TRUE : FALSE;
+					$this->required = TRUE;
+				else 
+				{
+					$this->required == FALSE;
+					$this->error .= $this->field_name." required<br>";
+				}
 			}
 			else
 				$this->validateArray($_REQUEST[$input],'required');
@@ -221,7 +236,9 @@ Final class ValidateClass
 	function match($match_for, $match_with)
 	{
 		if (isset($_REQUEST[$match_for]) && isset($_REQUEST[$match_with]) && ($_REQUEST[$match_for] === $_REQUEST[$match_with])) 
-			$this->match = ($this->match != FALSE ) ? TRUE : FALSE; 
+			{
+				$this->match = TRUE;				
+			}
 		else{
 				$this->match = FALSE;
 				$this->error .= $this->field_name." not match<br>";
@@ -233,7 +250,9 @@ Final class ValidateClass
 		if (isset($_REQUEST[$input])){
 			if(!is_array($_REQUEST[$input])){
 				if( filter_var($_REQUEST[$input], FILTER_VALIDATE_EMAIL))
-					$this->email = ($this->email != FALSE ) ? TRUE : FALSE; 
+					{						
+						$this->email = TRUE;						
+					}
 				else{
 						$this->email = FALSE;
 						$this->error .= $this->field_name." ".$_REQUEST[$this->input]." is not valide email<br>";
@@ -255,7 +274,9 @@ Final class ValidateClass
 			if(!is_array($_REQUEST[$input]))
 			{
 				if((filter_var($_REQUEST[$input], FILTER_VALIDATE_INT) !== FALSE) )
-					$this->int = ($this->int != FALSE ) ? TRUE : FALSE; 
+					{
+						$this->int = TRUE;						
+					}
 				else{
 						$this->int = FALSE;
 						$this->error .= $this->field_name." must be Integer<br>";	
@@ -275,7 +296,9 @@ Final class ValidateClass
 		if (isset($_REQUEST[$input])){
 			if(!is_array($_REQUEST[$input])){
 				if(filter_var($_REQUEST[$input], FILTER_VALIDATE_URL))
-					$this->url = ($this->url != FALSE ) ? TRUE : FALSE;
+					{
+						$this->url = TRUE;						
+					}
 				else{
 					$this->url = FALSE;
 					$this->error .= $this->field_name." must be URL<br>";	
@@ -295,7 +318,9 @@ Final class ValidateClass
 		if (isset($_REQUEST[$input])){
 			if(!is_array($_REQUEST[$input])){
 				if(strlen($_REQUEST[$input]) >= $this->minVal)
-					$this->min = ($this->min != FALSE ) ? TRUE : FALSE;
+					{
+						$this->min = TRUE;						
+					}
 				else{
 					$this->min = FALSE;
 					$this->error .= $this->field_name." length must be greater then or equal {$this->minVal} <br>";	
@@ -314,8 +339,10 @@ Final class ValidateClass
 	{
 		if (isset($_REQUEST[$input])){
 			if(!is_array($_REQUEST[$input])){
-				if(strlen($_REQUEST[$input]) <= $this->maxVal)
-					$this->max = ($this->max != FALSE ) ? TRUE : FALSE;
+				if(strlen($_REQUEST[$input]) <= $this->maxVal)					
+					{
+						$this->max = TRUE;						
+					}
 				else{
 					$this->max = FALSE;
 					$this->error .= $this->field_name." length must be less then or equal {$this->maxVal} <br>";	
@@ -335,7 +362,9 @@ Final class ValidateClass
 		if (isset($_REQUEST[$input])){
 			if(!is_array($_REQUEST[$input])){
 				if(strlen($_REQUEST[$input]) == $this->fixedVal)
-					$this->fixed = ($this->fixed != FALSE ) ? TRUE : FALSE;
+					{
+						$this->fixed = TRUE;
+					}
 				else{
 					$this->fixed = FALSE;
 					$this->error .= $this->field_name." length must be equal {$this->fixedVal} <br>";	

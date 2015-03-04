@@ -245,6 +245,11 @@ Final class DbClass
 
 	function join($table, $join, $pos = 0)
 	{
+		$join = explode('=', $join);
+		foreach ($join as $key => $value) {
+			$join[$key] = $this->db_prefix.trim($value);
+		}
+		$join = implode('=', $join);
 		$this->join .=  (($pos !== 0) ? " ".strtoupper($pos)." JOIN {$this->db_prefix}$table ON $join " : "JOIN {$this->db_prefix}$table ON $join ");
 
 		return $this;
@@ -260,26 +265,42 @@ Final class DbClass
 	function where($where = 1, $isSec = false)
 	{
 		$where_full = '';
-
+		$db_prefix 	= '';
 		if(is_array($where)){
+			if(isset($where['db_prefix']))
+			{
+				$db_prefix = $this->db_prefix;
+			}
 			foreach ($where as $key => $value) {
 
 				if( preg_match('/<|>|\=|!| LIKE| BETWEEN| IN| NOT IN/', $key) && (preg_match('/ AND$| OR$|\'|^\(|\)$/', $value)) )					
-					$where_full .= " $key $value";
+					$where_full .= " {$db_prefix}$key $value";
 				elseif(preg_match('/<|>|\=|!/', $key))
-					$where_full .= " $key '$value' AND";
+					$where_full .= " {$db_prefix}$key '$value' AND";
 				elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
-					$where_full .= " $key = $value";
+					$where_full .= " {$db_prefix}$key = $value";
 				else
-					$where_full .= " $key = '$value' AND";
+					$where_full .= " {$db_prefix}$key = '$value' AND";
 			}
 			
-			if(substr($where_full,-4) === ' AND')
-				$this->where = substr($where_full, 0, -4);
-			else
-				$this->where = $where_full;
+			if(substr($where_full,-4) === ' AND'){
+				if($this->where != 1)
+					$this->where .= substr($where_full, 0, -4);
+				else
+					$this->where = substr($where_full, 0, -4);
+			}
+			else{
+				if($this->where != 1)
+					$this->where .= ' AND '.$where_full;
+				else
+					$this->where = $where_full;
+			}
 		}
-		elseif($isSec != false)
+		elseif($this->where != 1 AND $isSec != false)
+			$this->where .= " AND $where = '$isSec'";		
+		elseif($this->where != 1 AND $isSec == false)
+			$this->where .= " AND $where";
+		elseif($this->where == 1 AND $isSec != false)
 			$this->where = "$where = '$isSec'";
 		else
 			$this->where = $where;
@@ -433,7 +454,9 @@ Final class DbClass
 		catch (PDOException $error)
 		{
 			$this->printError($error);
-		}	
+		}
+
+		$this->where = 1;
 
 		return $this;
 	}
@@ -451,6 +474,8 @@ Final class DbClass
 		{
 			$this->printError($error);
 		}
+
+		$this->where = 1;
 		
 		return $this;
 		
