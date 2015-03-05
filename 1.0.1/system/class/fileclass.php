@@ -134,13 +134,13 @@ Final class FileClass
 
 			if ($value == UPLOAD_ERR_OK){	
 				
-				if($this->upload_file_type === 0 || $file_type_check !== FALSE){
+				if($this->upload_file_type == 0 || $file_type_check !== FALSE){
 
-					if($this->upload_max_size === 0 || ($_FILES[$post_name]['size'][$key] <= $this->upload_max_size)){						
+					if($this->upload_max_size == 0 || ($_FILES[$post_name]['size'][$key] <= $this->upload_max_size)){						
 
-						if($this->upload_max_width === 0 || $width <= $this->upload_max_width){
+						if($this->upload_max_width == 0 || $width <= $this->upload_max_width){
 
-							if($this->upload_max_height === 0 || $height <= $this->upload_max_height)
+							if($this->upload_max_height == 0 || $height <= $this->upload_max_height)
 
 								$this->upload_error_ok = 1;
 
