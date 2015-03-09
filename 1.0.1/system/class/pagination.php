@@ -105,6 +105,8 @@ Final class pagination
 						$prev = 0;
 						
 		$next = (uri_segment($this->uri_segment) ) + $this->per_page;
+
+		$next = ($next >= $this->total) ? $next - $this->per_page : $next;
 		
 						
 		echo $this->before_tag."<a href='{$this->base_url}/{$prev}'><<</a> ".$this->after_tag;
