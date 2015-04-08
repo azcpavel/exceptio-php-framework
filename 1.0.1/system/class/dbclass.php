@@ -181,9 +181,9 @@ Final class DbClass
 		$this->table = (($table !== 0) ? $table : $this->table);
 		
 		if(count(func_get_args()) > 1 )
-			$this->limit = "LIMIT ".func_get_arg(1);
+			$this->limit = "LIMIT ".preg_replace(array('/[A-Z]*[a-z]*[ ]*/','[_()]','<\W+>'), array('','',''), func_get_arg(1));
 		if(count(func_get_args()) > 2 )
-			$this->limit = "LIMIT ".func_get_arg(1).", ".func_get_arg(2)."";		
+			$this->limit = "LIMIT ".preg_replace(array('/[A-Z]*[a-z]*[ ]*/','[_()]','<\W+>'), array('','',''), func_get_arg(1).", ".func_get_arg(2))."";		
 
 		$this->query();
 		
@@ -195,9 +195,9 @@ Final class DbClass
 		$this->table = (($table !== 0) ? $table : $this->table);
 
 		if(count(func_get_args()) > 2 )
-			$this->limit = "LIMIT ".func_get_arg(2);
+			$this->limit = "LIMIT ".preg_replace(array('/[A-Z]*[a-z]*[ ]*/','[_()]','<\W+>'), array('','',''), func_get_arg(2));
 		if(count(func_get_args()) > 3 )
-			$this->limit = "LIMIT ".func_get_arg(2).", ".func_get_arg(3)."";		
+			$this->limit = "LIMIT ".preg_replace(array('/[A-Z]*[a-z]*[ ]*/','[_()]','<\W+>'), array('','',''), func_get_arg(2)).", ".preg_replace(array('/[A-Z]*[a-z]*[ ]*/','[_()]','<\W+>'), array('','',''), func_get_arg(3))."";		
 
 		$this->where($where);
 
@@ -324,9 +324,9 @@ Final class DbClass
 	function limit()
 	{
 		if(count(func_get_args()) > 1 )
-			$this->limit = "LIMIT ".func_get_arg(0).", ".func_get_arg(1)."";
+			$this->limit = "LIMIT ".preg_replace(array('/[A-Z]*[a-z]*[ ]*/','[_()]','<\W+>'), array('','',''), func_get_arg(0)).", ".preg_replace(array('/[A-Z]*[a-z]*[ ]*/','[_()]','<\W+>'), array('','',''), func_get_arg(1))."";
 		else
-			$this->limit = "LIMIT ".func_get_arg(0);
+			$this->limit = "LIMIT ".preg_replace(array('/[A-Z]*[a-z]*[ ]*/','[_()]','<\W+>'), array('','',''), func_get_arg(0));
 
 		return $this;
 	}
