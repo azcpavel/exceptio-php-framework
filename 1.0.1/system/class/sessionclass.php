@@ -17,7 +17,7 @@ Final class SessionClass
 	function __construct()
 	{
 		if(SESSION_USE_DB === TRUE)
-		{		
+		{			
 			session_set_save_handler(array($this , '_open'),
 	                         array($this , '_close'),
 	                         array($this , '_read'),
@@ -127,7 +127,7 @@ Final class SessionClass
 
 	function _read($id)
 	{		
-	    
+	    $lifeTime = time() - SESSION_LIFE_TIME;
 
 	    $id = 'ex_session_'.$id;
 
@@ -135,7 +135,7 @@ Final class SessionClass
 	    {
 	    	$sql = "SELECT data
 	    	            FROM   ex_sessions
-	    	            WHERE  id = :id";
+	    	            WHERE  id = :id AND access > '$lifeTime'";
 	    	$pdo = $this->pdo->prepare($sql);	    
 	    	$pdo->bindValue(':id', $id, PDO::PARAM_STR);
 	   	}
@@ -143,7 +143,7 @@ Final class SessionClass
 	    {
 	    	$sql = "SELECT data
 	    	            FROM   ex_sessions
-	    	            WHERE  id = :id AND ip = :ip";
+	    	            WHERE  id = :id AND ip = :ip AND access > '$lifeTime'";
 	    	$pdo = $this->pdo->prepare($sql);	    
 	    	$pdo->bindValue(':id', $id, PDO::PARAM_STR);
 	    	$pdo->bindValue(':ip', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
@@ -152,7 +152,7 @@ Final class SessionClass
 	    {
 	    	$sql = "SELECT data
 	    	            FROM   ex_sessions
-	    	            WHERE  id = :$id AND browser = :browser";
+	    	            WHERE  id = :$id AND browser = :browser AND access > '$lifeTime'";
 	    	$pdo = $this->pdo->prepare($sql);	    
 	    	$pdo->bindValue(':id', $id, PDO::PARAM_STR);
 	    	$pdo->bindValue(':browser', $_SERVER['HTTP_USER_AGENT'], PDO::PARAM_STR);
@@ -161,7 +161,7 @@ Final class SessionClass
 	    {
 	    	$sql = "SELECT data
 	    	            FROM   ex_sessions
-	    	            WHERE  id = :$id AND ip = :ip AND browser = :browser";
+	    	            WHERE  id = :$id AND ip = :ip AND browser = :browser AND access > '$lifeTime'";
 	    	$pdo = $this->pdo->prepare($sql);	    
 	    	$pdo->bindValue(':id', $id, PDO::PARAM_STR);
 	    	$pdo->bindValue(':ip', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
@@ -186,7 +186,6 @@ Final class SessionClass
 	{
 	    $access = time();    
     	$id = 'ex_session_'.$id;
-	    $access = $access;
 	    $data = $data;
 	    $ip = $_SERVER['REMOTE_ADDR'];
 	    $browser = $_SERVER['HTTP_USER_AGENT'];
@@ -215,8 +214,7 @@ Final class SessionClass
 	}
 
 	function _gc($max)
-	{
-	    
+	{	    
 	    $old = time() - $max;	    
 	    
 	    $sql = "DELETE
@@ -224,7 +222,7 @@ Final class SessionClass
 	            WHERE  access < :access";	    
 
 	    $pdo = $this->pdo->prepare($sql);
-	    $pdo->bindValue('access', $access, PDO::PARAM_STR);
+	    $pdo->bindValue('access', $old, PDO::PARAM_STR);
 	    $pdo->execute();
 	}
 

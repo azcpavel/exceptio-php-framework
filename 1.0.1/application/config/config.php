@@ -22,7 +22,8 @@ KEY `ex_access` (`access`)
 
 ********************************************************************************************/
 $config['session_use_db'] = FALSE; //Use database For session value = 1 for active, 0 for inactive
-$config['session_match_ip'] = FALSE;
-$config['session_match_browser'] = FALSE;
+$config['session_match_ip'] = FALSE; //will session need to match IP
+$config['session_match_browser'] = FALSE; //will session need to match browser
+$config['session_life_time'] = 60 * 60; //SESSION lifetime in second
 
 ?>

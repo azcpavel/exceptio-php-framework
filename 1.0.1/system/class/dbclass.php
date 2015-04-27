@@ -125,7 +125,7 @@ Final class DbClass
 			foreach ($value['args'] as $argsKey => $argsValue) {
 				if(is_array($argsValue))
 					foreach ($argsValue as $argsKeySub => $argsValueSub) {
-						echo (strlen($argsValueSub) > 0) ? 'In args "'.$argsKeySub." => ".$argsValueSub.'"<br>' : '';	
+						echo (@strlen($argsValueSub) > 0) ? 'In args "'.$argsKeySub." => ".$argsValueSub.'"<br>' : '';	
 					}
 				else
 					echo (strlen($argsValue) > 0) ? 'In args "'.$argsValue.'"<br>' : '';	

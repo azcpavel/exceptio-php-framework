@@ -49,6 +49,7 @@ define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
 define('SESSION_USE_DB', $config['session_use_db']);
 define('SESSION_MATCH_IP', $config['session_match_ip']);
 define('SESSION_MATCH_BROWSER', $config['session_match_browser']);
+define('SESSION_LIFE_TIME', $config['session_life_time']);
 
 
 define('DEFAULT_CONTROLLER', $config['default_controller']);
