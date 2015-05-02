@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 *	@author : Ahsan Zahid Chowdhury
 *	@owner : Exception Solutions
 *	@email : azc.pavel@gmail.com
@@ -107,7 +107,7 @@ Final class SessionClass
 		try{
 			
 			$this->pdo = @new pdo($dsn,$user,$pass);
-			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			//$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->pdo->beginTransaction();
 
 		} catch (PDOException $e) {

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 *	@author : Ahsan Zahid Chowdhury
 *	@owner : Exception Solutions
 *	@email : azc.pavel@gmail.com
@@ -42,6 +42,11 @@ define('BASEDIR', $config['base_dir']);
 define('INDEXPHP', $config['hide_index']);
 
 define('NOCACHE', $config['no_cache']);
+
+define('ENCRYPT_SALT', $config['encryption_key']);
+
+define('COOKIE_ENCRYPT', $config['cookie_encryption']);
+define('COOKIE_LIFETIME', $config['cookie_lifetime']);
 
 define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
 

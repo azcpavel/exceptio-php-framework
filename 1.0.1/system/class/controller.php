@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 *	@author : Ahsan Zahid Chowdhury
 *	@owner : Exception Solutions
 *	@email : azc.pavel@gmail.com
@@ -30,6 +30,7 @@ abstract class Ex_Controller{
 		$this->view 	= new viewClass;
 		$this->file 	= new fileClass;
 		$this->session 	= new sessionClass;
+		$this->cookie 	= new cookieClass;
 		$this->input 	= new inputClass;
 		$this->server 	= new serverClass;
 		$this->globals 	= new globalsClass;

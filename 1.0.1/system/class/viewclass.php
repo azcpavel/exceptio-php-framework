@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 *	@author : Ahsan Zahid Chowdhury
 *	@owner : Exception Solutions
 *	@email : azc.pavel@gmail.com
@@ -19,6 +19,7 @@ Final class ViewClass
 	function __construct()
 	{
 		$this->session 	= new sessionClass;
+		$this->cookie 	= new cookieClass;
 		$this->input 	= new inputClass;
 		$this->server 	= new serverClass;
 		$this->globals 	= new globalsClass;

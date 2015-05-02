@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 *	@author : Ahsan Zahid Chowdhury
 *	@owner : Exception Solutions
 *	@email : azc.pavel@gmail.com
@@ -179,6 +179,31 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 	}
 
 	return preg_replace($regx, $replacement, $input);
+}
+
+
+function ex_encrypt($text, $salt = ENCRYPT_SALT) 
+{ 
+    $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+    $iv = mcrypt_create_iv($iv_size, MCRYPT_DEV_URANDOM);
+
+    $returnText = $iv.mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $salt,
+                                 trim($text), MCRYPT_MODE_CBC, $iv);
+
+    return base64_encode($returnText);
+} 
+
+function ex_decrypt($text, $salt = ENCRYPT_SALT) 
+{    
+    $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+    $iv = mcrypt_create_iv($iv_size, MCRYPT_DEV_URANDOM);
+
+    $returnText = base64_decode($text);
+    $iv_dec = substr($returnText, 0, $iv_size);
+    $returnText = substr($returnText, $iv_size);
+
+    return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt,
+                                    $returnText, MCRYPT_MODE_CBC, $iv_dec));
 }
 
 

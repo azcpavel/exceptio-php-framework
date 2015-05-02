@@ -16,13 +16,14 @@ require_once(SYSTEM.'/class/viewclass.php');
 require_once(SYSTEM.'/class/loaddbclass.php');
 require_once(SYSTEM.'/class/dbclass.php');
 require_once(SYSTEM.'/class/sessionclass.php');
+require_once(SYSTEM.'/class/cookieclass.php');
 require_once(SYSTEM.'/class/inputclass.php');
 require_once(SYSTEM.'/class/validateclass.php');
 require_once(SYSTEM.'/class/controller.php');
 require_once(SYSTEM.'/class/model.php');
 require_once(SYSTEM.'/default.php');
 
-/*
+/**
 *	@author : Ahsan Zahid Chowdhury
 *	@owner : Exception Solutions
 *	@email : azc.pavel@gmail.com
