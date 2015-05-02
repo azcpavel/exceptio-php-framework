@@ -6,10 +6,12 @@ $config['no_cache'] = 1; //Add no cache user can't go back after logout value = 
 
 $config['hide_index'] = 1; //If you need to hide index.php from url value = 1 for active, 0 for inactive
 
-$config['encryption_key'] = ''; //encryption key
+$config['encryption_key'] = 'FFD'; //encryption key
 
 $config['cookie_encryption'] = false; //will encryption apply for cookie value true or false
 $config['cookie_lifetime'] =  time() + 31536000; //COOKIE lifetime in second
+$config['cookie_secure'] = false; //will apply for cookie, value true or false
+$config['cookie_httponly'] = true; //will apply for cookie, value true or false
 
 /*******************************************************************************************
 

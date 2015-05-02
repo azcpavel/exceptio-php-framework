@@ -47,6 +47,8 @@ define('ENCRYPT_SALT', $config['encryption_key']);
 
 define('COOKIE_ENCRYPT', $config['cookie_encryption']);
 define('COOKIE_LIFETIME', $config['cookie_lifetime']);
+define('COOKIE_SECURE', $config['cookie_secure']);
+define('COOKIE_HTTPONLY', $config['cookie_httponly']);
 
 define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
 
