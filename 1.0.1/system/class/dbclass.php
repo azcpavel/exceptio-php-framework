@@ -264,23 +264,24 @@ Final class DbClass
 
 	function where($where = 1, $isSec = false)
 	{
-		$where_full = '';
-		$db_prefix 	= '';
+		$where_full = '';		
+		$db_table	= '';
 		if(is_array($where)){
-			if(isset($where['db_prefix']))
-			{
-				$db_prefix = $this->db_prefix;
+			if(isset($where['db_table']))
+			{							
+				$db_table 	= $this->db_prefix.$where['db_table'].'.';
+				unset($where['db_table']);
 			}
 			foreach ($where as $key => $value) {
 
 				if( preg_match('/<|>|\=|!| LIKE| BETWEEN| IN| NOT IN/', $key) && (preg_match('/ AND$| OR$|\'|^\(|\)$/', $value)) )					
-					$where_full .= " {$db_prefix}$key $value";
+					$where_full .= " {$db_table}$key $value";
 				elseif(preg_match('/<|>|\=|!/', $key))
-					$where_full .= " {$db_prefix}$key '$value' AND";
+					$where_full .= " {$db_table}$key '$value' AND";
 				elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
-					$where_full .= " {$db_prefix}$key = $value";
+					$where_full .= " {$db_table}$key = $value";
 				else
-					$where_full .= " {$db_prefix}$key = '$value' AND";
+					$where_full .= " {$db_table}$key = '$value' AND";
 			}
 			
 			if(substr($where_full,-4) === ' AND'){
