@@ -54,9 +54,9 @@ Final class CookieClass
 
 	function set_userdata($name, $value, $encrypt = false, $options = array())	
 	{
-		$options = array_replace(array('path' => BASEDIR, 'domain' => $_SERVER['HTTP_HOST'], 'secure' => COOKIE_SECURE, 'httponly' => COOKIE_HTTPONLY), 
+		$options = array_replace(array('lifetime' => COOKIE_LIFETIME,'path' => BASEDIR, 'domain' => $_SERVER['HTTP_HOST'], 'secure' => COOKIE_SECURE, 'httponly' => COOKIE_HTTPONLY), 
 								$options);		
-		setcookie($name,((COOKIE_ENCRYPT || $encrypt) ? ex_encrypt($value) : $value), COOKIE_LIFETIME, $options['path'], $options['domain'], $options['secure'], $options['httponly']);
+		setcookie($name,((COOKIE_ENCRYPT || $encrypt) ? ex_encrypt($value) : $value), $options['lifetime'], $options['path'], $options['domain'], $options['secure'], $options['httponly']);
 	}
 
 	function userdata($name, $decrypt = false)
