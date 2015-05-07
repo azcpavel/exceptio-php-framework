@@ -40,20 +40,32 @@ function redirect($link){
 		header("Location: ".BASEPATH.$link);
 }
 
-function form_mpt($address)
+function form_mpt($address, $attr = array())
 {
+	$attr = array_replace(array('method' => 'POST'), $attr);
+
+	foreach ($attr as $key => $value) {
+    	$attr[$key] = $key.'="'.$value.'"';
+    }    
+
 	if(INDEXPHP === 0)
-		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST" enctype="multipart/form-data">';
+		echo '<form action="'.BASEPATH.'index.php/'.$address.'" '.implode(' ', $attr).' enctype="multipart/form-data">';
 	else
-		echo '<form action="'.BASEPATH.$address.'" method="POST" enctype="multipart/form-data">';
+		echo '<form action="'.BASEPATH.$address.'" '.implode(' ', $attr).' enctype="multipart/form-data">';
 }
 
-function form_spt($address)
+function form_spt($address, $attr = array())
 {
+	$attr = array_replace(array('method' => 'POST'), $attr);
+
+	foreach ($attr as $key => $value) {
+    	$attr[$key] = $key.'="'.$value.'"';
+    }
+
 	if(INDEXPHP === 0)
-		echo '<form action="'.BASEPATH.'index.php/'.$address.'" method="POST">';
+		echo '<form action="'.BASEPATH.'index.php/'.$address.'" '.implode(' ', $attr).' >';
 	else
-		echo '<form action="'.BASEPATH.$address.'" method="POST">';
+		echo '<form action="'.BASEPATH.$address.'" '.implode(' ', $attr).' >';
 }
 
 function uri_segment($no)

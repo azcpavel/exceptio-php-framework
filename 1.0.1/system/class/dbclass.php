@@ -309,15 +309,21 @@ Final class DbClass
 		return $this;
 	}
 
-	function order_by($order_by = 0, $order = 0)
+	function order_by($order_by = NULL, $order = NULL)
 	{
 		
-			if($this->order_by == '')
+		if($this->order_by == ''){
+			if($order_by && $order == NULL)
 				$this->order_by = "ORDER BY $order_by";
 			else
-				$this->order_by .= " ,$order_by";
-		
-			$this->order_by .= " $order";
+				$this->order_by = "ORDER BY $order_by $order";
+		}
+		else{
+			if($order_by && $order == NULL)
+				$this->order_by = ", $order_by";
+			else
+				$this->order_by = ", $order_by $order";
+		}			
 
 		return $this;
 	}
