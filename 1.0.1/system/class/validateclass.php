@@ -212,11 +212,11 @@ Final class ValidateClass
 
 	function required($input)
 	{
-
 		if(isset($_REQUEST[$input]) || isset($_FILES[$input]))
 		{			
-			if(!is_array($_REQUEST[$input]) || isset($_FILES[$input]['name'][0])){
-				if($_REQUEST[$input] != '' || $_FILES[$input]['name'][0] != '')
+			if(isset($_REQUEST[$input]))
+			{
+				if($_REQUEST[$input] != '')
 					$this->required = TRUE;
 				else 
 				{
@@ -224,13 +224,20 @@ Final class ValidateClass
 					$this->error .= $this->field_name." required<br>";
 				}
 			}
-			else
-				$this->validateArray($_REQUEST[$input],'required');
+			else{
+				if($_FILES[$input]['name'][0] != '')
+					$this->required = TRUE;
+				else 
+				{
+					$this->required == FALSE;
+					$this->error .= $this->field_name." required<br>";
+				}
+			}			
 		}
 		else{
 				$this->required = FALSE;
 				$this->error .= $this->field_name." required<br>";
-			}
+		}
 		 
 	}	
 
