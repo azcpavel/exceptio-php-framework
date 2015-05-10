@@ -15,6 +15,7 @@ Final class ValidateClass
 	private $match = 1;
 	private $email = 1;
 	private $int = 1;
+	private $num = 1;
 	private $error = '';
 	private $input = 1;
 	private $field_name = 1;
@@ -87,6 +88,10 @@ Final class ValidateClass
 				$this->int($input);
 			}
 
+			if ($value === 'num') {
+				$this->num($input);
+			}
+
 			if ($value === 'url') {
 				$this->url($input);
 			}
@@ -149,6 +154,17 @@ Final class ValidateClass
 						else{
 								$this->int = FALSE;
 								$this->error .= $this->field_name." must be Integer<br>";	
+							}
+					}
+
+					if($type == 'num'){
+						if(is_numeric($value) !== FALSE)
+							{
+								$this->num = TRUE;	
+							}
+						else{
+								$this->num = FALSE;
+								$this->error .= $this->field_name." must be Number<br>";	
 							}
 					}
 
@@ -385,6 +401,25 @@ Final class ValidateClass
 				$this->fixed = FALSE;
 				$this->error .= $this->field_name." length  must be equal {$this->fixedVal} <br>";	
 			}
+	}
+
+	function num($input)
+	{		
+		if (isset($_REQUEST[$input])){
+			if(!is_array($_REQUEST[$input]))
+			{
+				if(is_numeric($_REQUEST[$input])){
+					$_REQUEST[$input] = trim($_REQUEST[$input]);
+					$this->num = TRUE;
+				}
+				else{
+					$this->num = FALSE;
+					$this->error .= $this->field_name." must be Number<br>";
+				}
+			}
+			else
+				$_REQUEST[$input] = $this->validateArray($_REQUEST[$input],'num');
+		}
 	}
 
 	function trim($input)
