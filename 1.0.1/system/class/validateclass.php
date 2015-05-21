@@ -179,7 +179,7 @@ Final class ValidateClass
 
 					if($type == 'tag_clr')
 					{
-						$input[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+						$input[$key] = replace_regx(filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS));
 						$this->tag_clr = TRUE;
 					}
 
@@ -441,7 +441,7 @@ Final class ValidateClass
 		if (isset($_REQUEST[$input])){
 			if(!is_array($_REQUEST[$input]))
 			{
-				$_REQUEST[$input] = filter_var($_REQUEST[$input], FILTER_SANITIZE_SPECIAL_CHARS);
+				$_REQUEST[$input] = replace_regx(filter_var($_REQUEST[$input], FILTER_SANITIZE_SPECIAL_CHARS));
 				$this->tag_clr = TRUE;	
 			}
 			else

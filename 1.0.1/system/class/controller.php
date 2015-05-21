@@ -20,7 +20,8 @@ abstract class Ex_Controller{
 	protected $input;
 	protected $server;
 	protected $globals;
-	protected $validate;	
+	protected $validate;
+	protected $config;	
 
 	protected function __construct()
 	{
@@ -35,6 +36,7 @@ abstract class Ex_Controller{
 		$this->server 	= new serverClass;
 		$this->globals 	= new globalsClass;
 		$this->validate = new validateClass;
+		$this->config 	= new configClass;
 
 		if(NOCACHE==1)
 			include(SYSTEM.'/no_cache.php');

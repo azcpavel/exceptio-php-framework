@@ -114,6 +114,9 @@ Final class DbClass
 
 	private function printError($error)
 	{
+		if(SHOW_DB_ERROR == false)
+			die('Database Error');
+		
 		echo "Query Error:<br><br>".$error->getMessage()."<br><br>";
 		echo "Query Trace:<br><br>";
 		foreach ($error->getTrace() as $key => $value) {

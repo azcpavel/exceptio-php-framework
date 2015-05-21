@@ -52,24 +52,7 @@ Final class ViewClass
 
 
 	function page($load_view_page = 'main',array $data_for_view = array())
-	{
-		
-		require_once (APPLICATION.'/config/autoload.php');
-
-		if(isset($config_helper))
-		if(count($config_helper) > 0){
-			
-			foreach ($config_helper as $key => $value) {
-				if(file_exists(APPLICATION.'/helpers/'.$value.'_helper.php'))
-					require (APPLICATION.'/helpers/'.$value.'_helper.php');
-				else
-					exit("Helper not found in ".APPLICATION.'/helpers/'.$value.'_helper.php');
-			}
-
-			unset($key);
-			unset($value);
-		}
-
+	{		
 		extract($data_for_view);		
 
 		if(file_exists(APPLICATION.'/views/'.$load_view_page.'.php'))

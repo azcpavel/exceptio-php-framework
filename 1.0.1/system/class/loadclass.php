@@ -83,7 +83,7 @@ Final class LoadClass
 						}
 						else
 						{
-							$Controller->$base_name = new $base_name;
+							$Controller->$base_name = new $base_name($config);
 
 							if(count($config) > 0)
 							foreach ($config as $key => $value) {

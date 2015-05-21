@@ -157,17 +157,25 @@ function highlight_text($haystack, $needle, $tag_open = '<strong>', $tag_close =
 function replace_regx($input, $otherRegx = '', $allowTags = '')
 {
 	$regx = array(
-		'php' 		=> '/<\?/', 		//PHP Short Tag			
-		'script' 	=> '/<script/',		//Script Tag
-		'hdoc'		=> '/"/',			//Heredoc
-		'ndoc'		=> '/\'/'			//Nowdoc		
+		'php' 		=> '/<\?/', 			//PHP Short Tag			
+		'script' 	=> '/<script/',			//Script Tag
+		'hdoc'		=> '/"/',				//Heredoc
+		'ndoc'		=> '/\'/',				//Nowdoc
+		'e'			=> '/e/',				//select,delete,insert,update query injection
+		'i'			=> '/i/',				//union query injection
+		'E'			=> '/E/',				//SELECT,DELETE,INSERT,UPDATE query injection
+		'I'			=> '/I/'				//union query injection
 		);
 
 	$replacement = array(
-		'php' 		=> '&#60;?',		//PHP Short Tag			
-		'script' 	=> '&#60;script',	//Script Tag
-		'hdoc'		=> '&#34;',			//Heredoc
-		'ndoc'		=> '&#39;'			//Nowdoc		
+		'php' 		=> '&#60;?',			//PHP Short Tag			
+		'script' 	=> '&#60;script',		//Script Tag
+		'hdoc'		=> '&#34;',				//Heredoc
+		'ndoc'		=> '&#39;',				//Nowdoc
+		'e'			=> '&#101;',			//select,delete,insert,update query injection
+		'i'			=> '&#105;',			//union query injection
+		'E'			=> '&#69;',				//SELECT,DELETE,INSERT,UPDATE query injection
+		'I'			=> '&#73;'				//union query injection
 		);
 
 	if(is_array($allowTags))

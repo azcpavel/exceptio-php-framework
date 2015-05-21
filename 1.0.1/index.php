@@ -19,6 +19,7 @@ require_once(SYSTEM.'/class/sessionclass.php');
 require_once(SYSTEM.'/class/cookieclass.php');
 require_once(SYSTEM.'/class/inputclass.php');
 require_once(SYSTEM.'/class/validateclass.php');
+require_once(SYSTEM.'/class/configclass.php');
 require_once(SYSTEM.'/class/controller.php');
 require_once(SYSTEM.'/class/model.php');
 require_once(SYSTEM.'/default.php');
