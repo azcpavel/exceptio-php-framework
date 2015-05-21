@@ -32,12 +32,20 @@ function site_url($address = '')
 		return BASEPATH.$address;
 }
 
-function redirect($link){
+function redirect($link, $option = 1){
 	
-	if(INDEXPHP === 0)
-		header("Location: ".BASEPATH.'index.php/'.$link);
-	else
-		header("Location: ".BASEPATH.$link);
+	if(INDEXPHP === 0){
+		if($option)
+			header("Location: ".BASEPATH.'index.php/'.$link);
+		else
+			header("Location: ".$link);
+	}
+	else{
+		if($option)
+			header("Location: ".BASEPATH.$link);
+		else
+			header("Location: ".$link);
+	}
 }
 
 function form_mpt($address, $attr = array())
