@@ -106,8 +106,8 @@ Final class SessionClass
 
 		try{
 			
-			$this->pdo = @new pdo($dsn,$user,$pass);
-			//$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->pdo = new pdo($dsn,$user,$pass);
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->pdo->beginTransaction();
 
 		} catch (PDOException $e) {
@@ -187,17 +187,19 @@ Final class SessionClass
 	    $access = time();    
     	$id = 'ex_session_'.$id;
 	    $data = $data;
+	    $host = $_SERVER['HTTP_HOST'];
 	    $ip = $_SERVER['REMOTE_ADDR'];
 	    $browser = $_SERVER['HTTP_USER_AGENT'];
 
-	    $query = 'REPLACE INTO ex_sessions(id, ip, browser, access, data) VALUES(:id, :ip, :browser, :access, :data)';
+	    $query = 'REPLACE INTO ex_sessions(id, host, ip, browser, access, data) VALUES(:id, :host, :ip, :browser, :access, :data)';
 	    $pdo = $this->pdo->prepare($query);
 	    $pdo->bindValue(':id', $id, PDO::PARAM_STR);
+	    $pdo->bindValue(':host', $host, PDO::PARAM_STR);
 	    $pdo->bindValue(':ip', $ip, PDO::PARAM_STR);
 	    $pdo->bindValue(':browser', $browser, PDO::PARAM_STR);
 	    $pdo->bindValue(':access', $access, PDO::PARAM_STR);
 	    $pdo->bindValue(':data', $data, PDO::PARAM_STR);	    
-	    $pdo->execute();	    	       
+	    $pdo->execute();	    
 	}
 
 	function _destroy($id)

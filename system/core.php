@@ -165,25 +165,19 @@ function highlight_text($haystack, $needle, $tag_open = '<strong>', $tag_close =
 function replace_regx($input, $otherRegx = '', $allowTags = '')
 {
 	$regx = array(
-		'php' 		=> '/<\?/', 			//PHP Short Tag			
-		'script' 	=> '/<script/',			//Script Tag
+		'amp'		=> '/ & /',				//Amp
 		'hdoc'		=> '/"/',				//Heredoc
-		'ndoc'		=> '/\'/',				//Nowdoc
-		'e'			=> '/e/',				//select,delete,insert,update query injection
-		'i'			=> '/i/',				//union query injection
-		'E'			=> '/E/',				//SELECT,DELETE,INSERT,UPDATE query injection
-		'I'			=> '/I/'				//union query injection
+		'ndoc'		=> '/\'/',				//Nowdoc		
+		'gt'		=> '/>/',				//Greater than
+		'lt'		=> '/</',				//Less than
 		);
 
 	$replacement = array(
-		'php' 		=> '&#60;?',			//PHP Short Tag			
-		'script' 	=> '&#60;script',		//Script Tag
+		'amp'		=> ' &#38; ',			//Amp
 		'hdoc'		=> '&#34;',				//Heredoc
-		'ndoc'		=> '&#39;',				//Nowdoc
-		'e'			=> '&#101;',			//select,delete,insert,update query injection
-		'i'			=> '&#105;',			//union query injection
-		'E'			=> '&#69;',				//SELECT,DELETE,INSERT,UPDATE query injection
-		'I'			=> '&#73;'				//union query injection
+		'ndoc'		=> '&#39;',				//Nowdoc		
+		'gt'		=> '&#62;',				//Greater than
+		'lt'		=> '&#60;',				//Less than
 		);
 
 	if(is_array($allowTags))
@@ -205,6 +199,71 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 			$replacement[] = $otherRegxSub[1];
 		}		
 	}
+
+	//Clean SELECT INSERT UPDATE DELETE UNION
+	$input = preg_replace_callback(array('/\b(select)\b/i','/\b(insert)\b/i','/\b(update)\b/i','/\b(delete)\b/i','/\b(union)\b/i'),
+			function($matches){
+
+				$regxInd = array(
+					'a' => '/a/',
+					'c' => '/c/',
+					'd' => '/d/',
+					'e' => '/e/',
+					'i' => '/i/',
+					'l' => '/l/',
+					'n' => '/n/',
+					'o' => '/o/',
+					'p' => '/p/',
+					'r' => '/r/',
+					's' => '/s/',
+					't' => '/t/',
+					'u' => '/u/',
+					'A'	=> '/A/',
+					'C' => '/C/',
+					'D' => '/D/',
+					'E' => '/E/',
+					'I' => '/I/',
+					'L' => '/L/',
+					'N' => '/N/',
+					'O' => '/O/',
+					'P' => '/P/',
+					'R' => '/R/',
+					'S' => '/S/',
+					'T' => '/T/',
+					'U' => '/U/',
+					);
+
+				$replacementVal = array(
+					'a' => '&#97;',
+					'c' => '&#99;',
+					'd' => '&#100;',
+					'e' => '&#101;',
+					'i' => '&#105;',
+					'l' => '&#108;',
+					'n' => '&#110;',
+					'o' => '&#111;',
+					'p' => '&#112;',
+					'r' => '&#114;',
+					's' => '&#115;',
+					't' => '&#116;',
+					'u' => '&#117;',
+					'A'	=> '&#65;',
+					'C' => '&#67;',
+					'D' => '&#68;',
+					'E' => '&#69;',
+					'I' => '&#73;',
+					'L' => '&#76;',
+					'N' => '&#78;',
+					'O' => '&#79;',
+					'P' => '&#80;',
+					'R' => '&#82;',
+					'S' => '&#83;',
+					'T' => '&#84;',
+					'U' => '&#85;',
+					);
+				return preg_replace($regxInd, $replacementVal, $matches[0]);				
+			}
+		, $input);
 
 	return preg_replace($regx, $replacement, $input);
 }

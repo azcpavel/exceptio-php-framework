@@ -19,10 +19,10 @@ Final class DbClass
 	private $group_by 	= '';
 	private $limit 		= '';
 	private $query;
-	private $query_str;
-	private $error_query;
+	private $query_str;	
 	private $affected_rows;
 	private $db_driver;
+	private $select_table_prefix = '';
 	
 	// Public Property
 	public $db_host;
@@ -35,6 +35,7 @@ Final class DbClass
 	public $db_server;
 	public $db_uid;
 	public $db_options;
+	public $errors;
 
 	
 	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
@@ -114,8 +115,10 @@ Final class DbClass
 
 	private function printError($error)
 	{
-		if(SHOW_DB_ERROR == false)
-			die('Database Error');
+		if(SHOW_DB_ERROR == false){
+			$this->errors = array('message' => $error->getMessage(), 'trace' => $error->getTrace());
+			return false;
+		}
 		
 		echo "Query Error:<br><br>".$error->getMessage()."<br><br>";
 		echo "Query Trace:<br><br>";
@@ -172,7 +175,7 @@ Final class DbClass
 			$this->printError($error);
 		}		
 		
-		$this->order_by = $this->join = $this->limit = '';
+		$this->order_by = $this->join = $this->limit = $select_table_prefix = '';
 		$this->where = 1;
 		$this->select = NULL;
 		
@@ -211,9 +214,32 @@ Final class DbClass
 
 	function select($select = NULL)
 	{
-		if($this->select != NULL)
-			$this->select .= ',';
-		$this->select .= $select;
+		if(is_array($select)){
+			
+			if(isset($select['db_table']))
+			{							
+				$this->select_table_prefix = $this->db_prefix.$select['db_table'].'.';
+				unset($select['db_table']);
+			}
+			foreach ($select as $key => $value) {
+				if($this->select != NULL)
+					$this->select .= ',';				
+				
+				if(preg_match('/\(/', $value)){
+										
+					$this->select .= preg_replace_callback('/\(\w+\)/', function($match){																			
+										return preg_replace('/\(/', '('.$this->select_table_prefix, $match[0]);
+									}, $value);
+				}
+				else
+					$this->select .= $this->select_table_prefix.$value;
+			}
+		}else{
+
+			if($this->select != NULL)
+				$this->select .= ',';
+			$this->select .= $select;
+		}
 
 		return $this;
 	}
@@ -277,8 +303,10 @@ Final class DbClass
 			}
 			foreach ($where as $key => $value) {
 
-				if( preg_match('/<|>|\=|!| LIKE| BETWEEN| IN| NOT IN/', $key) && (preg_match('/ AND$| OR$|\'|^\(|\)$/', $value)) )					
+				if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) && (preg_match('/ AND$| OR$|\'|^$/', $value)) )
 					$where_full .= " {$db_table}$key $value";
+				elseif(preg_match('/IN| NOT IN/', $key))
+					$where_full .= " {$db_table}$key ($value)";
 				elseif(preg_match('/<|>|\=|!/', $key))
 					$where_full .= " {$db_table}$key '$value' AND";
 				elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
@@ -286,10 +314,11 @@ Final class DbClass
 				else
 					$where_full .= " {$db_table}$key = '$value' AND";
 			}
+
 			
-			if(substr($where_full,-4) === ' AND'){
+			if(substr($where_full,-4) === ' AND'){				
 				if($this->where != 1)
-					$this->where .= substr($where_full, 0, -4);
+					$this->where .= ' AND'.substr($where_full, 0, -4);
 				else
 					$this->where = substr($where_full, 0, -4);
 			}
@@ -299,6 +328,8 @@ Final class DbClass
 				else
 					$this->where = $where_full;
 			}
+			
+			
 		}
 		elseif($this->where != 1 AND $isSec != false)
 			$this->where .= " AND $where = '$isSec'";		

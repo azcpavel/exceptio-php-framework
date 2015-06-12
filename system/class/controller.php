@@ -13,15 +13,16 @@ abstract class Ex_Controller{
 
 	private static $all_instance;
 
-	protected $load;
+	public $load;	
+	public $file;
+	public $session;
+	public $input;
+	public $server;
+	public $globals;
+	public $validate;
+	public $config;	
+
 	protected $view;
-	protected $file;
-	protected $session;
-	protected $input;
-	protected $server;
-	protected $globals;
-	protected $validate;
-	protected $config;	
 
 	protected function __construct()
 	{
