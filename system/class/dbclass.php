@@ -227,9 +227,7 @@ Final class DbClass
 				
 				if(preg_match('/\(/', $value)){
 										
-					$this->select .= preg_replace_callback('/\(\w+\)/', function($match){																			
-										return preg_replace('/\(/', '('.$this->select_table_prefix, $match[0]);
-									}, $value);
+					$this->select .= preg_replace_callback('/\(\w+\)/', array($this,'selectReplaceCallBack'), $value);
 				}
 				else
 					$this->select .= $this->select_table_prefix.$value;
@@ -242,6 +240,11 @@ Final class DbClass
 		}
 
 		return $this;
+	}
+
+	private function selectReplaceCallBack($match){
+
+		return preg_replace('/\(/', '('.$this->select_table_prefix, $match[0]);
 	}
 
 	function select_max($MAX, $as = 0)
