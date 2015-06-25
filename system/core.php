@@ -19,9 +19,9 @@ function __autoload($class)
 }
 
 
-function base_url()
+function base_url($address = '')
 {	
-	return BASEPATH;
+	return BASEPATH.$address;
 }
 
 function site_url($address = '')

@@ -357,9 +357,9 @@ Final class DbClass
 		}
 		else{
 			if($order_by && $order == NULL)
-				$this->order_by = ", $order_by";
+				$this->order_by .= ", $order_by";
 			else
-				$this->order_by = ", $order_by $order";
+				$this->order_by .= ", $order_by $order";
 		}			
 
 		return $this;
