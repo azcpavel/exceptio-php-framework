@@ -313,6 +313,28 @@ function fix_ver($ver){
     die();
 }
 
+function getDateRange($argDateFrom, $argDateTo, $format = 'Y-m-d')
+{
+	// date args must be in YYYY-mm-dd format
+	// takes two dates and creates an inclusive array of the dates between the from and to dates.
+
+	$dateArray=array();
+
+	$dateFrom=mktime(1, 0, 0, substr($argDateFrom,5,2), substr($argDateFrom,8,2), substr($argDateFrom,0,4));
+	$dateTo=mktime(1, 0, 0, substr($argDateTo,5,2), substr($argDateTo,8,2), substr($argDateTo,0,4));
+
+	if ($dateTo>=$dateFrom)
+	{
+		array_push($dateArray,date($format,$dateFrom)); // first entry
+		while ($dateFrom<$dateTo)
+		{
+			$dateFrom+=86400; // add 24 hours
+			array_push($dateArray,date($format,$dateFrom));
+		}
+	}
+	return $dateArray;
+}
+
 
 function &get_controller_instance()
 {
