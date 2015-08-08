@@ -39,6 +39,8 @@ define('BASEHOST', $config['base_host']);
 
 define('BASEDIR', $config['base_dir']);
 
+define('TIMEZONE', $config['time_zone']);
+
 define('INDEXPHP', $config['hide_index']);
 
 define('NOCACHE', $config['no_cache']);

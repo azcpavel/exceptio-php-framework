@@ -13,6 +13,7 @@ class Main extends Ex_Controller
 
 	function index()
 	{	
+		$this->view->pagination(array());
 		$this->view->page('main');				
 	}
 }

@@ -143,6 +143,10 @@ Final class pagination
 		else
 			return get_object_vars($this);
 	}
+
+	function __destruct(){
+		
+	}
 }
 
 

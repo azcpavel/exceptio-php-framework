@@ -41,6 +41,9 @@ abstract class Ex_Controller{
 
 		if(NOCACHE==1)
 			include(SYSTEM.'/no_cache.php');
+
+		if(TIMEZONE != NULL)
+			date_default_timezone_set(TIMEZONE);
 	}
 	
 

