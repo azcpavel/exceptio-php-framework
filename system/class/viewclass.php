@@ -58,7 +58,7 @@ Final class ViewClass
 		if(file_exists(APPLICATION.'/views/'.$load_view_page.'.php'))
 			require (APPLICATION.'/views/'.$load_view_page.'.php');
 		else
-			exit("View not found in ".APPLICATION.'/views/'.$load_view_page.'.php');
+			exit("View not found in your application/views/".$load_view_page.'.php');
 		
 	}
 
@@ -75,10 +75,10 @@ Final class ViewClass
 						$this->$base_name = new $base_name;
 					}
 				else
-					exit("Class $base_name not found in ".APPLICATION.'/libraries/'.$load_libraries_name.'.php');
+					exit("Class $base_name not found in your application/libraries/".$load_libraries_name.'.php');
 			}
 		else
-			exit("Libraries not found in ".APPLICATION.'/libraries/'.$load_libraries_name.'.php');
+			exit("Libraries not found in your application/libraries/".$load_libraries_name.'.php');
 	}
 	
 	function pagination(array $config = array(''))

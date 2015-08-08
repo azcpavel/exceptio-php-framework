@@ -60,10 +60,10 @@ Final class LoadClass
 				if(class_exists($base_name))
 					$Controller->$base_name = new $base_name;
 				else
-					exit("Class $base_name not found in ".APPLICATION.'/models/'.$load_model_name.'.php');
+					exit("Class $base_name not found in your application/models/".$load_model_name.'.php');
 			}
 		else
-			exit("Model not found in ".APPLICATION.'/models/'.$load_model_name.'.php');
+			exit("Model not found in your application/models/".$load_model_name.'.php');
 	}
 
 	function library($load_libraries_name = '',$config = '')
@@ -111,7 +111,7 @@ Final class LoadClass
 		if(file_exists(APPLICATION.'/helpers/'.$load_helper_page.'_helper.php'))
 			require_once (APPLICATION.'/helpers/'.$load_helper_page.'_helper.php');
 		else
-			exit("Helper not found in ".APPLICATION.'/helpers/'.$load_helper_page.'_helper.php');
+			exit("Helper not found in your application/helpers/".$load_helper_page.'_helper.php');
 		
 	}
 
