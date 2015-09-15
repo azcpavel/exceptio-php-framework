@@ -20,6 +20,12 @@ class emoticons
 	function __construct($config)
 	{		
 
+		if(is_array($config) && count($config) > 0){			
+
+			if(isset($config['emoticonsHeight']))
+				$this->emoticonsHeight = $config['emoticonsHeight'];			
+		}
+
 		$this->emoticonsCode = array(		
 		"brains" => '/:brn: /',
 		"angry" => '/(>:-\( )|(>:\( )/',		
@@ -191,9 +197,6 @@ class emoticons
 
 		
 		if(is_array($config) && count($config) > 0){			
-
-			if(isset($config['emoticonsHeight']))
-				$this->emoticonsHeight = $config['emoticonsHeight'];
 
 			if(isset($config['emoticonsCode']))
 				$this->emoticonsCode = array_merge($this->emoticonsCode,$config['emoticonsCode']);
