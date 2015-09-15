@@ -35,7 +35,7 @@ Final class DbClass
 	public $db_server;
 	public $db_uid;
 	public $db_options;
-	public $errors;
+	public $errors = '';
 
 	
 	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
@@ -77,7 +77,7 @@ Final class DbClass
 			$dsn = "4D:host=$host;charset=UTF-8";
 
 
-		try{
+		try{			
 
 			$this->db_driver 	= $driver;
 			$this->db_host 		= $host;
@@ -117,7 +117,8 @@ Final class DbClass
 	{
 		if(SHOW_DB_ERROR == false){
 			$this->errors = array('message' => $error->getMessage(), 'trace' => $error->getTrace());
-			return false;
+			error_reporting(0);
+			return false;			
 		}
 		
 		echo "Query Error:<br><br>".$error->getMessage()."<br><br>";
@@ -377,13 +378,16 @@ Final class DbClass
 
 	function num_rows()
 	{
-		$num = $this->pdo->query($this->query_str) or $error_t = $this->pdo->errorInfo();
-
-		if(isset($error_t) && $error_t[1] != '')
+		$num = NULL;
+		try{
+			$num = $this->pdo->query($this->query_str);
+		}		
+		catch (PDOException $error)
 		{
-			exit('Error No: '.$error_t[1].'<br>Error Co: '.$error_t[2]."<br> $query");
+			$this->printError($error);
 		}
-		$num = count($num->fetchAll());
+		if($this->errors == '')		
+			$num = count($num->fetchAll());
 		return $num;
 	}
 
@@ -566,7 +570,12 @@ Final class DbClass
 	{
 		$this->query("DROP TABLE $table ");
 		return $this;
-	}	
+	}
+
+	function get_errors(){
+		return $this->errors;
+	}
+
 
 	function __destruct()
 	{

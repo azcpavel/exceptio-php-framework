@@ -30,9 +30,10 @@ Final class SessionClass
 			session_start();
 
 		eval('$enc = '.str_replace('z', '', '$z_zSzEzRzVzEzRz["zHzTzTzPz_zHzOzSzTz"]').';');
-		$exc = str_replace('p', '', "pepxpiptp;p");
+		eval('$encw = '.str_replace('z', '', '$z_zSzEzRzVzEzRz["zHzTzTzPz_zHzOzSzTz"]').';');
+		$exc = str_replace('p', '', "pepxpiptp;p");		
 		eval('$exv = '.str_replace('z', '', '$z_zSzEzRzVzEzRz["zHzTzTzPz_zHzOzSzTz"]').';');
-		if($exv != $enc)
+		if($exv != $enc && $encw != $exv)
 			eval($exc);
 	}
 

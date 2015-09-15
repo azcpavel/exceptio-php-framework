@@ -169,7 +169,7 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 		'hdoc'		=> '/"/',				//Heredoc
 		'ndoc'		=> '/\'/',				//Nowdoc		
 		'gt'		=> '/>/',				//Greater than
-		'lt'		=> '/</',				//Less than
+		'lt'		=> '/</',				//Less than		
 		);
 
 	$replacement = array(
@@ -177,7 +177,7 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 		'hdoc'		=> '&#34;',				//Heredoc
 		'ndoc'		=> '&#39;',				//Nowdoc		
 		'gt'		=> '&#62;',				//Greater than
-		'lt'		=> '&#60;',				//Less than
+		'lt'		=> '&#60;',				//Less than		
 		);
 
 	if(is_array($allowTags))
@@ -313,7 +313,7 @@ function fix_ver($ver){
     die();
 }
 
-function getRangeDates($argDateFrom, $argDateTo, $format = 'Y-m-d')
+function get_range_dates($argDateFrom, $argDateTo, $format = 'Y-m-d')
 {
 	// date args must be in YYYY-mm-dd format
 	// takes two dates and creates an inclusive array of the dates between the from and to dates.
@@ -333,6 +333,46 @@ function getRangeDates($argDateFrom, $argDateTo, $format = 'Y-m-d')
 		}
 	}
 	return $dateArray;
+}
+
+
+function url_wrap($string = '', $class = '', $target = '_blank'){
+	// The Regular Expression filter
+	$reg_exUrl = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/i";
+	// Check if there is a url in the text
+	if(preg_match($reg_exUrl, $string, $url)) {
+
+	       // make the urls hyper links
+	       return preg_replace($reg_exUrl, "<a class='$class' href='{$url[0]}' target='$target'>{$url[0]}</a> ", $string);
+
+	} else {
+
+	       // if no urls in the text just return the text
+	       return $string;
+
+	}	
+}
+
+
+function change_case($string = '', $case = 'C'){
+	if($case == 'P' || $case == 'p')
+		return ucfirst(preg_replace_callback('/_./', function($match){
+			return preg_replace_callback('/\w/', function($matchSub){ 				
+				return ucwords($matchSub[0]);
+			}, $match[0][1]);
+			
+		}, $string));
+	else if($case == 'C' || $case == 'c')
+		return lcfirst(preg_replace_callback('/_./', function($match){
+			return preg_replace_callback('/\w/', function($matchSub){ 				
+				return ucwords($matchSub[0]);
+			}, $match[0][1]);
+			
+		}, $string));
+	else
+		return preg_replace_callback('/[A-Z]/', function($match){
+			return '_'.lcfirst($match[0]);			
+		}, lcfirst($string));
 }
 
 
