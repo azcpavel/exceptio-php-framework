@@ -32,7 +32,7 @@ function site_url($address = '')
 		return BASEPATH.$address;
 }
 
-function redirect($link, $option = 1){
+function redirect($link = '', $option = 1){
 	
 	if(INDEXPHP === 0){
 		if($option)
