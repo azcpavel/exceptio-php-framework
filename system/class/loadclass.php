@@ -77,7 +77,7 @@ Final class LoadClass
 				require(SYSTEM.'/libraries/'.$load_libraries_name.'.php');
 				if(class_exists($base_name))
 					{
-						if($base_name === 'imgresize' || $base_name === 'zend' || $base_name == 'exqrcode' || $base_name == 'emoticons')
+						if($base_name === 'imgresize' || $base_name === 'zend' || $base_name == 'exqrcode')
 						{
 							$Controller->$base_name = new $base_name($config);
 						}
@@ -85,7 +85,7 @@ Final class LoadClass
 						{
 							$Controller->$base_name = new $base_name($config);
 
-							if(count($config) > 0)
+							if(is_array($config) && count($config) > 0)
 							foreach ($config as $key => $value) {
 								
 								if(property_exists($Controller->$base_name, $key))
