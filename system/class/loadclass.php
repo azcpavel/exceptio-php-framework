@@ -74,7 +74,9 @@ Final class LoadClass
 
 		if(file_exists(DOCUMENT_ROOT.BASEDIR.SYSTEM.'/libraries/'.$load_libraries_name.'.php'))
 			{
-				require(SYSTEM.'/libraries/'.$load_libraries_name.'.php');
+				if(!class_exists($base_name))
+					require(SYSTEM.'/libraries/'.$load_libraries_name.'.php');
+				
 				if(class_exists($base_name))
 					{
 						if($base_name === 'imgresize' || $base_name === 'zend' || $base_name == 'exqrcode' || $base_name == 'emoticons')

@@ -26,12 +26,12 @@ abstract class Ex_Model
 	{	
 		self::$all_instance =& $this;
 
-		$this->load 	= new loadDBClass;
-		$this->session 	= new sessionClass;
-		$this->cookie 	= new cookieClass;		
-		$this->input 	= new inputClass;	
-		$this->server 	= new serverClass;
-		$this->globals 	= new globalsClass;	
+		$this->load 	 = new loadDBClass;		
+		$this->session 	 = new sessionClass;
+		$this->cookie 	 = new cookieClass;		
+		$this->input 	 = new inputClass;	
+		$this->server 	 = new serverClass;
+		$this->globals 	 = new globalsClass;	
 	}	
 
 	static function &get_all_instance()
