@@ -62,17 +62,18 @@ Final class ViewClass
 		
 	}
 
-	function library($load_libraries_name = '')
+	function library($load_libraries_name = '',$config = '')
 	{		
 
 		$base_name = basename($load_libraries_name);
 
 		if(file_exists(APPLICATION.'/libraries/'.$load_libraries_name.'.php'))
 			{
-				require(APPLICATION.'/libraries/'.$load_libraries_name.'.php');
+				if(!class_exists($base_name))
+					require(APPLICATION.'/libraries/'.$load_libraries_name.'.php');
 				if(class_exists($base_name))
 					{						
-						$this->$base_name = new $base_name;
+						$this->$base_name = new $base_name($config);
 					}
 				else
 					exit("Class $base_name not found in your application/libraries/".$load_libraries_name.'.php');
