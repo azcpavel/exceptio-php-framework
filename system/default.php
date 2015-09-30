@@ -14,6 +14,14 @@ if(BASEDIR !== '/')
 else
 	$user_uri = $_SERVER['REQUEST_URI'];
 
+preg_match('#.\?#', $user_uri, $matchUri);
+if(count($matchUri) > 0){	
+	if(strpos($matchUri[0], '/') === false){			
+		$user_uri = str_replace($matchUri[0], $matchUri[0][0].'/'.$matchUri[0][1], $user_uri);
+	}	
+}
+
+
 $user_uri = explode('/', $user_uri);
 if ($user_uri[0] == 'index.php' || $user_uri[0] == '') {
 	array_shift($user_uri);
