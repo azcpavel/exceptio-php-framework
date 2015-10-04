@@ -98,7 +98,7 @@ Final class DbClass
 			else
 				$this->pdo = @new pdo($dsn,$user,$pass);
 			
-			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);			
 
 			$this->pdo->beginTransaction();
 
@@ -392,42 +392,29 @@ Final class DbClass
 	}
 
 
-	function row_array($index = NULL)
-	{		
-		if($index)
-		{
-			$result = $this->result_array();
-			if(isset($return[$index]))
-			return $return[$index];
-		}
-		return $this->query->fetch(PDO::FETCH_ASSOC);
+	function row_array($index = 0)
+	{
+		$return = $this->result_array();
+		if(isset($return[$index]))
+		return $return[$index];
+				
 	}
 
 	function result_array()
-	{		
-		while($result[] = $this->query->fetch(PDO::FETCH_ASSOC)){}
-			array_pop($result);
-
-		return $result;
+	{
+		return $this->query->fetchAll();
 	}
 
-	function row($index = NULL)
+	function row($index = 0)
 	{		
-		if($index)
-		{
-			$result = $this->result();
-			if(isset($return[$index]))
-			return $return[$index];
-		}
-		return $this->query->fetch(PDO::FETCH_OBJ);
+		$return = $this->result();
+		if(isset($return[$index]))
+		return $return[$index];				
 	}
 
 	function result()
-	{			
-		while($result[] = $this->query->fetch(PDO::FETCH_OBJ)){}
-			array_pop($result);
-
-		return $result;		
+	{
+		return $this->query->fetchAll(PDO::FETCH_CLASS);		
 	}
 
 	function fetch_column($limit = 0)
@@ -476,6 +463,49 @@ Final class DbClass
 
 		return $this;
 
+	}
+	
+	function insert_multi($table, $keys , $values = 1, $typeQr = 'INSERT')
+	{
+	
+		$values_full = '';
+		$key_full = '(';
+	
+		if(is_array($keys)){
+			$key_full = '(';
+			foreach ($keys as $keyKeys => $valueKeys) {				
+				$key_full .= "$valueKeys,";
+			}			
+			$key_full = substr($key_full, 0, -1).')';
+		}
+		else
+			$key_full .= $keys.')';
+		
+		if(is_array($values)){			
+			foreach ($values as $keyValues => $valueValues) {
+				$values_full .= '(';
+				foreach ($valueValues as $value){					
+					$values_full .= "'$value',";					
+				}
+				$values_full = substr($values_full, 0, -1).'),';
+			}
+		
+			$values_full = substr($values_full, 0, -1);
+			
+		}
+		else
+			$values_full .= $values;
+	
+		try{
+			$this->affected_rows = $this->pdo->exec("{$typeQr} INTO {$this->db_prefix}{$table} $key_full VALUES {$values_full}");
+		}
+		catch (PDOException $error)
+		{
+			$this->printError($error);
+		}
+	
+		return $this;
+	
 	}
 
 	function update($table, $values = '', $where = false)
@@ -527,6 +557,19 @@ Final class DbClass
 		
 		return $this;
 		
+	}
+	
+	function exec($query)
+	{	
+		try{
+			$this->affected_rows = $this->pdo->exec($query);
+		}
+		catch (PDOException $error)
+		{
+			$this->printError($error);
+		}
+		
+		return $this;	
 	}
 
 	function affected_rows()
