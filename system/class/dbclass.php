@@ -19,7 +19,9 @@ Final class DbClass
 	private $group_by 	= '';
 	private $limit 		= '';
 	private $query;
-	private $query_str;	
+	private $query_str;
+	private $prepare;
+	private $prepareSql;
 	private $affected_rows;
 	private $db_driver;
 	private $select_table_prefix = '';
@@ -160,6 +162,56 @@ Final class DbClass
 			echo "\t"."No Properties Exists";
 		
 		exit;
+	}
+	
+	function prepare($sql = ''){
+		try{
+			$this->query = $this->pdo->prepare($sql);
+		}
+		catch(PDOException $error){
+			$this->printError($error);
+		}
+		return $this;
+	}
+	
+	function bindValue($index, $value, $data_type){
+		try{
+			$this->query->bindValue($index, $value, $data_type);
+		}
+		catch(PDOException $error){
+			$this->printError($error);
+		}
+		return $this;
+	}
+	
+	function execute($query = NULL)
+	{
+		try{
+			if($query)
+				$this->query->execute($query);
+			else
+				$this->query->execute();
+		}
+		catch (PDOException $error)
+		{
+			$this->printError($error);
+		}
+	
+		return $this;
+	}
+	
+	function exec($query = NULL)
+	{
+		try{
+			if($query)
+				$this->affected_rows = $this->pdo->exec($query);			
+		}
+		catch (PDOException $error)
+		{
+			$this->printError($error);
+		}
+	
+		return $this;
 	}
 
 	function query($query = "")
@@ -557,20 +609,7 @@ Final class DbClass
 		
 		return $this;
 		
-	}
-	
-	function exec($query)
-	{	
-		try{
-			$this->affected_rows = $this->pdo->exec($query);
-		}
-		catch (PDOException $error)
-		{
-			$this->printError($error);
-		}
-		
-		return $this;	
-	}
+	}	
 
 	function affected_rows()
 	{
