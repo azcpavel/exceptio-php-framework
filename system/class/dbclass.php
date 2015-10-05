@@ -100,9 +100,8 @@ Final class DbClass
 			else
 				$this->pdo = @new pdo($dsn,$user,$pass);
 			
-			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);			
-
-			$this->pdo->beginTransaction();
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);			
 
 		} catch (PDOException $error) {
 		    $this->printError($error);
@@ -213,6 +212,7 @@ Final class DbClass
 	
 		return $this;
 	}
+	
 
 	function query($query = "")
 	{
@@ -442,7 +442,11 @@ Final class DbClass
 			$num = count($num->fetchAll());
 		return $num;
 	}
-
+	
+	function next_rowset(){
+		if($this->query)
+			return $this->query->nextRowset();		
+	}
 
 	function row_array($index = 0)
 	{
@@ -660,8 +664,7 @@ Final class DbClass
 
 
 	function __destruct()
-	{
-		$this->pdo->commit();
+	{		
 		$this->pdo = null;
 	}
 }
