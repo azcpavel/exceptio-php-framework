@@ -10,6 +10,8 @@ $config['encryption_key'] = 'FFD'; //encryption key
 
 $config['time_zone'] = NULL; //default time zone, NULL for default
 
+$config['show_runtime'] = false; //show exection time. will print runtime at the bottom of the page between <!-- -->
+
 $config['cookie_encryption'] = false; //will encryption apply for cookie value true or false
 $config['cookie_lifetime'] =  time() + 31536000; //COOKIE lifetime in second
 $config['cookie_secure'] = false; //will apply for cookie, value true or false

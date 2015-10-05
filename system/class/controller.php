@@ -51,6 +51,17 @@ abstract class Ex_Controller{
 	{
 		return self::$all_instance;
 	}
+
+	function __destruct(){
+		if(SHOWRUNTIME){
+			$currentTime = microtime(true);		
+			echo 	PHP_EOL.'<!-- '.
+					PHP_EOL.'Run Time Start '.RUNTIMESTART.
+					PHP_EOL.'Run Time End '.$currentTime.
+					PHP_EOL.'Run Time '.($currentTime - RUNTIMESTART).'s'.
+					PHP_EOL.' -->';
+		}
+	}
 	
 }
 

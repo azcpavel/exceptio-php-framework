@@ -27,7 +27,7 @@ if ($user_uri[0] == 'index.php' || $user_uri[0] == '') {
 	array_shift($user_uri);
 }
 
-if(isset($user_uri[0]) && $user_uri[0] != ''){
+if(isset($user_uri[0]) && $user_uri[0] != '' && strpos($user_uri[0],'?') === false){
 	$controller_option_list = $user_uri;
 
 	foreach ($controller_option_list as $key => $value) {
@@ -235,5 +235,6 @@ else{
 		$obj->index();
 	
 }
+
 
 ?>

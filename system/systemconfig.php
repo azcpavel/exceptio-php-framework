@@ -45,6 +45,8 @@ define('INDEXPHP', $config['hide_index']);
 
 define('NOCACHE', $config['no_cache']);
 
+define('SHOWRUNTIME', $config['show_runtime']);
+
 define('SHOW_DB_ERROR', $config['show_db_error']);
 
 define('ENCRYPT_SALT', $config['encryption_key']);
