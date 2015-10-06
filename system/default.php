@@ -31,7 +31,7 @@ if(isset($user_uri[0]) && $user_uri[0] != '' && strpos($user_uri[0],'?') === fal
 	$controller_option_list = $user_uri;
 
 	foreach ($controller_option_list as $key => $value) {
-		if($value != '')
+		if($value != '' && strpos($value,'?') === false)
 			$controller_option[] = $value;
 	}
 

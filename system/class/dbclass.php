@@ -40,7 +40,7 @@ Final class DbClass
 	public $errors = '';
 
 	
-	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '')
+	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true)
 	{
 		if($driver == 'mysql' || $driver == 'mysqli')
 			$dsn = "mysql:host=$host;port=$port;dbname=$db";
@@ -101,7 +101,11 @@ Final class DbClass
 				$this->pdo = @new pdo($dsn,$user,$pass);
 			
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);			
+			
+			if($autocommit)
+				$this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
+			else			
+				$this->pdo->setAttribute(PDO::ATTR_PERSISTENT, true);
 
 		} catch (PDOException $error) {
 		    $this->printError($error);
@@ -111,15 +115,18 @@ Final class DbClass
 
 	function __call($mth_name,$mth_arg)
 	{
-		echo "Unknown Member Call $mth_name<br>You can get all details by calling get_class_details() method";
+		echo "Unknown Member Call $mth_name<br>You can get all details by calling get_class_details() method<br>".PHP_EOL;
+	}
+
+	function __get($porp_name){
+		echo "Unknown Property Call $porp_name<br>You can get all details by calling get_class_details() method<br>".PHP_EOL;	
 	}
 
 	private function printError($error)
 	{
 		if(SHOW_DB_ERROR == false){
-			$this->errors = array('message' => $error->getMessage(), 'trace' => $error->getTrace());
-			error_reporting(0);
-			return false;			
+			$this->errors = array('message' => $error->getMessage(), 'trace' => $error->getTrace());			
+			return $this;			
 		}
 		
 		echo "Query Error:<br><br>".$error->getMessage()."<br><br>";
@@ -162,6 +169,18 @@ Final class DbClass
 		
 		exit;
 	}
+
+	function begin_transaction(){
+		$this->pdo->beginTransaction();
+	}
+
+	function roll_back(){
+		$this->pdo->rollBack();
+	}
+
+	function commit(){
+		$this->pdo->commit();
+	}
 	
 	function prepare($sql = ''){
 		try{
@@ -173,7 +192,7 @@ Final class DbClass
 		return $this;
 	}
 	
-	function bindValue($index, $value, $data_type){
+	function bind_value($index, $value, $data_type){
 		try{
 			$this->query->bindValue($index, $value, $data_type);
 		}
@@ -445,32 +464,43 @@ Final class DbClass
 	
 	function next_rowset(){
 		if($this->query)
-			return $this->query->nextRowset();		
+			return $this->query->nextRowset();
+		return $this;		
 	}
 
 	function row_array($index = 0)
 	{
-		$return = $this->result_array();
-		if(isset($return[$index]))
-		return $return[$index];
-				
+		if($this->errors == ''){
+			$return = $this->result_array();
+			if(isset($return[$index]))
+				return $return[$index];
+		}
+		return $this;
 	}
 
 	function result_array()
 	{
-		return $this->query->fetchAll();
+		if($this->errors == '')
+			return $this->query->fetchAll();
+		return $this;
 	}
 
 	function row($index = 0)
 	{		
-		$return = $this->result();
-		if(isset($return[$index]))
-		return $return[$index];				
+		if($this->errors == ''){
+			$return = $this->result();
+			if(isset($return[$index]))
+				return $return[$index];
+		}
+
+		return $this;
 	}
 
 	function result()
 	{
-		return $this->query->fetchAll(PDO::FETCH_CLASS);		
+		if($this->errors == '')
+			return $this->query->fetchAll(PDO::FETCH_CLASS);
+		return $this;
 	}
 
 	function fetch_column($limit = 0)

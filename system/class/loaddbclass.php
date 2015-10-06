@@ -19,7 +19,11 @@ Final class LoadDBClass
 
 	function __call($mth_name,$mth_arg)
 	{
-		echo "Unknown Member Call $mth_name<br>You can get all details by calling get_class_details() method";
+		echo "Unknown Member Call $mth_name<br>You can get all details by calling get_class_details() method<br>".PHP_EOL;
+	}
+
+	function __get($porp_name){
+		echo "Unknown Property Call $porp_name<br>You can get all details by calling get_class_details() method<br>".PHP_EOL;	
 	}
 
 	function get_class_details()
@@ -60,7 +64,7 @@ Final class LoadDBClass
 		$model->db = new dbClass($db_get_all_config[$name]['driver'],$db_get_all_config[$name]['host'],$db_get_all_config[$name]['user'],
 			$db_get_all_config[$name]['pass'],$db_get_all_config[$name]['db'],$db_get_all_config[$name]['dbPrefix'],$db_get_all_config[$name]['port'],
 			$db_get_all_config[$name]['service'],$db_get_all_config[$name]['protocol'],$db_get_all_config[$name]['server'],
-			$db_get_all_config[$name]['uid'],$db_get_all_config[$name]['options']);
+			$db_get_all_config[$name]['uid'],$db_get_all_config[$name]['options'],$db_get_all_config[$name]['autocommit']);
 
 		return $model->db;
 	}

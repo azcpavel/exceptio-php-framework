@@ -12,5 +12,6 @@ $db_config['default']['protocol']  	= '';
 $db_config['default']['server']  	= '';
 $db_config['default']['uid']  		= '';
 $db_config['default']['options']  	= array('');
+$db_config['default']['autocommit'] = true;
 
 ?>

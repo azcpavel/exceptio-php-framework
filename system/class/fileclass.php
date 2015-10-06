@@ -34,9 +34,12 @@ Final class FileClass
 
 	function __call($mth_name,$mth_arg)
 	{
-		echo "Unknown Member Call $mth_name<br>You can get all details by calling get_class_details() method";
+		echo "Unknown Member Call $mth_name<br>You can get all details by calling get_class_details() method<br>".PHP_EOL;
 	}
 
+	function __get($porp_name){
+		echo "Unknown Property Call $porp_name<br>You can get all details by calling get_class_details() method<br>".PHP_EOL;	
+	}
 	function get_class_details()
 	{		
 		echo '<pre>';
