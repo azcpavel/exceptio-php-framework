@@ -468,20 +468,24 @@ Final class DbClass
 		return $this;		
 	}
 
-	function row_array($index = 0)
+	function row_array($index = 0, $type = 1)
 	{
 		if($this->errors == ''){
-			$return = $this->result_array();
+			$return = $this->result_array($type);
 			if(isset($return[$index]))
 				return $return[$index];
 		}
 		return $this;
 	}
 
-	function result_array()
+	function result_array($type = 1)
 	{
-		if($this->errors == '')
-			return $this->query->fetchAll();
+		if($this->errors == ''){
+			if($type)
+				return $this->query->fetchAll(PDO::FETCH_ASSOC);
+			else
+				return $this->query->fetchAll();
+		}
 		return $this;
 	}
 
