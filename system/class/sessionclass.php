@@ -242,19 +242,38 @@ Final class SessionClass
 
 	function set_userdata($name,$value)
 	{		
+		$this->session_start();
+		
 		$_SESSION[$name] = $value;
 	}
 
 	function userdata($name)
 	{
+		$this->session_start();
+		
 		return (isset($_SESSION[$name])) ? $_SESSION[$name] : FALSE;
 
 	}
 
 	function unset_userdata($name)
 	{
+		$this->session_start();
+		
 		if(isset($_SESSION[$name]))		
 			unset($_SESSION[$name]);
+	}
+	
+	function session_start($options = array()){
+		try{
+			if(!is_array($options))
+				throw new Exception('Param must be an array.');
+			
+			if(!isset($_SESSION))
+				session_start($options);
+		}catch(Exception $e){
+			echo $e->getMessage();
+			exit;
+		}
 	}
 
 	function session_destroy()
