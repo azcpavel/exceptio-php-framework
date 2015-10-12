@@ -114,7 +114,7 @@ Final class LoadClass
 
 	function app_library($load_libraries_name = '', $config = '')
 	{
-		$Model =& get_model_instance();
+		$Controller =& get_controller_instance();
 
 		$base_name = basename($load_libraries_name);
 
@@ -126,13 +126,13 @@ Final class LoadClass
 				if(class_exists($base_name))
 					{
 						
-						$Model->$base_name = new $base_name;
+						$Controller->$base_name = new $base_name;
 
 						if(is_array($config))
 						foreach ($config as $key => $value) {
 							
-							if(property_exists($Model->$base_name, $key))
-								$Model->$base_name->$key = $value;
+							if(property_exists($Controller->$base_name, $key))
+								$Controller->$base_name->$key = $value;
 						}
 
 						unset($key);
