@@ -37,5 +37,6 @@ $config['session_use_db'] = FALSE; //Use database For session value = TRUE for a
 $config['session_match_ip'] = FALSE; //will session need to match IP
 $config['session_match_browser'] = FALSE; //will session need to match browser
 $config['session_life_time'] = 60 * 60; //SESSION lifetime in second
+$config['session_options'] = array(''); //SESSION options for sesion_start(array $optons = array())
 
 ?>
