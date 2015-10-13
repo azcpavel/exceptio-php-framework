@@ -2,6 +2,12 @@
 # Turn on URL rewriting
 RewriteEngine On
 
+# If your website begins from a folder e.g localhost/my_project then 
+# you have to change it to: RewriteBase /my_project/
+# If your site begins from the root e.g. example.local/ then
+# let it as it is
+RewriteBase /
+
 # non-www to www redirect
 #RewriteCond %{HTTP_HOST} !^www\.
 #RewriteRule ^(.*)$ http://www.%1/$1 [R=301,L]
@@ -9,12 +15,6 @@ RewriteEngine On
 # www to non-www redirect
 #RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
 #RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
-
-# If your website begins from a folder e.g localhost/my_project then 
-# you have to change it to: RewriteBase /my_project/
-# If your site begins from the root e.g. example.local/ then
-# let it as it is
-RewriteBase /
 
 # Protect application and system files from being viewed when the index.php is missing
 RewriteCond $1 ^(application|system|private|logs)
