@@ -9,12 +9,22 @@ RewriteEngine On
 RewriteBase /
 
 # non-www to www redirect
+#RewriteCond %{HTTPS} off
 #RewriteCond %{HTTP_HOST} !^www\.
-#RewriteRule ^(.*)$ http://www.%1/$1 [R=301,L]
+#RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
+
+#RewriteCond %{HTTPS} on
+#RewriteCond %{HTTP_HOST} !^www\.
+#RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
 
 # www to non-www redirect
+#RewriteCond %{HTTPS} off
 #RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
 #RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
+#RewriteCond %{HTTPS} on
+#RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+#RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 
 # Protect application and system files from being viewed when the index.php is missing
 RewriteCond $1 ^(application|system|private|logs)
