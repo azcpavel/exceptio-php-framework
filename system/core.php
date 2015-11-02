@@ -375,6 +375,19 @@ function change_case($string = '', $case = 'C'){
 		}, lcfirst($string));
 }
 
+if(!function_exists('look')){
+function look($array, $print_r = 1, $exit = 1){
+	echo "<pre>";
+	echo "=========================".PHP_EOL;
+	if($print_r == 1) print_r($array); else var_dump($array);
+	echo "=========================".PHP_EOL;
+	echo "</pre>";
+
+	if($exit)
+		exit();
+}
+}
+
 
 function &get_controller_instance()
 {

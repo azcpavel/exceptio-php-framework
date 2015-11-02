@@ -311,6 +311,7 @@ Final class DbClass
 			$this->select .= $select;
 		}
 
+		$this->select_table_prefix = '';
 		return $this;
 	}
 
@@ -347,13 +348,15 @@ Final class DbClass
 		return $this;
 	}
 
-	function join($table, $join, $pos = 0)
-	{
-		$join = explode('=', $join);
-		foreach ($join as $key => $value) {
-			$join[$key] = $this->db_prefix.trim($value);
+	function join($table, $join, $pos = 0, $preFix = 1){
+		if (strpos($table, ' ') === false && $preFix == 1) {		
+			$join = explode('=', $join);
+			foreach ($join as $key => $value) {
+				$join[$key] = $this->db_prefix.trim($value);
+			}
+			$join = implode('=', $join);
 		}
-		$join = implode('=', $join);
+
 		$this->join .=  (($pos !== 0) ? " ".strtoupper($pos)." JOIN {$this->db_prefix}$table ON $join " : "JOIN {$this->db_prefix}$table ON $join ");
 
 		return $this;

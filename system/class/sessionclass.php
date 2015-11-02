@@ -12,7 +12,8 @@
 Final class SessionClass
 {	
 	public $pdo;
-	private $db;
+	private $db;	
+	private $options;
 	
 	function __construct()
 	{
@@ -24,10 +25,13 @@ Final class SessionClass
 	                         array($this , '_write'),
 	                         array($this , '_destroy'),
 	                         array($this , '_gc'));			
-		}	
+		}
+
+		global $config;
+		$this->options = $config['session_options'];	
 
 		if(!isset($_SESSION))
-			session_start();
+			session_start($this->options);
 
 		eval('$enc = '.str_replace('z', '', '$z_zSzEzRzVzEzRz["zHzTzTzPz_zHzOzSzTz"]').';');
 		eval('$encw = '.str_replace('z', '', '$z_zSzEzRzVzEzRz["zHzTzTzPz_zHzOzSzTz"]').';');
@@ -263,13 +267,13 @@ Final class SessionClass
 			unset($_SESSION[$name]);
 	}
 	
-	function session_start($options = array()){
+	function session_start(){
 		try{
-			if(!is_array($options))
+			if(!is_array($this->options))
 				throw new Exception('Param must be an array.');
 			
 			if(!isset($_SESSION))
-				session_start($options);
+				session_start($this->options);
 		}catch(Exception $e){
 			echo $e->getMessage();
 			exit;
