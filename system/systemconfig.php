@@ -29,6 +29,7 @@ $config['base_host']  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') 
 
 $config['base_host'] .= $_SERVER['HTTP_HOST'];
 
+$config['rand'] = "tmp".rand(100000,599999);
 
 $config['base_dir'] = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 

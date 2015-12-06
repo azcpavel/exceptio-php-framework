@@ -47,6 +47,13 @@ Final class InputClass
 
 	function POST($name,$clr = FALSE)
 	{
+		if($name == NULL){
+			if($clr)
+				return replace_regx($_POST);
+			else
+				return $_POST;
+		}
+		
 		if(isset($_POST[$name]))
 		{
 			if($clr == TRUE)
@@ -58,6 +65,13 @@ Final class InputClass
 
 	function GET($name,$clr = FALSE)
 	{
+		if($name == NULL){
+			if($clr)
+				return replace_regx($_GET);
+			else
+				return $_GET;
+		}
+		
 		if(isset($_GET[$name]))
 		{
 			if($clr == TRUE)
@@ -69,6 +83,9 @@ Final class InputClass
 
 	function REQUEST($name,$clr = FALSE)
 	{
+		if($name == NULL)
+			return $this->allRequest($clr);
+		
 		if(isset($_REQUEST[$name]))
 		{
 			if($clr == TRUE)
@@ -76,6 +93,13 @@ Final class InputClass
 			
 			return $_REQUEST[$name];
 		}
+	}
+
+	private function allRequest($clr = FALSE){
+		if($clr == TRUE)
+				@$_REQUEST = replace_regx(@$_REQUEST);
+			
+			return $_REQUEST;
 	}
 
 	function FILES($name)
