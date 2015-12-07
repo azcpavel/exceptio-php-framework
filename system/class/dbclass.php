@@ -477,6 +477,8 @@ Final class DbClass
 			$return = $this->result_array($type);
 			if(isset($return[$index]))
 				return $return[$index];
+			else
+				return false;
 		}
 		return $this;
 	}
@@ -498,6 +500,8 @@ Final class DbClass
 			$return = $this->result();
 			if(isset($return[$index]))
 				return $return[$index];
+			else
+				return false;
 		}
 
 		return $this;
