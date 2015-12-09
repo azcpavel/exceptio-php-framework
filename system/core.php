@@ -18,9 +18,6 @@ function __autoload($class)
 		require(APPLICATION.'/helpers/'.$class.'.php');
 }
 
-function rqr($fileName = ""){
-	require ($fileName);
-}
 
 function base_url($address = '')
 {	
@@ -201,6 +198,16 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 			$regx[] = '/'.$otherRegxSub[0].'/';
 			$replacement[] = $otherRegxSub[1];
 		}		
+	}
+
+	if(is_array($input)){
+		foreach ($input as $key => $value) {
+			if(is_array($value))
+				$input[$key] = replace_regx($value, $otherRegx, $allowTags);
+			else
+				$input[$key] = $value;
+		}
+		return $input;
 	}
 
 	//Clean SELECT INSERT UPDATE DELETE UNION
