@@ -18,6 +18,10 @@ function __autoload($class)
 		require(APPLICATION.'/helpers/'.$class.'.php');
 }
 
+function rqr($fileName = ""){
+	require($fileName);
+}
+
 
 function base_url($address = '')
 {	
