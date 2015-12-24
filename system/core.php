@@ -18,7 +18,7 @@ function __autoload($class)
 		require(APPLICATION.'/helpers/'.$class.'.php');
 }
 
-function rqr($fileName = ""){
+function rqr($fileName = ""){	
 	require($fileName);
 }
 
@@ -305,6 +305,43 @@ function ex_decrypt($text, $salt = ENCRYPT_SALT)
 
     return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt,
                                     $returnText, MCRYPT_MODE_CBC, $iv_dec));
+}
+
+
+function include_try($cont_func, $cont_param_arr, $output = false) {	
+    // Setup shutdown function:
+    static $run = 0;
+    if($run++ === 0) register_shutdown_function('include_shutdown_handler');
+
+    // If output is not allowed, capture it:
+    if(!$output) ob_start();
+    // Reset error_get_last():
+    @user_error('error_get_last mark');
+    // Enable shutdown handler and store parameters:
+    $params = array($cont_func, $cont_param_arr, $output, getcwd());
+    $GLOBALS['_include_shutdown_handler'] = $params;
+}
+
+function include_catch() {
+    $error_get_last = error_get_last();
+    $output = $GLOBALS['_include_shutdown_handler'][2];
+    // Disable shutdown handler:
+    $GLOBALS['_include_shutdown_handler'] = NULL;
+    // Check unauthorized outputs or if an error occured:
+    return ($output ? false : ob_get_clean() !== '')
+        || $error_get_last['message'] !== 'error_get_last mark';
+}
+
+function include_shutdown_handler() {
+    $func = $GLOBALS['_include_shutdown_handler'];
+    if($func !== NULL) {
+        // Cleanup:
+        include_catch();
+        // Fix potentially wrong working directory:
+        chdir($func[3]);
+        // Call continuation function:
+        call_user_func_array($func[0], $func[1]);
+    }
 }
 
 
