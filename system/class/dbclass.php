@@ -237,7 +237,7 @@ Final class DbClass
 	{
 		$select = ($this->select == NULL ) ? '*' : $this->select;
 		if ($query === "")
-			$query = "SELECT {$select} FROM {$this->db_prefix}{$this->table} {$this->join} WHERE {$this->where} {$this->order_by} {$this->group_by} {$this->limit}";
+			$query = "SELECT {$select} FROM {$this->db_prefix}{$this->table} {$this->join} WHERE {$this->where} {$this->group_by} {$this->order_by} {$this->limit}";
 
 		$this->query_str = $query;
 		try{			
@@ -247,7 +247,7 @@ Final class DbClass
 			$this->printError($error);
 		}		
 		
-		$this->order_by = $this->join = $this->limit = $select_table_prefix = '';
+		$this->order_by = $this->group_by = $this->join = $this->limit = $select_table_prefix = '';
 		$this->where = 1;
 		$this->select = NULL;
 		
@@ -383,6 +383,8 @@ Final class DbClass
 
 				if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) && (preg_match('/ AND$| OR$|\'|^$/', $value)) )
 					$where_full .= " {$db_table}$key $value";
+				else if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) )
+					$where_full .= " {$db_table}$key $value AND";
 				elseif(preg_match('/IN| NOT IN/', $key))
 					$where_full .= " {$db_table}$key ($value)";
 				elseif(preg_match('/<|>|\=|!/', $key))
