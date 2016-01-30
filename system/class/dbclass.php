@@ -383,7 +383,7 @@ Final class DbClass
 
 				if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) && (preg_match('/ AND$| OR$|\'|^$/', $value)) )
 					$where_full .= " {$db_table}$key $value";
-				else if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) )
+				else if( preg_match('/ LIKE| BETWEEN/', $key) )
 					$where_full .= " {$db_table}$key $value AND";
 				elseif(preg_match('/IN| NOT IN/', $key))
 					$where_full .= " {$db_table}$key ($value)";
