@@ -132,18 +132,18 @@ Final class FileClass
 						
 			list($width, $height, $type, $attr) = @getimagesize($tmp_name);
 
-			// print_r(get_object_vars($this));exit;
-			$file_type_check = @strpos($this->upload_file_type, $_FILES[$post_name]['type'][$key]);
+			// print_r(get_object_vars($this));
+			$file_type_check = @strpos($this->upload_file_type, $_FILES[$post_name]['type'][$key]);			
 
 			if ($value == UPLOAD_ERR_OK){	
 				
-				if($this->upload_file_type == 0 || $file_type_check !== FALSE){
+				if($this->upload_file_type === 0 || $file_type_check !== FALSE){
 
-					if($this->upload_max_size == 0 || ($_FILES[$post_name]['size'][$key] <= $this->upload_max_size)){						
+					if($this->upload_max_size === 0 || ($_FILES[$post_name]['size'][$key] <= $this->upload_max_size)){						
 
-						if($this->upload_max_width == 0 || $width <= $this->upload_max_width){
+						if($this->upload_max_width === 0 || $width <= $this->upload_max_width){
 
-							if($this->upload_max_height == 0 || $height <= $this->upload_max_height)
+							if($this->upload_max_height === 0 || $height <= $this->upload_max_height)
 
 								$this->upload_error_ok = 1;
 
@@ -156,7 +156,7 @@ Final class FileClass
 				    else
 				    	$upload_error .= "<br>$file_name Too Large Maximum ".($this->upload_max_size / 1024).' Kb';
 		    	}
-		    	else		    		
+		    	else
 		    		$upload_error .= "<br>$file_name Type Not Allowd";		    	
 			}
 			else
@@ -223,7 +223,9 @@ Final class FileClass
 
 		
 		$this->upload_data  = $upload_data;
-		$this->upload_error = $upload_error;		
+		$this->upload_error = $upload_error;
+
+		return ($upload_error == '') ? 1 : 0;
 	}
 
 	function mk_download($address)
