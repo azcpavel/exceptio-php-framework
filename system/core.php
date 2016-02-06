@@ -83,12 +83,14 @@ function form_spt($address, $attr = array())
 function uri_segment($no)
 {
 	$uri = BASEHOST.$_SERVER['REQUEST_URI'];	
-	$uri = str_replace(BASEPATH ,'', $uri);	
+	$uri = str_replace(BASEPATH ,'', $uri);
 	$uri = explode('/', $uri);
 	if(count($uri) > 1)
 	{
 		if(isset($uri[$no-1]))
 			return $uri[$no-1];
+	}else if(count($uri) == 1 && $no == 1){
+		return $uri[0];
 	}
 	
 	return false;
@@ -171,7 +173,7 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 	$regx = array(
 		'amp'		=> '/ & /',				//Amp
 		'hdoc'		=> '/"/',				//Heredoc
-		'ndoc'		=> '/\'/',				//Nowdoc		
+		'ndoc'		=> "/\'/",				//Nowdoc		
 		'gt'		=> '/>/',				//Greater than
 		'lt'		=> '/</',				//Less than		
 		);
@@ -209,7 +211,7 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 			if(is_array($value))
 				$input[$key] = replace_regx($value, $otherRegx, $allowTags);
 			else
-				$input[$key] = $value;
+				$input[$key] = preg_replace($regx, $replacement, $value);
 		}
 		return $input;
 	}
