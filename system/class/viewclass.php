@@ -15,6 +15,7 @@ Final class ViewClass
 	protected $input;
 	protected $server;
 	protected $globals;
+	protected $ob_level;
 	
 	function __construct()
 	{
@@ -23,6 +24,7 @@ Final class ViewClass
 		$this->input 	= new inputClass;
 		$this->server 	= new serverClass;
 		$this->globals 	= new globalsClass;
+		$this->ob_level = ob_get_level();		
 	}
 
 	function __call($mth_name,$mth_arg)
@@ -55,14 +57,26 @@ Final class ViewClass
 	}
 
 
-	function page($load_view_page = 'main',array $data_for_view = array())
+	function page($load_view_page = 'main', array $data_for_view = array(), $outputBuffer = false)
 	{		
+		ob_start();
 		extract($data_for_view);		
 
-		if(file_exists(APPLICATION.'/views/'.$load_view_page.'.php'))
-			require (APPLICATION.'/views/'.$load_view_page.'.php');
+		if($outputBuffer && file_exists(APPLICATION.'/views/'.$load_view_page.'.php')){						
+			include (APPLICATION.'/views/'.$load_view_page.'.php');
+			$return = ob_get_contents();
+			@ob_end_clean();						
+			return $return;
+		}
+		else if(file_exists(APPLICATION.'/views/'.$load_view_page.'.php'))
+			include (APPLICATION.'/views/'.$load_view_page.'.php');
 		else
 			exit("View not found in your application/views/".$load_view_page.'.php');
+
+		if(ob_get_level() > $this->ob_level + 1)
+		{
+			ob_end_flush();
+		}		
 		
 	}
 
@@ -90,6 +104,10 @@ Final class ViewClass
 	{
 		require(SYSTEM.'/class/pagination.php');
 		$this->pagination = new pagination($config);
+	}
+
+	function __destruct(){
+		
 	}
 	
 

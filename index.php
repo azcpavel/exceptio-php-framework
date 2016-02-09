@@ -1,5 +1,4 @@
 <?php
-ob_start();
 define('RUNTIMESTART',microtime(true));
 
 define('SYSTEM','system');
@@ -33,5 +32,4 @@ require_once(SYSTEM.'/default.php');
 *	@version : 1.0.1
 *	Main Index
 */
-
 ?>
