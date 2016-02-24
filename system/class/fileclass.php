@@ -15,21 +15,26 @@ Final class FileClass
 	private $upload_dir;
 	private $upload_file_name;
 	private $upload_file_temp_name;
-	private $upload_max_size = 0;
-	private $upload_file_type = 0;
+	private $upload_max_size;
+	private $upload_file_type;
+	private $upload_file_mimes;
 	private $upload_file_source;
 	private $upload_create_thumb;
 	private $upload_image_ratio;
-	private $upload_max_width = 0;
-	private $upload_max_height = 0;
+	private $upload_max_width;
+	private $upload_max_height;
 	private $upload_data;
 	private $upload_error;
-	private $upload_error_ok = 0;	
+	private $upload_error_ok;	
 
 	
 	function __construct()
-	{
-		
+	{		
+		$this->upload_max_size = 0;
+		$this->upload_file_type = 0;		
+		$this->upload_max_width = 0;
+		$this->upload_max_height = 0;		
+		$this->upload_error_ok = 0;		
 	}
 
 	function __call($mth_name,$mth_arg)
@@ -85,18 +90,140 @@ Final class FileClass
 				$mmtp_full .= $value.',';	
 		}
 		
-		$this->upload_file_type = substr($mmtp_full,0,-1);
+		$this->upload_file_mimes = substr($mmtp_full,0,-1);
 		
 	}
 
 	function do_upload($post_name)
 	{
 		$upload_data  = array();
-		$upload_error = '';
-		// echo "<pre>";
-		// print_r($_FILES[$post_name]['error'][0]);exit;
-		if(isset($_FILES[$post_name]['error'][0])){		
-		foreach ($_FILES[$post_name]['error'] as $key => $value) {		
+		$upload_error = '';	
+		
+		// if file post is not array
+		if (isset($_FILES[$post_name]['error']) && !is_array($_FILES[$post_name]['error'])) {
+				
+			
+			$tmp_name 			= $_FILES[$post_name]['tmp_name'];
+			$file_name 			= $_FILES[$post_name]['name'];
+			$file_client_name 	= str_replace(' ','_',date('YmdHis').rand().'_'.$file_name);
+			$file_size 			= number_format(($_FILES[$post_name]['size'] / 1024),2);
+			$file_type 			= $_FILES[$post_name]['type'];
+
+			global $mimes_file_types;
+			$tmp_file_type = $mimes_file_types;			
+
+			foreach ($tmp_file_type as $key_file_type => $value_file_type) {
+				
+				if(is_array($value_file_type)){
+					foreach ($value_file_type as $key_file_type_sub => $value_file_type_sub) {
+						
+						if ($value_file_type_sub === $file_type) {
+					
+							$file_type = $key_file_type;
+							break;
+						}
+					}
+				}
+				else
+				{
+					if ($value_file_type === $file_type) {
+					
+						$file_type = $key_file_type;
+						break;
+					}
+				}
+
+			}
+						
+			list($width, $height, $type, $attr) = @getimagesize($tmp_name);			
+						
+			$file_type_check = @strpos($this->upload_file_mimes, $_FILES[$post_name]['type']);			
+
+			if ($_FILES[$post_name]['error'] == UPLOAD_ERR_OK){	
+				
+				if($this->upload_file_type === 0 || strlen($this->upload_file_mimes) === 0 || $file_type_check !== FALSE){
+
+					if($this->upload_max_size === 0 || ($_FILES[$post_name]['size'] <= $this->upload_max_size)){						
+
+						if($this->upload_max_width === 0 || $width <= $this->upload_max_width){
+
+							if($this->upload_max_height === 0 || $height <= $this->upload_max_height)
+
+								$this->upload_error_ok = 1;
+
+							else
+								$upload_error .= "<br>Please Check Upload Max Height for $file_name";
+						}
+						else
+							$upload_error .= "<br>Please Check Upload Max Width for $file_name";				        
+				    }
+				    else
+				    	$upload_error .= "<br>$file_name Too Large Maximum ".($this->upload_max_size / 1024).' Kb';
+		    	}
+		    	else
+		    		$upload_error .= "<br>$file_name Type Not Allowd";		    	
+			}
+			else
+				$upload_error .= "<br>$file_name Upload Error";
+		
+
+		
+		if($this->upload_error_ok === 1){		
+			
+			$tmp_name 			= $_FILES[$post_name]['tmp_name'];
+			$file_name 			= $_FILES[$post_name]['name'];
+			$file_client_name 	= str_replace(' ','_',date('YmdHis').rand().'_'.$file_name);
+			$file_size 			= number_format(($_FILES[$post_name]['size'] / 1024),2);
+			$file_type 			= $_FILES[$post_name]['type'];
+
+			global $mimes_file_types;
+			$tmp_file_type = $mimes_file_types;			
+
+			foreach ($tmp_file_type as $key_file_type => $value_file_type) {
+				
+				if(is_array($value_file_type)){
+					foreach ($value_file_type as $key_file_type_sub => $value_file_type_sub) {
+						
+						if ($value_file_type_sub === $file_type) {
+					
+							$file_type = $key_file_type;
+							break;
+						}
+					}
+				}
+				else
+				{
+					if ($value_file_type === $file_type) {
+					
+						$file_type = $key_file_type;
+						break;
+					}
+				}
+
+			}			
+						if(@move_uploaded_file($tmp_name, $_SERVER['DOCUMENT_ROOT'].$this->upload_dir.$file_client_name))
+				        {
+				        	$upload_data[] = array(
+				        						'file_name' => $file_name,
+				        						'file_path' => $this->upload_dir,				        						
+				        						'file_client_name' => $file_client_name,
+				        						'file_type' => $file_type,
+				        						'file_size_kb' => $file_size,
+				        						'file_full_path' => $this->upload_dir.$file_client_name,
+				        						'file_server_dir' => $_SERVER['DOCUMENT_ROOT'].$this->upload_dir,
+				        						'file_server_path' => $_SERVER['DOCUMENT_ROOT'].$this->upload_dir.$file_client_name,
+				        						'file_web_url' => 'http://'.$_SERVER['HTTP_HOST'].$this->upload_dir.$file_client_name,
+				        						);			        
+				        }
+				        else
+				        	$upload_error .= "<br>Please Check Upload Document ROOT for $file_name";
+				        
+			}
+			
+		}
+		// if file post is array
+		else if(isset($_FILES[$post_name]['error'][0])){		
+		foreach ($_FILES[$post_name]['error'] as $key => $errorValue) {		
 			
 			$tmp_name 			= $_FILES[$post_name]['tmp_name'][$key];
 			$file_name 			= $_FILES[$post_name]['name'][$key];
@@ -133,9 +260,9 @@ Final class FileClass
 			list($width, $height, $type, $attr) = @getimagesize($tmp_name);
 
 			// print_r(get_object_vars($this));
-			$file_type_check = @strpos($this->upload_file_type, $_FILES[$post_name]['type'][$key]);			
+			$file_type_check = @strpos($this->upload_file_mimes, $_FILES[$post_name]['type'][$key]);			
 
-			if ($value == UPLOAD_ERR_OK){	
+			if ($errorValue == UPLOAD_ERR_OK){	
 				
 				if($this->upload_file_type === 0 || $file_type_check !== FALSE){
 
@@ -219,7 +346,7 @@ Final class FileClass
 			
 		}
 		else
-			$upload_error .= "<br>You Must Use Form Name As Array<br>Ex. name='your_post_name[]' ";
+			$upload_error .= "<br>You Must Use Form Name As <br>Ex. name='".$post_name."' ";
 
 		
 		$this->upload_data  = $upload_data;
