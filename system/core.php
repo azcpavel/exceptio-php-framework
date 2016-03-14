@@ -82,14 +82,20 @@ function form_spt($address, $attr = array())
 
 if(!function_exists("log_write")){
 
-function log_write($content,$fileName = "log.txt"){	
+function log_write($content, $printTime = false, $fileName = "log.txt"){	
 	if(!file_exists(DOCUMENT_ROOT.BASEDIR.$fileName)){
 		$fh = fopen(DOCUMENT_ROOT.BASEDIR.$fileName, 'w');
-		fwrite($fh, $content.PHP_EOL);
+		if($printTime)
+			fwrite($fh, date('Y-m-d H:i:s')."# ".$content.PHP_EOL);
+		else
+			fwrite($fh, $content.PHP_EOL);
 		fclose($fh);
 	}else{
 		$fh = fopen(DOCUMENT_ROOT.BASEDIR.$fileName, 'a');
-		fwrite($fh, $content.PHP_EOL);
+		if($printTime)
+			fwrite($fh, date('Y-m-d H:i:s')."# ".$content.PHP_EOL);
+		else
+			fwrite($fh, $content.PHP_EOL);
 		fclose($fh);
 	}
 }
