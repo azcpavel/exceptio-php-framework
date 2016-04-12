@@ -1,6 +1,6 @@
 <?php
 
-$db_config['default']['driver'] 	= 'mysqli';
+$db_config['default']['driver'] 	= 'mysql'; //Both 'mysql' and 'mysqli' use "mysql".
 $db_config['default']['host'] 		= 'localhost';
 $db_config['default']['user'] 		= '';
 $db_config['default']['pass'] 		= '';

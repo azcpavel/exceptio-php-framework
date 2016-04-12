@@ -41,43 +41,9 @@ Final class DbClass
 
 	
 	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true)
-	{
-		if($driver == 'mysql' || $driver == 'mysqli')
-			$dsn = "mysql:host=$host;port=$port;dbname=$db";
-
-		elseif($driver == 'cubrid')
-			$dsn = "cubrid:dbname=$db;host=$host;port=$post";
-
-		elseif($driver == 'firebird')
-			$dsn = "firebird:dbname=$host/port:$port$db";
-
-		elseif($driver == 'ibm')
-			$dsn = "ibm:DRIVER={IBM DB2 ODBC DRIVER};DATABASE=$db;HOSTNAME=$host;PORT=$port;PROTOCOL=$protocol;";
-
-		elseif($driver == 'informix')
-			$dsn = "informix:host=$host;service=$service;database=$db;server=$server;protocol=$protocol;EnableScrollableCursors=1";
-
-		elseif($driver == 'oci')
-			$dsn = "oci:dbname=//$host:$port/$db";
-
-		elseif($driver == 'sqlsrv')
-			$dsn = "sqlsrv:Server=$host,$port;Database=$db";
-
-		elseif($driver == 'odbc')
-			{
-				if (!file_exists($db)) {
-				    die("Could not find database file in $db");
-				}
-
-				$dsn = "odbc:DRIVER={Microsoft Access Driver (*.mdb, *.accdb)}; DBQ=$db; Uid=$user; Pwd=$pass;";
-			}
-
-		elseif($driver == 'pgsql')
-			$dsn = "pgsql:host=$host;port=$port;dbname=$db;user=$user;password=$pass";
-
-		elseif($driver == '4D')
-			$dsn = "4D:host=$host;charset=UTF-8";
-
+	{		
+		
+		require_once(SYSTEM.'/class/dbDriver/'.$driver.'.inc');
 
 		try{			
 
