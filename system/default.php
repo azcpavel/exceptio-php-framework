@@ -35,6 +35,11 @@ if(isset($user_uri[0]) && $user_uri[0] != '' && strpos($user_uri[0],'?') === fal
 			$controller_option[] = $value;
 	}
 
+	//adding route config
+	if(isset($config['route']) && isset($config['route'][$controller_option[0]])){
+		$controller_option[0] = $config['route'][$controller_option[0]];
+	}
+
 	if(file_exists(APPLICATION.'/controllers/'.$controller_option[0].'.php'))
 		if(class_exists($controller_option[0]))
 			$obj = new $controller_option[0];
