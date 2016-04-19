@@ -85,113 +85,15 @@ if(isset($user_uri[0]) && $user_uri[0] != '' && strpos($user_uri[0],'?') === fal
 
 		if(in_array($method, $obj_meth))
 		{
-			switch (count($prm)) {
-				case 1:
-					$obj->$method($prm[0]);
-					break;
-					
-				case 2:
-					$obj->$method($prm[0],$prm[1]);
-					break;
-					
-				case 3:
-					$obj->$method($prm[0],$prm[1],$prm[2]);
-					break;
-					
-				case 4:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3]);
-					break;
-					
-				case 5:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4]);
-					break;
-					
-				case 6:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5]);
-					break;
-					
-				case 7:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6]);
-					break;
-					
-				case 8:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7]);
-					break;
-					
-				case 9:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8]);
-					break;
-					
-				case 10:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9]);
-					break;
-					
-				case 11:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10]);
-					break;
-					
-				case 12:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11]);
-					break;
-					
-				case 13:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11],$prm[12]);
-					break;
-					
-				case 14:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11],$prm[12],
-								$prm[13]);
-					break;
-					
-				case 15:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11],$prm[12],
-								$prm[13],$prm[14]);
-					break;
-					
-				case 16:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11],$prm[12],
-								$prm[13],$prm[14],$prm[15]);
-					break;
-					
-				case 17:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11],$prm[12],
-								$prm[13],$prm[14],$prm[15],$prm[16]);
-					break;
-					
-				case 18:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11],$prm[12],
-								$prm[13],$prm[14],$prm[15],$prm[16],$prm[17]);
-					break;
-					
-				case 19:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11],$prm[12],
-								$prm[13],$prm[14],$prm[15],$prm[16],$prm[17],$prm[18]);
-					break;
-					
-				case 20:
-					$obj->$method($prm[0],$prm[1],$prm[2],$prm[3],$prm[4],$prm[5],
-								$prm[6],$prm[7],$prm[8],$prm[9],$prm[10],$prm[11],$prm[12],
-								$prm[13],$prm[14],$prm[15],$prm[16],$prm[17],$prm[18],$prm[19]
-							);
-					break;
-													
-				default:
-					$obj->$method();
-					break;
-			}			
+			
+			$paramStr = '';
+			for ($countParam=0; $countParam < count($prm); $countParam++) { 
+				$paramStr .= '$prm['.$countParam.'],';
+			}
+			$paramStr = substr($paramStr, 0, -1);
+
+			eval('$obj->$method('.$paramStr.');');
+						
 		}
 		else
 		{
