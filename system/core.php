@@ -197,7 +197,9 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 		'hdoc'		=> '/"/',				//Heredoc
 		'ndoc'		=> "/\'/",				//Nowdoc		
 		'gt'		=> '/>/',				//Greater than
-		'lt'		=> '/</',				//Less than		
+		'lt'		=> '/</',				//Less than
+		'startPra'	=> '/\(/',				//Opening parenthesis
+		'endPra'	=> '/\)/',				//Closing parenthesis
 		);
 
 	$replacement = array(
@@ -205,7 +207,9 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 		'hdoc'		=> '&#34;',				//Heredoc
 		'ndoc'		=> '&#39;',				//Nowdoc		
 		'gt'		=> '&#62;',				//Greater than
-		'lt'		=> '&#60;',				//Less than		
+		'lt'		=> '&#60;',				//Less than
+		'startPra'	=> '&#40;',				//Opening parenthesis
+		'endPra'	=> '&#41;',				//Closing parenthesis		
 		);
 
 	if(is_array($allowTags))
