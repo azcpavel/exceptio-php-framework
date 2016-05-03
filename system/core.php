@@ -467,6 +467,12 @@ if(!function_exists('look')){
 	}
 }
 
+if(!function_exists('unserializer')){
+	function unserializer($string = ''){
+		return unserialize(preg_replace('!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $string));
+	}
+}
+
 
 function &get_controller_instance()
 {
