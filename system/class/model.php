@@ -17,7 +17,8 @@ abstract class Ex_Model
 	public 	$session;
 	public 	$input;
 	public 	$server;
-	public 	$globals;	
+	public 	$globals;
+	public 	$config;	
 	
 
 	#use Select, MkArrayObj;
@@ -31,7 +32,8 @@ abstract class Ex_Model
 		$this->cookie 	 = new cookieClass;		
 		$this->input 	 = new inputClass;	
 		$this->server 	 = new serverClass;
-		$this->globals 	 = new globalsClass;	
+		$this->globals 	 = new globalsClass;
+		$this->config 	 = new configClass;
 	}
 
 	function __call($mth_name,$mth_arg)
