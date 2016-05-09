@@ -11,7 +11,7 @@ $db_config['default']['service']  	= '';
 $db_config['default']['protocol']  	= '';
 $db_config['default']['server']  	= '';
 $db_config['default']['uid']  		= '';
-$db_config['default']['options']  	= array('');
+$db_config['default']['options']  	= array();
 $db_config['default']['autocommit'] = true;
-
+$db_config['default']['preExecute'] = array(); //Any commands that will execute after db connect
 ?>

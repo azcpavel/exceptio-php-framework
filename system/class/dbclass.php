@@ -40,7 +40,7 @@ Final class DbClass
 	public $errors = '';
 
 	
-	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true)
+	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true, $preExecute = '')
 	{		
 		
 		require_once(SYSTEM.'/class/dbDriver/'.$driver.'.inc');
@@ -72,6 +72,11 @@ Final class DbClass
 				$this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
 			else			
 				$this->pdo->setAttribute(PDO::ATTR_PERSISTENT, true);
+
+			if(is_array($preExecute) && count($preExecute) > 0)
+			foreach ($preExecute as $value) {
+				$this->pdo->exec($value);
+			}
 
 		} catch (PDOException $error) {
 		    $this->printError($error);
