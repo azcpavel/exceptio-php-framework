@@ -46,7 +46,7 @@ Final class DbClass
 		require_once(SYSTEM.'/class/dbDriver/'.$driver.'.inc');
 
 		try{			
-			//look($dsn);
+
 			$this->db_driver 	= $driver;
 			$this->db_host 		= $host;
 			$this->db_uname 	= $user;
@@ -208,7 +208,7 @@ Final class DbClass
 	{
 		$select = ($this->select == NULL ) ? '*' : $this->select;
 		if ($query === "")
-			$query = "SELECT {$select} FROM {$this->db_prefix}{$this->table} {$this->join} ".( ($this->where !== 1) ? 'WHERE {$this->where}' : '')." {$this->group_by} {$this->order_by} {$this->limit}";
+			$query = "SELECT {$select} FROM {$this->db_prefix}{$this->table} {$this->join} WHERE {$this->where} {$this->group_by} {$this->order_by} {$this->limit}";
 
 		$this->query_str = $query;
 		try{			
