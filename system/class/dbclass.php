@@ -20,6 +20,8 @@ Final class DbClass
 	private $limit 		= '';
 	private $query;
 	private $query_str;
+	private $wrapColumnStart = '`';
+	private $wrapColumnEnd = '`';
 	private $prepare;
 	private $prepareSql;
 	private $affected_rows;
@@ -46,7 +48,7 @@ Final class DbClass
 		require_once(SYSTEM.'/class/dbDriver/'.$driver.'.inc');
 
 		try{			
-
+			//look($dsn);
 			$this->db_driver 	= $driver;
 			$this->db_host 		= $host;
 			$this->db_uname 	= $user;
@@ -70,8 +72,13 @@ Final class DbClass
 			
 			if($autocommit)
 				$this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
-			else			
+			else if($driver != 'dblib' || substr(phpversion(), 0,1) == 7){
+				if($driver == 'dblib'){
+					$this->wrapColumnStart = '[';
+					$this->wrapColumnEnd = ']';
+				}
 				$this->pdo->setAttribute(PDO::ATTR_PERSISTENT, true);
+			}
 
 			if(is_array($preExecute) && count($preExecute) > 0)
 			foreach ($preExecute as $value) {
@@ -208,7 +215,7 @@ Final class DbClass
 	{
 		$select = ($this->select == NULL ) ? '*' : $this->select;
 		if ($query === "")
-			$query = "SELECT {$select} FROM {$this->db_prefix}{$this->table} {$this->join} WHERE {$this->where} {$this->group_by} {$this->order_by} {$this->limit}";
+			$query = "SELECT {$select} FROM {$this->db_prefix}{$this->table} {$this->join} ".( ($this->where !== 1) ? "WHERE ".$this->where : '')." {$this->group_by} {$this->order_by} {$this->limit}";
 
 		$this->query_str = $query;
 		try{			
@@ -347,23 +354,50 @@ Final class DbClass
 		if(is_array($where)){
 			if(isset($where['db_table']))
 			{							
-				$db_table 	= $this->db_prefix.$where['db_table'].'.';
+				$db_table 	= $this->db_prefix.$where['db_table'];
 				unset($where['db_table']);
 			}
-			foreach ($where as $key => $value) {
+			foreach ($where as $key => $value) {				
 
-				if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) && (preg_match('/ AND$| OR$|\'|^$/', $value)) )
-					$where_full .= " {$db_table}$key $value";
-				else if( preg_match('/ LIKE| BETWEEN/', $key) )
-					$where_full .= " {$db_table}$key $value AND";
-				elseif(preg_match('/IN| NOT IN/', $key))
-					$where_full .= " {$db_table}$key ($value)";
-				elseif(preg_match('/<|>|\=|!/', $key))
-					$where_full .= " {$db_table}$key '$value' AND";
-				elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
-					$where_full .= " {$db_table}$key = $value";
-				else
-					$where_full .= " {$db_table}$key = '$value' AND";
+				if($this->db_driver != 'dblib'){
+
+					if($db_table == '')
+						$db_table = $this->wrapColumnStart;
+					else
+						$db_table = $this->wrapColumnStart.$db_table.'.';
+
+					if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) && (preg_match('/ AND$| OR$|\'|^$/', $value)) )
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} $value";
+					else if( preg_match('/ LIKE| BETWEEN/', $key) )
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} $value AND";
+					elseif(preg_match('/IN| NOT IN/', $key))
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} ($value)";
+					elseif(preg_match('/<|>|\=|!/', $key))
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} '$value' AND";
+					elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} = $value";
+					else
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} = '$value' AND";
+				}else{
+					
+					if($db_table == '')
+						$db_table = $this->wrapColumnStart;
+					else
+						$db_table = $this->wrapColumnStart.$db_table.$this->wrapColumnEnd.'.'.$this->wrapColumnStart.'dbo'.$this->wrapColumnEnd.'.'.$this->wrapColumnStart;					
+
+					if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) && (preg_match('/ AND$| OR$|\'|^$/', $value)) )
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} $value";
+					else if( preg_match('/ LIKE| BETWEEN/', $key) )
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} $value AND";
+					elseif(preg_match('/IN| NOT IN/', $key))
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} ($value)";
+					elseif(preg_match('/<|>|\=|!/', $key))
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} '$value' AND";
+					elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} = $value";
+					else
+						$where_full .= " {$db_table}$key{$this->wrapColumnEnd} = '$value' AND";
+				}
 			}
 
 			
@@ -514,7 +548,7 @@ Final class DbClass
 			foreach ($values as $key => $value) {
 				
 					$values_full .= "'$value',";
-					$key_full .= "$key,";
+					$key_full .= "{$this->wrapColumnStart}$key{$this->wrapColumnEnd},";
 			}
 
 			$values_full = substr($values_full, 0, -1).')';
@@ -544,7 +578,7 @@ Final class DbClass
 		if(is_array($keys)){
 			$key_full = '(';
 			foreach ($keys as $keyKeys => $valueKeys) {				
-				$key_full .= "$valueKeys,";
+				$key_full .= "{$this->wrapColumnStart}$valueKeys{$this->wrapColumnEnd},";
 			}			
 			$key_full = substr($key_full, 0, -1).')';
 		}
@@ -588,7 +622,7 @@ Final class DbClass
 		if(is_array($values)){
 			foreach ($values as $key => $value) {
 				
-					$values_full .= " $key = '$value',";
+					$values_full .= " {$this->wrapColumnStart}$key{$this->wrapColumnEnd} = '$value',";
 			}
 
 			$values_full = substr($values_full, 0, -1);
