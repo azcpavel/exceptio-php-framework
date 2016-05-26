@@ -72,7 +72,7 @@ Final class DbClass
 			
 			if($autocommit)
 				$this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
-			else if($driver != 'dblib' || substr(phpversion(), 0,1) == 7)				
+			else if($driver != 'dblib' || substr(phpversion(), 0,1) >= 7)				
 				$this->pdo->setAttribute(PDO::ATTR_PERSISTENT, true);			
 
 			if(is_array($preExecute) && count($preExecute) > 0)
