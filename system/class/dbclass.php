@@ -20,8 +20,8 @@ Final class DbClass
 	private $limit 		= '';
 	private $query;
 	private $query_str;
-	private $wrapColumnStart = '`';
-	private $wrapColumnEnd = '`';
+	private $wrapColumnStart = '';
+	private $wrapColumnEnd = '';
 	private $prepare;
 	private $prepareSql;
 	private $affected_rows;
@@ -72,13 +72,8 @@ Final class DbClass
 			
 			if($autocommit)
 				$this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
-			else if($driver != 'dblib' || substr(phpversion(), 0,1) == 7){
-				if($driver == 'dblib'){
-					$this->wrapColumnStart = '[';
-					$this->wrapColumnEnd = ']';
-				}
-				$this->pdo->setAttribute(PDO::ATTR_PERSISTENT, true);
-			}
+			else if($driver != 'dblib' || substr(phpversion(), 0,1) == 7)				
+				$this->pdo->setAttribute(PDO::ATTR_PERSISTENT, true);			
 
 			if(is_array($preExecute) && count($preExecute) > 0)
 			foreach ($preExecute as $value) {
