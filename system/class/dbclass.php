@@ -362,16 +362,26 @@ Final class DbClass
 				if($db_table == '')
 					$db_table = $this->wrapColumnStart;																			
 
-				if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) && (preg_match('/ AND$| OR$|\'|^$/', $value)) )
-					$where_full .= " {$db_table}$key{$this->wrapColumnEnd} $value";
-				else if( preg_match('/ LIKE| BETWEEN/', $key) )
-					$where_full .= " {$db_table}$key{$this->wrapColumnEnd} $value AND";
-				elseif(preg_match('/IN| NOT IN/', $key))
-					$where_full .= " {$db_table}$key{$this->wrapColumnEnd} ($value)";
-				elseif(preg_match('/<|>|\=|!/', $key))
-					$where_full .= " {$db_table}$key{$this->wrapColumnEnd} '$value' AND";
-				elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value))
-					$where_full .= " {$db_table}$key{$this->wrapColumnEnd} = $value";
+				if( preg_match('/<|>|\=|!| LIKE| BETWEEN/', $key) && (preg_match('/ AND$| OR$|\'|^$/', $value)) ){
+					$tmpVar = explode(' ', $key);
+					$where_full .= " {$db_table}{$tmpVar[0]}{$this->wrapColumnEnd} {$tmpVar[1]} $value";
+				}
+				else if( preg_match('/ LIKE| BETWEEN/', $key) ){
+					$tmpVar = explode(' ', $key);
+					$where_full .= " {$db_table}{$tmpVar[0]}{$this->wrapColumnEnd} {$tmpVar[1]} $value AND";
+				}
+				elseif(preg_match('/IN| NOT IN/', $key)){
+					$tmpVar = explode(' ', $key);
+					$where_full .= " {$db_table}{$tmpVar[0]}{$this->wrapColumnEnd} {$tmpVar[1]} ($value)";
+				}
+				elseif(preg_match('/<|>|\=|!/', $key)){
+					$tmpVar = explode(' ', $key);
+					$where_full .= " {$db_table}{$tmpVar[0]}{$this->wrapColumnEnd} {$tmpVar[1]} '$value' AND";
+				}
+				elseif (preg_match('/ AND$| OR$|^\(|\)$/', $value)){
+					$tmpVar = explode(' ', $key);
+					$where_full .= " {$db_table}{$tmpVar[0]}{$this->wrapColumnEnd} {$tmpVar[1]} = $value";
+				}
 				else
 					$where_full .= " {$db_table}$key{$this->wrapColumnEnd} = '$value' AND";
 				
