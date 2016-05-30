@@ -40,6 +40,8 @@ define('BASEHOST', $config['base_host']);
 
 define('BASEDIR', $config['base_dir']);
 
+define('URL_POSTFIX', $config['url_postFix']);
+
 define('TIMEZONE', $config['time_zone']);
 
 define('INDEXPHP', $config['hide_index']);

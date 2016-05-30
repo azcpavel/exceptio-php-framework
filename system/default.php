@@ -78,7 +78,7 @@ if(isset($user_uri[0]) && $user_uri[0] != '' && strpos($user_uri[0],'?') === fal
 	else
 	{		
 
-		$method = $controller_option[0];
+		$method = str_replace(URL_POSTFIX, '', $controller_option[0]);
 		array_shift($controller_option);
 
 		$prm = $controller_option;		

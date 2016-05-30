@@ -45,8 +45,12 @@ function redirect($link = '', $option = 1){
 			header("Location: ".$link);
 	}
 	else{
+		$linkOp = explode('/', $link);
+		if(isset($linkOp[1]))
+			$linkOp[1] = $linkOp[1].URL_POSTFIX;
+		$linkOp = implode('/', $linkOp);
 		if($option)
-			header("Location: ".BASEPATH.$link);
+			header("Location: ".BASEPATH.$linkOp);
 		else
 			header("Location: ".$link);
 	}

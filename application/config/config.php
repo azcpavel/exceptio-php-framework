@@ -19,6 +19,8 @@ $config['cookie_httponly'] = true; //will apply for cookie, value true or false
 
 $config['show_db_error'] = true; //show db error for query, value true or false
 
+$config['url_postFix'] = ''; //will add postfix after controller method
+
 /*******************************************************************************************
 
 CREATE TABLE IF NOT EXISTS ex_sessions(
