@@ -473,7 +473,11 @@ if(!function_exists('look')){
 
 if(!function_exists('unserializer')){
 	function unserializer($string = ''){
-		return unserialize(preg_replace('!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $string));
+		return unserialize(preg_replace_callback ( '!s:(\d+):"(.*?)";!',
+		    function($match) {
+		        return ($match[1] == strlen($match[2])) ? $match[0] : 's:' . strlen($match[2]) . ':"' . $match[2] . '";';
+		    },
+			$string));
 	}
 }
 
