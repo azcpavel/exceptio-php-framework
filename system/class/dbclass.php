@@ -45,10 +45,10 @@ Final class DbClass
 	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true, $preExecute = '')
 	{		
 		
-		require_once(SYSTEM.'/class/dbDriver/'.$driver.'.inc');
+		require(SYSTEM.'/class/dbDriver/'.$driver.'.inc');
 
-		try{			
-			//look($dsn);
+		try{	
+			
 			$this->db_driver 	= $driver;
 			$this->db_host 		= $host;
 			$this->db_uname 	= $user;
@@ -64,9 +64,9 @@ Final class DbClass
 			$this->db_options	= $options;
 
 			if(is_array($options) && count($options) > 0)
-				$this->pdo = @new pdo($dsn,$user,$pass,$this->db_options);
+				$this->pdo = new pdo($dsn,$user,$pass,$this->db_options);
 			else
-				$this->pdo = @new pdo($dsn,$user,$pass);
+				$this->pdo = new pdo($dsn,$user,$pass);
 			
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			
