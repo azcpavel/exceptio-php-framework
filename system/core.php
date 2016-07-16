@@ -236,10 +236,10 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 		}		
 	}
 
-	if(is_array($input)){
+	if(!is_string($input)){
 		foreach ($input as $key => $value) {
-			if(is_array($value))
-				$input[$key] = replace_regx($value, $otherRegx, $allowTags);
+			if(!is_string($value))
+				$input[$key] = replace_regx((array) $value, $otherRegx, $allowTags);
 			else
 				$input[$key] = preg_replace($regx, $replacement, $value);
 		}
