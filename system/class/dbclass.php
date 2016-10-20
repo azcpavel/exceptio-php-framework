@@ -562,7 +562,7 @@ Final class DbClass
 
 	}
 	
-	function insert_multi($table, $keys , $values = 1, $typeQr = 'INSERT')
+	function insert_multi($table, $keys , $values = 1, $chunkSplit=100, $typeQr = 'INSERT')
 	{
 	
 		$values_full = '';
@@ -578,7 +578,18 @@ Final class DbClass
 		else
 			$key_full .= $keys.')';
 		
-		if(is_array($values)){			
+		if(is_array($values)){
+
+			if(count($values) > $chunkSplit){
+				$chunk = array_chunk($values, $chunkSplit);
+
+				foreach ($chunk as $keyChunk => $valueChunk) {
+					$this->insert_multi($table, $keys, $valueChunk, $chunkSplit, $typeQr);
+				}
+				
+				return $this;
+			}
+
 			foreach ($values as $keyValues => $valueValues) {
 				$values_full .= '(';
 				foreach ($valueValues as $value){					
