@@ -710,6 +710,71 @@ Final class DbClass
 		return $this;
 	}
 
+	function export_table_splite($table, $rowCount = 100, $splite = 100){
+		$rowCountVal = $this->select('count(*) as rCount')->get($table)->row()->rCount;
+		$rowColumns = $this->query('show columns from '.$table)->result();
+		
+		for ($fileSplite=0; $fileSplite < $splite ; $fileSplite++) { 
+			$fileHandeler = fopen(DOCUMENT_ROOT.BASEDIR.'table_'.$table.'_part_'.($fileSplite + 1).".sql", "w");
+
+			$limit = ceil($rowCountVal / $splite);
+
+			$queryRows = $this->limit($limit * $fileSplite, $limit)->get($table)->result_array();
+
+			$queryTable = $this->query('show create table '.$table)->row_array();
+
+            $sign = '--  @author Ahsan Zahid Chowdhury <itszahid.info>'.PHP_EOL.
+                    '--  @since 2016-12-11'.PHP_EOL.
+                    '--  @abstruct To export large table data in splite file'.PHP_EOL.
+                    '--  @version 1.0.1'.PHP_EOL.
+                    '--  @time '.date('Y-m-d H:i:s').PHP_EOL.PHP_EOL.PHP_EOL.PHP_EOL;
+            fwrite($fileHandeler, $sign);
+
+			$queryTable = str_replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS", $queryTable['Create Table']).";".PHP_EOL.PHP_EOL.PHP_EOL;
+			fwrite($fileHandeler, $queryTable);
+			
+			$rowTxt = "";
+			$queryCount = 1;
+			foreach ($queryRows as $keyRow => $valueRow) {
+				
+				if($queryCount == 1){
+					$rowTxt = "INSERT INTO ".$table." (";
+					foreach ($rowColumns as $key => $value) {
+						$rowTxt .= $value->Field.",";
+					}
+					$rowTxt = substr($rowTxt, 0, -1);
+					$rowTxt .= ") VALUES ";
+                    fwrite($fileHandeler, $rowTxt);
+                    $rowTxt = "".PHP_EOL;
+				}
+
+				$rowTxt .= "('".implode("','", $valueRow)."'),";
+
+                $querySplite = ($limit < $rowCount) ? $limit : $rowCount;
+				if($queryCount == $querySplite){
+					$rowTxt = substr($rowTxt, 0, -1);
+					$rowTxt .= ';'.PHP_EOL;					
+					$queryCount = 0;
+				}
+				else if($queryCount != $querySplite && $keyRow == count($queryRows)-1){
+                    $rowTxt = substr($rowTxt, 0, -1);
+                    $rowTxt .= ';'.PHP_EOL;
+                }
+
+                fwrite($fileHandeler, $rowTxt);
+                $rowTxt = "".PHP_EOL;
+				$queryCount++;
+				
+				
+			}
+
+			fclose($fileHandeler);
+						
+			
+		}
+
+	}
+
 	function get_errors(){
 		return $this->errors;
 	}
