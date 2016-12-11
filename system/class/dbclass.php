@@ -740,29 +740,36 @@ Final class DbClass
 				if($queryCount == 1){
 					$rowTxt = "INSERT INTO ".$table." (";
 					foreach ($rowColumns as $key => $value) {
-						$rowTxt .= $value->Field.",";
+						$rowTxt .= $this->wrapColumnStart.$value->Field.$this->wrapColumnEnd.",";
 					}
 					$rowTxt = substr($rowTxt, 0, -1);
-					$rowTxt .= ") VALUES ";
+					$rowTxt .= ") VALUES ".PHP_EOL;
                     fwrite($fileHandeler, $rowTxt);
-                    $rowTxt = "".PHP_EOL;
+                    $rowTxt = "";
 				}
 
-				$rowTxt .= "('".implode("','", $valueRow)."'),";
+				$rowTxt .= "(";
+				foreach ($valueRow as $keyData => $valueData) {
+					
+					$rowTxt .= "'".str_replace("'", "\'", $valueData)."',";
+					
+				}
+				$rowTxt = substr($rowTxt, 0, -1);
+				$rowTxt .= "),".PHP_EOL;
 
                 $querySplite = ($limit < $rowCount) ? $limit : $rowCount;
 				if($queryCount == $querySplite){
-					$rowTxt = substr($rowTxt, 0, -1);
+					$rowTxt = substr($rowTxt, 0, -2);
 					$rowTxt .= ';'.PHP_EOL;					
 					$queryCount = 0;
 				}
 				else if($queryCount != $querySplite && $keyRow == count($queryRows)-1){
-                    $rowTxt = substr($rowTxt, 0, -1);
+                    $rowTxt = substr($rowTxt, 0, -2);
                     $rowTxt .= ';'.PHP_EOL;
                 }
 
                 fwrite($fileHandeler, $rowTxt);
-                $rowTxt = "".PHP_EOL;
+                $rowTxt = "";
 				$queryCount++;
 				
 				
