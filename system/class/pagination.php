@@ -24,6 +24,7 @@ Final class pagination
 	private $end_part = '';
 	private $before_tag = '';
 	private $after_tag = '';
+	private $with_query_param = true;
 
 	function __construct(array $array = array(''))
 	{
@@ -79,7 +80,7 @@ Final class pagination
 
 		$queryParam = "";
 
-		if(count($_GET) > 0){
+		if(count($_GET) > 0 && $this->with_query_param){
 			$queryParam = "?".$_SERVER['QUERY_STRING'];
 		}		
 
