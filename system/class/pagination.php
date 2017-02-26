@@ -75,7 +75,13 @@ Final class pagination
 
 	function show()
 	{
-		if($this->per_page < $this->total){		
+		if($this->per_page < $this->total){
+
+		$queryParam = "";
+
+		if(count($_GET) > 0){
+			$queryParam = "?".$_SERVER['QUERY_STRING'];
+		}		
 
 		$tmp = (int) ($this->total - ($this->per_page * 3));		
 		
@@ -95,7 +101,7 @@ Final class pagination
 		if($next >= ($this->total / $this->per_page ))
 						$next = $this->total - $this->per_page;
 		
-		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/0'>{$this->first}</a> ".$this->after_tag;		
+		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/0{$queryParam}'>{$this->first}</a> ".$this->after_tag;		
 		
 		$count_li = 1;
 		
@@ -113,11 +119,11 @@ Final class pagination
 		$next = ($next >= $this->total) ? $next - $this->per_page : $next;
 		
 						
-		echo $this->before_tag."<a href='{$this->base_url}/{$prev}'><<</a> ".$this->after_tag;
+		echo $this->before_tag."<a href='{$this->base_url}/{$prev}{$queryParam}'><<</a> ".$this->after_tag;
 
 		for ($list_page = $this->start; $list_page < ($this->total / $this->per_page); $list_page++) { 
 
-			echo "{$this->before_tag}<a href='{$this->base_url}/".($list_page * $this->per_page)."'>{$list_page}</a>{$this->after_tag} ";			
+			echo "{$this->before_tag}<a href='{$this->base_url}/".($list_page * $this->per_page)."{$queryParam}'>{$list_page}</a>{$this->after_tag} ";			
 			
 				
 			$count_li++;
@@ -131,9 +137,9 @@ Final class pagination
 		if($last <= $this->total) 
 			$last = $this->total;
 			
-		echo $this->before_tag."<a href='{$this->base_url}/{$next}'>>></a> ".$this->after_tag;
+		echo $this->before_tag."<a href='{$this->base_url}/{$next}{$queryParam}'>>></a> ".$this->after_tag;
 		
-		echo $this->before_tag."<a href='{$this->base_url}/".($last-$this->per_page)."'>{$this->last}</a>".$this->after_tag.$this->end_part;
+		echo $this->before_tag."<a href='{$this->base_url}/".($last-$this->per_page)."{$queryParam}'>{$this->last}</a>".$this->after_tag.$this->end_part;
 		
 		}
 	}
