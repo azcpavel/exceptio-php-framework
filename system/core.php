@@ -316,27 +316,29 @@ function replace_regx($input, $otherRegx = '', $allowTags = '')
 
 
 function ex_encrypt($text, $salt = ENCRYPT_SALT) 
-{ 
-    $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-    $iv = mcrypt_create_iv($iv_size, MCRYPT_DEV_URANDOM);
-
-    $returnText = $iv.mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $salt,
-                                 trim($text), MCRYPT_MODE_CBC, $iv);
-
-    return base64_encode($returnText);
+{
+	$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+	$iv = openssl_random_pseudo_bytes($ivlen);
+	$ciphertext_raw = openssl_encrypt($text, $cipher, $salt, $options=OPENSSL_RAW_DATA, $iv);
+	$hmac = hash_hmac('sha256', $ciphertext_raw, $salt, $as_binary=true);
+	return base64_encode( $iv.$hmac.$ciphertext_raw );
 } 
 
 function ex_decrypt($text, $salt = ENCRYPT_SALT) 
-{    
-    $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-    $iv = mcrypt_create_iv($iv_size, MCRYPT_DEV_URANDOM);
+{
+    $c = base64_decode($text);
+	$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+	$iv = substr($c, 0, $ivlen);
+	$hmac = substr($c, $ivlen, $sha2len=32);
+	$text_raw = substr($c, $ivlen+$sha2len);
+	$original_plaintext = @openssl_decrypt($text_raw, $cipher, $salt, $options=OPENSSL_RAW_DATA, $iv);
+	$calcmac = hash_hmac('sha256', $text_raw, $salt, $as_binary=true);
+	if (@hash_equals($hmac, $calcmac))//PHP 5.6+ timing attack safe comparison
+	{
+	    return $original_plaintext;
+	}
 
-    $returnText = base64_decode($text);
-    $iv_dec = substr($returnText, 0, $iv_size);
-    $returnText = substr($returnText, $iv_size);
-
-    return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt,
-                                    $returnText, MCRYPT_MODE_CBC, $iv_dec));
+	return $text;
 }
 
 
