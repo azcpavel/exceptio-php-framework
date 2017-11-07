@@ -24,6 +24,7 @@ Final class pagination
 	private $end_part = '';
 	private $before_tag = '';
 	private $after_tag = '';
+	private $page_slub = 4;
 	private $with_query_param = true;
 
 	function __construct(array $array = array(''))
@@ -82,25 +83,15 @@ Final class pagination
 
 		if(count($_GET) > 0 && $this->with_query_param){
 			$queryParam = "?".$_SERVER['QUERY_STRING'];
-		}		
-
-		$tmp = (int) ($this->total - ($this->per_page * 3));		
-		
-		if($this->start >= $tmp)
-			{
-				$this->start = (int) ($this->start - ($this->per_page * 3));
-				if($this->start <= 0 )
-						$this->start = 1;					
-			}
-			
+		}			
 		
 		$prev = $this->start - $this->per_page; 
 		if($prev <= 0 )
-						$prev = 0;
+			$prev = 0;
 						
 		$next = $this->start + $this->per_page; 
 		if($next >= ($this->total / $this->per_page ))
-						$next = $this->total - $this->per_page;
+			$next = $this->total - $this->per_page;
 		
 		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/0{$queryParam}'>{$this->first}</a> ".$this->after_tag;		
 		
@@ -122,16 +113,19 @@ Final class pagination
 						
 		echo $this->before_tag."<a href='{$this->base_url}/{$prev}{$queryParam}'><<</a> ".$this->after_tag;
 
-		for ($list_page = $this->start; $list_page < ($this->total / $this->per_page); $list_page++) { 
+		$midLink = ($this->total / $this->per_page);
 
+		for ($list_page = $this->start; $midLink < 5 ? 5 : $midLink; $list_page++) { 
+			if(($list_page * $this->per_page) > $this->total)
+				break;
 			echo "{$this->before_tag}<a href='{$this->base_url}/".($list_page * $this->per_page)."{$queryParam}'>{$list_page}</a>{$this->after_tag} ";			
 			
 				
 			$count_li++;
-			if($count_li == 4)
+			if($count_li == $this->page_slub)
 				break;
 
-			if($list_page == $this->total )
+			if($list_page == $this->total)
 				break;
 		}
 		$last = $this->total - (int)($this->per_page / 2);
