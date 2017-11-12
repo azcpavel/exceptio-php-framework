@@ -96,7 +96,7 @@ Final class pagination
 		if($next >= ($this->total / $this->per_page ))
 			$next = $this->total - $this->per_page;
 		
-		echo $this->begin_part.$this->before_tag."<a href='{$this->base_url}/0{$queryParam}'>{$this->first}</a> ".$this->after_tag;		
+		echo $this->begin_part.( (uri_segment($this->uri_segment) == 0) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/0{$queryParam}'>{$this->first}</a> ".$this->after_tag;		
 		
 		$count_li = 1;
 		
@@ -118,11 +118,12 @@ Final class pagination
 
 		$midLink = ($this->total / $this->per_page);
 		
-		for ($list_page = $this->start; $midLink < 5 ? 5 : $midLink; $list_page++) { 
+		for ($list_page = $this->start; $midLink < 5 ? 5 : $midLink; $list_page++) {
+		 
 			if(($list_page * $this->per_page) > $this->total )
 				break;
 
-			echo ( (($list_page * $this->per_page) == uri_segment($this->uri_segment)) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/".($list_page * $this->per_page)."{$queryParam}'>".$list_page."</a>{$this->after_tag} ";			
+			echo ( (($list_page * $this->per_page) == uri_segment($this->uri_segment)) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/".($list_page * $this->per_page)."{$queryParam}'>".($list_page+1)."</a>{$this->after_tag} ";			
 			
 				
 			$count_li++;
@@ -138,7 +139,7 @@ Final class pagination
 			
 		echo $this->before_tag."<a href='{$this->base_url}/{$next}{$queryParam}'>>></a> ".$this->after_tag;
 		
-		echo $this->before_tag."<a href='{$this->base_url}/".($last * $this->per_page)."{$queryParam}'>{$this->last}</a>".$this->after_tag.$this->end_part;
+		echo ( (uri_segment($this->uri_segment) == ($last * $this->per_page)) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/".($last * $this->per_page)."{$queryParam}'>{$this->last}</a>".$this->after_tag.$this->end_part;
 		
 		}
 	}
