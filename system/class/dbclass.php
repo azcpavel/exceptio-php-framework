@@ -42,10 +42,15 @@ Final class DbClass
 	public $errors = '';
 
 	
-	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true, $preExecute = '')
+	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true, $preExecute = '', $useDbEscape = true)
 	{		
 		
 		require(SYSTEM.'/class/dbDriver/'.$driver.'.inc');
+
+		if(!$useDbEscape){
+			$this->wrapColumnStart = '';
+			$this->wrapColumnEnd = '';
+		}
 
 		try{	
 			

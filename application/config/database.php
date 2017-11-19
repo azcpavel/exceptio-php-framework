@@ -1,5 +1,4 @@
 <?php
-
 $db_config['default']['driver'] 	= 'mysql'; //Both 'mysql' and 'mysqli' use "mysql".
 $db_config['default']['host'] 		= 'localhost';
 $db_config['default']['user'] 		= '';
@@ -14,4 +13,5 @@ $db_config['default']['uid']  		= '';
 $db_config['default']['options']  	= array();
 $db_config['default']['autocommit'] = true;
 $db_config['default']['preExecute'] = array(); //Any commands that will execute after db connect
+$db_config['default']['useDbEscape'] = false; //will add db escape to db query for mysql (`), for sqlServ ([])
 ?>
