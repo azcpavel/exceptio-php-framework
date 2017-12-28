@@ -77,7 +77,7 @@ Final class LoadClass
 		$Controller =& get_controller_instance();
 
 		$base_name = basename($load_libraries_name);
-
+		
 		if(file_exists(DOCUMENT_ROOT.BASEDIR.SYSTEM.'/libraries/'.$load_libraries_name.'.php'))
 			{
 				if(!class_exists($base_name))
@@ -115,7 +115,7 @@ Final class LoadClass
 	function app_library($load_libraries_name = '', $config = '')
 	{
 		$Controller =& get_controller_instance();
-
+		
 		$base_name = basename($load_libraries_name);
 
 		if(file_exists(APPLICATION.'/libraries/'.$load_libraries_name.'.php'))

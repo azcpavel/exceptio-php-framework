@@ -133,11 +133,27 @@ function truncate_str($str, $maxlen) {
 }
 
 function print_thousand($num, $dec = 2)
-	{
-		if($num > 3)
+	{	 
+	    $minus = '';
+	    if($num < 0){
+	    	$minus = '-';
+	    	$num = abs($num);
+	    }
+
+	    //Get the integer part
+	    $intpart = floor ( $num );
+	 
+	    //Get the fraction part
+	    $fraction = round($num - $intpart,2);
+	    if($fraction > 0)
+	    	$fraction = substr($fraction, 2);
+	    else
+	    	$fraction = '00';
+	    
+		if($intpart > 3)
 		{
-			$last_part = substr($num, -3, 3);
-			$first_part = substr($num, 0, -3);
+			$last_part = substr($intpart, -3, 3);
+			$first_part = substr($intpart, 0, -3);
 			$final = '';
 			$final_first = '';
 			
@@ -172,11 +188,110 @@ function print_thousand($num, $dec = 2)
 			$tmp_first = str_split($final);
 			if($tmp_first[0]==',')
 				$final = substr($final, 1);
-			return $final_first.$final;
+			return $minus.$final_first.$final.'.'.$fraction;
 		}
 		else
 			return $num;
 }
+
+
+/** 
+*  Function:   num_to_word 
+*
+*  Description: 
+*  Converts a given number into 
+*  alphabetical format ("one", "two", etc.)
+*
+*  @param $number
+*  @param $currency
+*  @param $currencyDec
+*  @param $decWord
+*  @return string
+*
+*/ 
+function num_to_word($number, $currency = ' Taka', $currencyDec = ' Poysa', $decWord = 'and') 
+{
+    // ABS
+    $number = abs($number);
+
+    //Get the integer part
+    $intpart = floor ( $number );
+ 	
+    //Get the fraction part
+    $fraction = round($number - $intpart,2);
+    if($fraction > 0)
+    	$fraction = substr($fraction, 2);
+    //look([$intpart, $fraction]);
+    $my_number = $intpart;
+    if (($intpart < 0) || ($intpart > 999999999)) 
+    { 
+    throw new Exception("Number is out of range");
+    } 
+    $Kt = floor($intpart / 10000000); /* Koti */
+    $intpart -= $Kt * 10000000;
+    $Gn = floor($intpart / 100000);  /* lakh  */ 
+    $intpart -= $Gn * 100000; 
+    $kn = floor($intpart / 1000);     /* Thousands (kilo) */ 
+    $intpart -= $kn * 1000; 
+    $Hn = floor($intpart / 100);      /* Hundreds (hecto) */ 
+    $intpart -= $Hn * 100; 
+    $Dn = floor($intpart / 10);       /* Tens (deca) */ 
+    $n = $intpart % 10;               /* Ones */ 
+    $res = ""; 
+    if ($Kt) 
+    { 
+        $res .= num_to_word($Kt, '') . " Koti "; 
+    } 
+    if ($Gn) 
+    { 
+        $res .= num_to_word($Gn, '') . " Lakh"; 
+    } 
+    if ($kn) 
+    { 
+        $res .= (empty($res) ? "" : " ") . 
+            num_to_word($kn, '') . " Thousand"; 
+    } 
+    if ($Hn) 
+    { 
+        $res .= (empty($res) ? "" : " ") . 
+            num_to_word($Hn, '') . " Hundred"; 
+    } 
+    $ones = array("", "One", "Two", "Three", "Four", "Five", "Six", 
+        "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", 
+        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eightteen", 
+        "Nineteen"); 
+    $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", 
+        "Seventy", "Eigthy", "Ninety"); 
+    if ($Dn || $n) 
+    { 
+        if (!empty($res)) 
+        { 
+            $res .= " and "; 
+        } 
+        if ($Dn < 2) 
+        { 
+            $res .= $ones[$Dn * 10 + $n]; 
+        } 
+        else 
+        { 
+            $res .= $tens[$Dn]; 
+            if ($n) 
+            { 
+                $res .= "-" . $ones[$n]; 
+            } 
+        } 
+    } 
+    if (empty($res)) 
+    { 
+        $res = "zero"; 
+    }
+    
+    if((int)$fraction > 0){
+    	$tmpDec = num_to_word($fraction, '');
+    	return $res.' '.$currency.' '.$decWord.' '.$tmpDec.$currencyDec;
+    } 
+    return $res.$currency; 
+} 
 
 
 function highlight_text($haystack, $needle, $tag_open = '<strong>', $tag_close = '</strong>')

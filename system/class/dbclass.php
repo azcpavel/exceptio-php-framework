@@ -103,7 +103,7 @@ Final class DbClass
 	private function printError($error)
 	{
 		if(SHOW_DB_ERROR == false){
-			$this->errors = array('message' => $error->getMessage(), 'trace' => $error->getTrace());			
+			$this->errors = array('message' => $error->getMessage(), 'trace' => $error->getTrace(), 'code' => $error->getCode());			
 			return $this;			
 		}
 		
@@ -115,6 +115,7 @@ Final class DbClass
 			echo 'In function "'.$value['function'].'"<br>';
 			echo (isset($value['class'])) ? 'In class "'.$value['class'].'"<br>' : '';
 			echo (isset($value['type'])) ? 'In type "'.$value['type'].'"<br>' : '';
+			if(isset($value['args']))
 			foreach ($value['args'] as $argsKey => $argsValue) {
 				if(is_array($argsValue))
 					foreach ($argsValue as $argsKeySub => $argsValueSub) {
@@ -149,15 +150,15 @@ Final class DbClass
 	}
 
 	function begin_transaction(){
-		$this->pdo->beginTransaction();
+		return $this->pdo->beginTransaction();
 	}
 
 	function roll_back(){
-		$this->pdo->rollBack();
+		return $this->pdo->rollBack();
 	}
 
 	function commit(){
-		$this->pdo->commit();
+		return $this->pdo->commit();
 	}
 	
 	function prepare($sql = ''){
