@@ -427,6 +427,43 @@ Final class DbClass
 		return $this;
 	}
 
+	function or_where($where, $isSec = false){
+		$where_full = "";
+		$db_table	= '';
+		if(is_array($where)){
+			if(isset($where['db_table']))
+			{							
+				$db_table 	= $this->db_prefix.$where['db_table'];
+				unset($where['db_table']);
+				
+				if($this->db_driver == 'mysql')
+					$db_table = $this->wrapColumnStart.$db_table.$this->wrapColumnEnd.'.'.$this->wrapColumnStart;
+				else if($this->db_driver == 'dblib')
+					$db_table = $this->wrapColumnStart.$db_table.$this->wrapColumnEnd.'.'.$this->wrapColumnStart.'dbo'.$this->wrapColumnEnd.'.'.$this->wrapColumnStart;
+
+			}
+			
+			foreach ($where as $key => $value) {
+				$where_full .= " OR {$db_table}$key{$this->wrapColumnEnd} = $value";
+			}
+			
+			if($this->where != 1)
+				$this->where .= $where_full;
+			else
+				$this->where = substr($where_full,3);
+		}		
+		elseif($this->where != 1 AND $isSec != false)
+			$this->where .= " OR $where = '$isSec'";		
+		elseif($this->where != 1 AND $isSec == false)
+			$this->where .= " OR $where";
+		elseif($this->where == 1 AND $isSec != false)
+			$this->where = "$where = '$isSec'";
+		else
+			$this->where = $where;
+		
+		return $this;
+	}
+
 	function order_by($order_by = NULL, $order = NULL)
 	{
 		
