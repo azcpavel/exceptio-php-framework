@@ -8,7 +8,7 @@
 *	@version : 1.0.1
 *	Core functions
 */
-
+require_once "assetVersion.php";
 function __autoload($class)
 {
 	if(file_exists(APPLICATION.'/controllers/'.$class.'.php'))	
@@ -598,6 +598,11 @@ if(!function_exists('unserializer')){
 	}
 }
 
+if(!function_exists('asset')){
+	function asset($file){
+		return base_url($file.'?v='.ASSET_VERSION);
+	}
+}
 
 function &get_controller_instance()
 {
