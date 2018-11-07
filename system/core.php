@@ -9,7 +9,8 @@
 *	Core functions
 */
 require_once "assetVersion.php";
-function __autoload($class)
+spl_autoload_register('ex_autoload');
+function ex_autoload($class)
 {
 	if(file_exists(APPLICATION.'/controllers/'.$class.'.php'))	
 		require(APPLICATION.'/controllers/'.$class.'.php');	
