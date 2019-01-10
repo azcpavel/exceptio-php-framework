@@ -583,7 +583,27 @@ Final class DbClass
 			$key_full = '(';
 			foreach ($values as $key => $value) {
 				
-					$values_full .= "'$value',";
+					if ($value !== null) {
+	                    $valType = gettype($value);
+	                    switch ($valType) {
+	                        case 'string':
+	                            $values_full .= "'$value',";
+	                            break;
+	                        case 'integer':
+	                        case 'double':
+	                            $values_full .= "$value,";
+	                            break;
+	                        case 'boolean':
+	                            $values_full .= (($value) ? "true" : "false").",";
+	                            break;
+	                        default:
+	                            $values_full .= "'$value',";
+	                            break;
+	                    }
+	                    
+	                } else {
+	                    $values_full .= "NULL,";
+	                }
 					$key_full .= "{$this->wrapColumnStart}$key{$this->wrapColumnEnd},";
 			}
 
@@ -636,7 +656,27 @@ Final class DbClass
 			foreach ($values as $keyValues => $valueValues) {
 				$values_full .= '(';
 				foreach ($valueValues as $value){					
-					$values_full .= "'$value',";					
+					if ($value !== null) {
+	                    $valType = gettype($value);
+	                    switch ($valType) {
+	                        case 'string':
+	                            $values_full .= "'$value',";
+	                            break;
+	                        case 'integer':
+	                        case 'double':
+	                            $values_full .= "$value,";
+	                            break;
+	                        case 'boolean':
+	                            $values_full .= (($value) ? "true" : "false").",";
+	                            break;
+	                        default:
+	                            $values_full .= "'$value',";
+	                            break;
+	                    }
+	                    
+	                } else {
+	                    $values_full .= "NULL,";
+	                }				
 				}
 				$values_full = substr($values_full, 0, -1).'),';
 			}
