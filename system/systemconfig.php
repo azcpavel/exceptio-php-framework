@@ -9,8 +9,6 @@
 *	System Constants
 */
 
-define('APPLICATION','application');
-
 require_once(APPLICATION.'/config/config.php');
 require_once(APPLICATION.'/config/route.php');
 
@@ -18,7 +16,7 @@ if($config['base_url'] === ''){
 
 	$config['base_url']  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
 
-	$config['base_url'] .= $_SERVER['HTTP_HOST'];
+	$config['base_url'] .= (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : '';
 
 	$config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 }
@@ -27,7 +25,7 @@ if($config['base_url'] === ''){
 
 $config['base_host']  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
 
-$config['base_host'] .= $_SERVER['HTTP_HOST'];
+$config['base_host'] .= (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : '';
 
 $config['ranKey'] = "tmp".rand(100000,599999);
 

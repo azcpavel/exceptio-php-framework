@@ -39,10 +39,13 @@ Final class DbClass
 	public $db_server;
 	public $db_uid;
 	public $db_options;
+	public $db_charset;
+	public $db_collation;
+	public $db_engine;
 	public $errors = '';
 
 	
-	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true, $preExecute = '', $useDbEscape = true)
+	function __construct($driver = '',$host = '',$user = '',$pass = '',$db = '',$dbPrefix = '',$port = '',$service = '',$protocol = '',$server = '',$uid = '',$options = '', $autocommit = true, $preExecute = '', $useDbEscape = true, $charset = 'utf8mb4', $collation = 'utf8mb4_unicode_ci', $engine = null)
 	{		
 		
 		require(SYSTEM.'/class/dbDriver/'.$driver.'.inc');
@@ -67,6 +70,9 @@ Final class DbClass
 			$this->db_server 	= $server;
 			$this->db_uid 		= $uid;
 			$this->db_options	= $options;
+			$this->db_charset	= $charset;
+			$this->db_collation	= $collation;
+			$this->db_engine	= $engine;
 
 			if(is_array($options) && count($options) > 0)
 				$this->pdo = new pdo($dsn,$user,$pass,$this->db_options);
@@ -299,7 +305,7 @@ Final class DbClass
 		return preg_replace('/\(/', '('.$this->select_table_prefix, $match[0]);
 	}
 
-	function select_max($MAX, $as = 0)
+	function select_MAX($MAX, $as = 0)
 	{
 		$this->select = ($as === 0 ) ? "MAX($MAX) as $MAX" : "MAX($MAX) as $as";
 
@@ -785,6 +791,28 @@ Final class DbClass
 		}
 
 		return $this;
+	}
+
+	function create_table($table, $columns, $ifNotExists = false){
+		$sql = 'CREATE TABLE '.( ($ifNotExists) ? 'IF NOT EXISTS ' : ''). $this->db_prefix. $table.'('.PHP_EOL;
+		foreach ($columns as $column => $attr) {
+			if(isset($attr['type'])){
+				$sql .= $column.' '.$attr['type'];
+				if(isset($attr['option'])){
+					$sql .= ' '.$attr['option'];
+				}
+				$sql .= ','.PHP_EOL;
+			}
+		}
+
+		$sql = substr($sql, 0, -3).')';
+		
+		if($this->db_engine !== null)
+			$sql .= 'ENGINE=$this->db_engine ';
+		if($this->db_charset != '' && $this->db_collation != '')
+		$sql .= "DEFAULT CHARSET={$this->db_charset} COLLATE={$this->db_collation}";
+
+		return $this->exec($sql);
 	}
 
 	function drop_table($table)

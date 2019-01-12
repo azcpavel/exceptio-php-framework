@@ -65,7 +65,8 @@ Final class LoadDBClass
 			$db_get_all_config[$name]['pass'],$db_get_all_config[$name]['db'],$db_get_all_config[$name]['dbPrefix'],$db_get_all_config[$name]['port'],
 			$db_get_all_config[$name]['service'],$db_get_all_config[$name]['protocol'],$db_get_all_config[$name]['server'],
 			$db_get_all_config[$name]['uid'],$db_get_all_config[$name]['options'],$db_get_all_config[$name]['autocommit'],
-			$db_get_all_config[$name]['preExecute'],$db_get_all_config[$name]['useDbEscape']);
+			$db_get_all_config[$name]['preExecute'],$db_get_all_config[$name]['useDbEscape'],$db_get_all_config[$name]['charset'],
+			$db_get_all_config[$name]['collation'],$db_get_all_config[$name]['engine']);
 
 		return $model->db;
 	}

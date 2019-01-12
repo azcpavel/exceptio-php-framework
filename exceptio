@@ -1,0 +1,7 @@
+<?php
+require_once('app.php');
+require_once(SYSTEM.'/exceptioCommand.php');
+
+$exceptioCommand = new ExceptioCommand($argv);
+$exceptioCommand->run();
+
