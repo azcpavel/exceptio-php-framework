@@ -334,15 +334,16 @@ Final class DbClass
 	}
 
 	function join($table, $join, $pos = 0, $preFix = 1){
+		$db_prefix = ($preFix) ? $this->db_prefix : "";
 		if (strpos($table, ' ') === false && $preFix == 1) {		
 			$join = explode('=', $join);
 			foreach ($join as $key => $value) {
-				$join[$key] = $this->db_prefix.trim($value);
+				$join[$key] = $db_prefix.trim($value);
 			}
 			$join = implode('=', $join);
 		}
 
-		$this->join .=  (($pos !== 0) ? " ".strtoupper($pos)." JOIN {$this->db_prefix}$table ON $join " : "JOIN {$this->db_prefix}$table ON $join ");
+		$this->join .=  (($pos !== 0) ? " ".strtoupper($pos)." JOIN {$db_prefix}$table ON $join " : "JOIN {$db_prefix}$table ON $join ");
 
 		return $this;
 	}

@@ -82,7 +82,7 @@ class ExceptioCommand {
 						'?>');
 			fclose($handle);
 
-			echo $this->getColoredString("Success new version is: ","green").$time;
+			echo $this->getColoredString("Success new version is: ","green").$time.PHP_EOL;
 		}
 	}
 
