@@ -397,7 +397,8 @@ class ExceptioCommand {
 			}
 
 		}else if(isset($this->argv[1]) 
-			&& $this->argv[1] == 'migrate'){
+			&& $this->argv[1] == 'migrate'
+			&& !isset($this->argv[2])){
 
 			$this->doMigration();
 

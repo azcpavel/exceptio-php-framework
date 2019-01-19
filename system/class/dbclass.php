@@ -802,11 +802,11 @@ Final class DbClass
 				if(isset($attr['option'])){
 					$sql .= ' '.$attr['option'];
 				}
-				$sql .= ','.PHP_EOL;
+				$sql .= ',';
 			}
 		}
 
-		$sql = substr($sql, 0, -3).')';
+		$sql = substr($sql, 0, -1).')';
 		
 		if($this->db_engine !== null)
 			$sql .= 'ENGINE=$this->db_engine ';
