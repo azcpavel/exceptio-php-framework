@@ -90,6 +90,11 @@ Final class pagination
 		if($this->per_page < $this->total && $this->total > 0 && $this->per_page > 0){
 
 		$queryParam = "";
+		
+		if(preg_match('/^[0-9]+/', uri_segment($this->uri_segment), $match))
+			$URISegment = $match[0];
+		else
+			$URISegment = 0;
 
 		if(count($_GET) > 0 && $this->with_query_param){
 			$queryParam = "?".$_SERVER['QUERY_STRING'];
@@ -103,7 +108,7 @@ Final class pagination
 		if($next >= ($this->total / $this->per_page ))
 			$next = $this->total - $this->per_page;
 		
-		echo $this->begin_part.( (uri_segment($this->uri_segment) == 0) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/0{$queryParam}'>{$this->first}</a> ".$this->after_tag;		
+		echo $this->begin_part.( ($URISegment == 0) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/0{$queryParam}'>{$this->first}</a> ".$this->after_tag;		
 		
 		$count_li = 1;
 		
@@ -112,11 +117,11 @@ Final class pagination
 		if($this->start <= 0 )
 			$this->start = 1; 
 			
-		$prev = (uri_segment($this->uri_segment) ) - $this->per_page; 
+		$prev = ($URISegment ) - $this->per_page; 
 		if($prev <= 0 )
 						$prev = 0;
 						
-		$next = (uri_segment($this->uri_segment) ) + $this->per_page;
+		$next = ($URISegment ) + $this->per_page;
 
 		$next = ($next >= $this->total) ? $next - $this->per_page : $next;
 		
@@ -130,7 +135,7 @@ Final class pagination
 			if(($list_page * $this->per_page) > $this->total )
 				break;
 
-			echo ( (($list_page * $this->per_page) == uri_segment($this->uri_segment)) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/".($list_page * $this->per_page)."{$queryParam}'>".($list_page+1)."</a>{$this->after_tag} ";			
+			echo ( (($list_page * $this->per_page) == $URISegment) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/".($list_page * $this->per_page)."{$queryParam}'>".($list_page+1)."</a>{$this->after_tag} ";			
 			
 				
 			$count_li++;
@@ -146,7 +151,7 @@ Final class pagination
 			
 		echo $this->before_tag."<a href='{$this->base_url}/{$next}{$queryParam}'>>></a> ".$this->after_tag;
 		
-		echo ( (uri_segment($this->uri_segment) == ($last * $this->per_page)) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/".($last * $this->per_page)."{$queryParam}'>{$this->last}</a>".$this->after_tag.$this->end_part;
+		echo ( ($URISegment == ($last * $this->per_page)) ? $this->active_tag : $this->before_tag)."<a href='{$this->base_url}/".($last * $this->per_page)."{$queryParam}'>{$this->last}</a>".$this->after_tag.$this->end_part;
 		
 		}
 	}
