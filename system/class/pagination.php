@@ -31,11 +31,18 @@ Final class pagination
 	function __construct(array $array = array(''))
 	{
 		$this->active_tag = $this->before_tag;
-		
+		$activeDefault = true;
 		foreach ($array as $key => $value) {
-			if(property_exists($this, $key))
+			if(property_exists($this, $key)){
 				$this->$key = $value;	
+				if($key == 'active_tag')
+					$activeDefault = false;
+			}
 		}		
+
+		if($activeDefault){
+			$this->active_tag = $this->before_tag;
+		}
 
 		$tmp_st = explode('/', $_SERVER['REQUEST_URI']);
 		$tmp_st = end($tmp_st);
@@ -80,7 +87,7 @@ Final class pagination
 
 	function show()
 	{
-		if($this->per_page < $this->total){
+		if($this->per_page < $this->total && $this->total > 0 && $this->per_page > 0){
 
 		$queryParam = "";
 
