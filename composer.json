@@ -1,0 +1,19 @@
+{
+	"description": "Exceptio PHP framework",
+	"name": "azcpavel/Exceptio-PHP-Framework",
+	"type": "project",
+	"homepage": "https://exceptionsolutions.com",
+	"license": "MIT",
+	"support": {		
+		"source": "https://github.com/azcpavel/Exceptio-PHP-Framework"
+	},
+	"require": {
+		"php": ">=5.5"
+	},
+	"suggest": {
+		
+	},
+	"require-dev": {
+		
+	}
+}
