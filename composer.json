@@ -1,6 +1,6 @@
 {
 	"description": "Exceptio PHP framework",
-	"name": "azcpavel/exceptio-php-framework",
+	"name": "exceptio/exceptio-php-framework",
 	"type": "project",
 	"homepage": "https://exceptionsolutions.com",
 	"license": "MIT",
