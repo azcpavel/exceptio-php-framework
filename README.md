@@ -13,13 +13,13 @@ https://github.com/azcpavel/Exceptio-PHP-Framework
 Exceptio PHP Framework is available on [Packagist](https://packagist.org/packages/azcpavel/exceptio-php-framework) (using semantic versioning), and installation via [Composer](https://getcomposer.org) is the recommended way to install PHPMailer. Just add this line to your `composer.json` file:
 
 ```json
-"azcpavel/exceptio-php-framework": "dev-master"
+"exceptio/exceptio-php-framework": "dev-master"
 ```
 
 or run
 
 ```sh
-composer require azcpavel/exceptio-php-framework
+composer require exceptio/exceptio-php-framework
 ```
 
 ```
